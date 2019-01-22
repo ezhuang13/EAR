@@ -1,0 +1,19 @@
+{
+  "name": "ear",
+  "version": "0.0.1",
+  "description": "music sequencing and editing web application",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vu-cs3892-s19/ear.git"
+  },
+  "author": "Eric Zhuang, Aaron Molotsky, Raj Singh",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/vu-cs3892-s19/ear/issues"
+  },
+  "homepage": "https://github.com/vu-cs3892-s19/ear#readme"
+}
