@@ -1,19 +1,29 @@
 import * as React from 'react';
 import { Fragment, Component } from 'react';
 
-import * as Actions from './actions';
 import { connect } from 'react-redux';
 
+import LoginForm from './login_form';
 
 class Login extends Component<any, any> {
     constructor(props) {
         super(props);
+        this.submitLogin = this.submitLogin.bind(this);
+    }
+
+    submitLogin(loginInformation: Object) {
+        console.log(loginInformation);
+        console.log("Submitting log in!");
+        return;
     }
 
     render() {
         return (
+            <Fragment>
             <h1>Login Header!</h1>
-        )
+            <LoginForm submitLogin={this.submitLogin}/>
+            </Fragment>
+        );
     }
 }
 

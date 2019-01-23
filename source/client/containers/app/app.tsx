@@ -6,8 +6,8 @@ import { BrowserRouter, Link } from 'react-router-dom';
 import * as Actions from './actions';
 import { connect } from 'react-redux';
 
-import Register from '../register/register.tsx';
-import Login from '../login/login.tsx';
+import Register from '../register/register';
+import Login from '../login/login';
 
 class Application extends Component<any, any> {
     constructor(props) {

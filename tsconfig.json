@@ -1,0 +1,13 @@
+{
+    "compilerOptions": {
+        "outDir": "./public",
+        "sourceMap": true,
+        "noImplicitAny": false,
+        "target": "es6",
+        "jsx": "react",
+        "moduleResolution": "node"
+    },
+    "include": [
+        "./source/client/*"
+    ]
+}

@@ -1,22 +1,28 @@
 import * as React from 'react';
 import { Fragment, Component } from 'react';
 
-import * as Actions from './actions';
 import { connect } from 'react-redux';
 
-import RegisterForm from './registerForm';
+import RegisterForm from './register_form';
 
 
 class Register extends Component<any, any> {
     constructor(props) {
         super(props);
+        this.submitRegistration = this.submitRegistration.bind(this);
+    }
+
+    submitRegistration(registrationInfo: Object) {
+        console.log(registrationInfo);
+        console.log("Registration has been submitted!");
+        return;
     }
 
     render() {
         return (
             <Fragment>
                 <h1>Register!</h1>
-                <RegisterForm/>
+                <RegisterForm submitRegistration={this.submitRegistration}/>
             </Fragment>
         )
     }
