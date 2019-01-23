@@ -1,11 +1,13 @@
 import * as React from 'react';
-import { Route, Redirect } from 'react-router';
+import { Route, Redirect, Switch } from 'react-router';
 import { Fragment, Component } from 'react';
 import { BrowserRouter, Link } from 'react-router-dom';
 
 import * as Actions from './actions';
 import { connect } from 'react-redux';
 
+import Register from '../register/register.tsx';
+import Login from '../login/login.tsx';
 
 class Application extends Component<any, any> {
     constructor(props) {
@@ -26,26 +28,22 @@ class Application extends Component<any, any> {
     render() {
         return (
             <BrowserRouter>
-                <Fragment>
-                <Route path="/" render={props => (
+                <Switch>
+                <Route exact path="/" render={props => (
                     <Fragment>
-                        <h1>Index Header!</h1>
-                        <Link to="/login">Logins?</Link>
+                        <h1>Ear</h1>
+                        <Link to="/login">Login</Link>
                         <div></div>
-                        <Link to="/register">Registesr?</Link>
+                        <Link to="/register">Register</Link>
                     </Fragment>
                 )}/>
                 <Route path="/login" render={props => (
-                    <Fragment>
-                        <h1>Login Header!</h1>
-                    </Fragment>
+                    <Login/>
                 )}/>
                 <Route path="/register" render={props => (
-                    <Fragment>
-                        <h1>Register Header!</h1>
-                    </Fragment>
+                    <Register/>
                 )}/>
-                </Fragment>
+                </Switch>
             </BrowserRouter>
         )
     }
