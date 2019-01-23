@@ -1,6 +1,7 @@
 import * as React from 'react';
+import { Route, Redirect } from 'react-router';
 import { Fragment, Component } from 'react';
-import { Route, BrowserRouter } from 'react-router-dom';
+import { BrowserRouter, Link } from 'react-router-dom';
 
 import * as Actions from './actions';
 import { connect } from 'react-redux';
@@ -25,17 +26,32 @@ class Application extends Component<any, any> {
     render() {
         return (
             <BrowserRouter>
+                <Fragment>
                 <Route path="/" render={props => (
                     <Fragment>
-                        <h1>Header One!</h1>
+                        <h1>Index Header!</h1>
+                        <Link to="/login">Logins?</Link>
+                        <div></div>
+                        <Link to="/register">Registesr?</Link>
                     </Fragment>
                 )}/>
+                <Route path="/login" render={props => (
+                    <Fragment>
+                        <h1>Login Header!</h1>
+                    </Fragment>
+                )}/>
+                <Route path="/register" render={props => (
+                    <Fragment>
+                        <h1>Register Header!</h1>
+                    </Fragment>
+                )}/>
+                </Fragment>
             </BrowserRouter>
         )
     }
 }
 
-/*
+
 // This gives the component access to the store (state)
 const mapStateToProps = state => {
     return {
@@ -54,5 +70,3 @@ const mapDispatchToProps = dispatch => {
 
 // This method wraps the component with the store and dispatch!!!
 export default connect(mapStateToProps, mapDispatchToProps)(Application);
-*/
-export default Application;

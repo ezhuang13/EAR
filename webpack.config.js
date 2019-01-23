@@ -77,7 +77,7 @@ const clientConfig = {
           }
     },
     plugins: [
-        new CleanWebpackPlugin(['public']),
+        new CleanWebpackPlugin(['source/server/static']),
         // new BundleAnalyzerPlugin()
     ]
 }

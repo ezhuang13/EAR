@@ -5,16 +5,20 @@ import Application from './containers/app/app';
 
 import { Provider } from 'react-redux';
 import { createStore } from 'redux';
-// import rootReducer from './reducers';
+import rootReducer from './reducers';
 
-// const store = createStore(rootReducer);
+const store = createStore(rootReducer);
 
 const renderApplication = () => {
-    render(<Application/>, document.getElementById('rootDiv'));
+    render(
+            <Provider store={store}>
+                <Application/>
+            </Provider>, document.getElementById('rootDiv'));
 }
 
 renderApplication();
 
 Object.defineProperty(window, 'store', {
+    value: store,
     writable: true
 });
