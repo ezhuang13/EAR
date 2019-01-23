@@ -13,9 +13,14 @@ class Register extends Component<any, any> {
     }
 
     submitRegistration(registrationInfo: Object) {
-        console.log(registrationInfo);
-        console.log("Registration has been submitted!");
-        return;
+        fetch("/user/" + registrationInfo.username, {
+            method: "POST",
+            body: JSON.stringify(registrationInfo),
+            credentials: "include",
+            headers: {
+              "content-type": "application/json"
+            }
+        });
     }
 
     render() {
