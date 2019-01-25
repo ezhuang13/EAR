@@ -15,7 +15,6 @@ class Register extends Component<any, any> {
 
     submitRegistration(registrationInfo: any) {
         console.log(registrationInfo);
-        /*
         fetch("/user/" + registrationInfo.username, {
             method: "POST",
             body: JSON.stringify(registrationInfo),
@@ -23,7 +22,8 @@ class Register extends Component<any, any> {
             headers: {
               "content-type": "application/json"
             }
-        });*/
+        });
+        this.props.history.push("/homepage");
     }
 
     render() {

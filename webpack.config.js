@@ -58,6 +58,14 @@ const clientConfig = {
                 use: [
                     {loader: 'url-loader?limit=8192'}
                 ]
+            },
+
+            // Allows mp3 files to be loaded
+            {
+                test: /\.mp3$/,
+                use: [
+                    {loader: 'file-loader'}
+                ]
             }
         ]
     },

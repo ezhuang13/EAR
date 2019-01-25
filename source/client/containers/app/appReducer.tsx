@@ -1,6 +1,6 @@
 import {
     APPLICATION_INITIALIZED
-} from './actions';
+} from './appActions';
 
 const initialState = {
     started: false
