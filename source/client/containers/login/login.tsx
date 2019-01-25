@@ -3,10 +3,18 @@ import { Fragment, Component } from 'react';
 
 import { connect } from 'react-redux';
 
-import LoginForm from './login_form';
+import Form from '../../components/form';
+import { Login_Fields } from '../../components/constants';
 
-class Login extends Component<any, any> {
-    constructor(props) {
+interface LoginProps {
+    // Nothing in here yet!
+};
+
+interface LoginState {
+    // Nothing in here yet!
+}
+class Login extends Component<LoginProps, LoginState> {
+    constructor(props: LoginProps) {
         super(props);
         this.submitLogin = this.submitLogin.bind(this);
     }
@@ -20,29 +28,14 @@ class Login extends Component<any, any> {
     render() {
         return (
             <Fragment>
-            <h1>Login Header!</h1>
-            <LoginForm submitLogin={this.submitLogin}/>
+                <h1>Login Header!</h1>
+                <Form 
+                fields={Login_Fields}
+                submitMethod={this.submitLogin}/>
             </Fragment>
         );
     }
 }
 
-
-// This gives the component access to the store (state)
-const mapStateToProps = state => {
-    return {
-        store: {
-            ...state
-        }
-    };
-}
-
-// This gives the component access to dispatch / the actions
-const mapDispatchToProps = dispatch => {
-    return {
-        initializeApplication: () => { dispatch(Actions.initializeApplication()); }
-    }
-}
-
 // This method wraps the component with the store and dispatch!!!
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default Login;

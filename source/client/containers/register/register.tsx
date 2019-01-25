@@ -3,7 +3,8 @@ import { Fragment, Component } from 'react';
 
 import { connect } from 'react-redux';
 
-import RegisterForm from './register_form';
+import Form from '../../components/form';
+import { Register_Fields } from '../../components/constants';
 
 
 class Register extends Component<any, any> {
@@ -12,7 +13,9 @@ class Register extends Component<any, any> {
         this.submitRegistration = this.submitRegistration.bind(this);
     }
 
-    submitRegistration(registrationInfo: Object) {
+    submitRegistration(registrationInfo: any) {
+        console.log(registrationInfo);
+        /*
         fetch("/user/" + registrationInfo.username, {
             method: "POST",
             body: JSON.stringify(registrationInfo),
@@ -20,35 +23,18 @@ class Register extends Component<any, any> {
             headers: {
               "content-type": "application/json"
             }
-        });
+        });*/
     }
 
     render() {
         return (
             <Fragment>
                 <h1>Register!</h1>
-                <RegisterForm submitRegistration={this.submitRegistration}/>
+                <Form fields={Register_Fields} submitMethod={this.submitRegistration}/>
             </Fragment>
         )
     }
 }
 
-
-// This gives the component access to the store (state)
-const mapStateToProps = state => {
-    return {
-        store: {
-            ...state
-        }
-    };
-}
-
-// This gives the component access to dispatch / the actions
-const mapDispatchToProps = dispatch => {
-    return {
-        initializeApplication: () => { dispatch(Actions.initializeApplication()); }
-    }
-}
-
 // This method wraps the component with the store and dispatch!!!
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+export default Register;
