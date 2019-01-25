@@ -3,7 +3,7 @@ import { Route, Redirect, Switch } from 'react-router';
 import { Fragment, Component } from 'react';
 import { BrowserRouter, Link } from 'react-router-dom';
 
-import * as Actions from './actions';
+import * as Actions from './appActions';
 import { connect } from 'react-redux';
 
 import Register from '../register/register';

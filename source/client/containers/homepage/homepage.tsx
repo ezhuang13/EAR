@@ -3,30 +3,37 @@ import { Fragment, Component } from 'react';
 
 import { connect } from 'react-redux';
 
-import soundfile from '../../../../public/audio/SampleAudio.mp3';
-import PlayButton from 'react-soundplayer/components';
+//import soundfile from '../../../../public/audio/SampleAudio.mp3';
 
 class HomePage extends Component<any, any> {
     constructor(props) {
         super(props);
 
-        this.audio = new Audio(soundfile);
-
-        this.playAudio = this.playAudio.bind(this);
+        this.state = {
+            play: true
+        };
+        
+        this.audio = new Audio("SampleAudio_0.7mb.mp3");
+        this.togglePlay = this.togglePlay.bind(this);
     }
 
-    playAudio() {
-        // this.audio.play();
-        console.log("play button clicked!");
+    togglePlay() {
+        if (this.state.play) {
+            this.audio.play().catch(err => {
+                console.log(err);
+            });
+        }
+        else {
+            this.audio.pause();
+        }
+        this.setState({ play: !this.state.play });
     }
 
     render() {
         return (
             <Fragment>
                 <h1>Upload some Audio</h1>
-                <PlayButton
-                  onTogglePlay={this.playAudio}
-                />
+                <button onClick={this.togglePlay}>Click Me!</button>
             </Fragment>
         );
     }
