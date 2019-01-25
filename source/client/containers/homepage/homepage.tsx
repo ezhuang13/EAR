@@ -12,8 +12,8 @@ class HomePage extends Component<any, any> {
         this.state = {
             play: true
         };
-        
-        this.audio = new Audio("SampleAudio_0.7mb.mp3");
+
+        this.audio = new Audio("http://streaming.tdiradio.com:8000/house.mp3");
         this.togglePlay = this.togglePlay.bind(this);
     }
 
@@ -30,10 +30,11 @@ class HomePage extends Component<any, any> {
     }
 
     render() {
+        let buttonName = this.state.play ? "Play" : "Pause";
         return (
             <Fragment>
                 <h1>Upload some Audio</h1>
-                <button onClick={this.togglePlay}>Click Me!</button>
+                <button onClick={this.togglePlay}>{buttonName}</button>
             </Fragment>
         );
     }
