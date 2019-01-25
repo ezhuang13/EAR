@@ -8,6 +8,7 @@ import { connect } from 'react-redux';
 
 import Register from '../register/register';
 import Login from '../login/login';
+import HomePage from '../homepage/homepage';
 
 class Application extends Component<any, any> {
     constructor(props) {
@@ -38,10 +39,13 @@ class Application extends Component<any, any> {
                     </Fragment>
                 )}/>
                 <Route path="/login" render={props => (
-                    <Login/>
+                    <Login {...props}/>
                 )}/>
                 <Route path="/register" render={props => (
-                    <Register/>
+                    <Register {...props}/>
+                )}/>
+                <Route path="/homepage" render={props => (
+                    <HomePage {...props}/>
                 )}/>
                 </Switch>
             </BrowserRouter>

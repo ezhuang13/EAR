@@ -22,6 +22,7 @@ class Login extends Component<LoginProps, LoginState> {
     submitLogin(loginInformation: Object) {
         console.log(loginInformation);
         console.log("Submitting log in!");
+        this.props.history.push('/homepage');
         return;
     }
 
