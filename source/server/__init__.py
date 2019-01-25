@@ -9,6 +9,7 @@ from flask_restful import Resource, Api
 app = Flask(__name__)
 api = Api(app)
 
+users = []
 # Create singular entry point for overall application
 @app.route('/', defaults={'path': ''})
 @app.route('/<path:path>')
@@ -17,8 +18,12 @@ def index(path):
 
 # TODO: Write users to database
 class User(Resource):
+	def get(self, username):
+		return users
+
 	def post(self, username):
 		data = request.get_json()
+		users.append(data)
 		return data
 api.add_resource(User, '/user/<username>')
 
