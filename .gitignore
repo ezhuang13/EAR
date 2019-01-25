@@ -3,3 +3,4 @@ source/server/venv/*
 source/server/__pycache__
 node_modules/*
 source/server/static/*
+package-lock.json
