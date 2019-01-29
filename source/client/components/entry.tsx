@@ -5,32 +5,46 @@ import * as React from 'react';
 const FormLabel = styled.label``;
 const FormInput = styled.input``;
 
+// Props interface definition for the Label Component
 interface LabelProps {
   labelText?: string;
 }
 
+// Props interface definition for the Input Component
 interface InputProps {
   // Usually default Input Attributes
   id?: string;
-  name?: string;
-  value?: any;
-  type?: string;
+  value?: number | string;
+  name: string;
+  type: string;
   onChange(event: any): void;
 }
 
-export const Label: React.SFC<LabelProps> = props => {
+/**
+ * Stateless Functional Component for Form Labels
+ * @param props Receives labelText (the text presented in the label)
+ * @returns JSX for the Label Component
+ */
+export const Label: React.SFC<LabelProps> = (props: LabelProps) => {
   return (
-    <FormLabel>{props.labelText}</FormLabel>
-  )
-}
+    <FormLabel>{props.labelText ? props.labelText : ''}</FormLabel>
+  );
+};
 
-export const Input: React.SFC<InputProps> = props => {
+/**
+ * Stateless Functional Component for Form Inputs
+ * @param props Receives onChange (required), id (optional),
+ * type (optional), name (optional), value (optional)
+ * @returns JSX for the Input Component
+ */
+export const Input: React.SFC<InputProps> = (props: InputProps) => {
   return (
     <FormInput
-    onChange={props.onChange}
-    id={props.id}
-    type={props.type}
-    name={props.name}
-    value={props.value}></FormInput>
-  )
+      onChange={props.onChange}
+      type={props.type}
+      name={props.name}
+      value={props.value}
+      id={props.id ? props.id : ''}
+    />
+  );
 };

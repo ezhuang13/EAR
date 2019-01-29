@@ -1,20 +1,20 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
-import { render } from 'react-dom';
 import Application from './containers/app/app';
 
 import { Provider } from 'react-redux';
-import { createStore } from 'redux';
-import rootReducer from './reducers';
+import thunk from 'redux-thunk';
+import { createStore, applyMiddleware } from 'redux';
+import { rootReducer } from './reducers';
 
-const store = createStore(rootReducer);
+const store = createStore(rootReducer, applyMiddleware(thunk));
 
 const renderApplication = () => {
-    render(
+    ReactDOM.render(
             <Provider store={store}>
                 <Application/>
             </Provider>, document.getElementById('rootDiv'));
-}
+};
 
 renderApplication();
 
