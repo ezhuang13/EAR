@@ -1,7 +1,9 @@
-export const APPLICATION_INITIALIZED = 'APPLICATION_INITIALIZED';
+import * as Types from './appTypes';
+import { ThunkAction, ThunkDispatch } from 'redux-thunk';
+import { AnyAction } from 'redux';
 
-export function initializeApplication () {
+export const initializeApplication = () => {
     return ({
-        type: APPLICATION_INITIALIZED,
+        type: Types.APPLICATION_INITIALIZED
     });
-}
+};

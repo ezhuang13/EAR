@@ -1,18 +1,30 @@
-import {
-    APPLICATION_INITIALIZED
-} from './appActions';
+import * as Types from './appTypes';
 
-const initialState = {
-    started: false
+// Describes the shape of Login's slice of state for the Reducer
+interface AppStateLocal {
+    loggedIn: boolean;
+    pastUsername: string;
+    status: string;
+    appInitialized: boolean;
+}
+
+export const initialAppState: AppStateLocal = {
+    appInitialized: false,
+    status: '',
+    pastUsername: '',
+    loggedIn: false
 };
 
-export const appReducer = (state = initialState, action) => {
-    switch(action.type) {
-        case APPLICATION_INITIALIZED:
+export const appReducer = (state = initialAppState, action: Types.AppActionTypes) => {
+    switch (action.type) {
+        case Types.APPLICATION_INITIALIZED:
             return Object.assign({}, state, {
-                started: true
+                appInitialized: true
             });
+
         default:
             return state;
     }
-}
+};
+
+export type AppState = ReturnType<typeof appReducer>;
