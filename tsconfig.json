@@ -3,11 +3,24 @@
         "outDir": "./public",
         "sourceMap": true,
         "noImplicitAny": false,
-        "target": "es6",
+        "target": "es5",
+        "lib": ["es6", "dom"],
+        "module": "commonjs",
         "jsx": "react",
-        "moduleResolution": "node"
+        "types": [
+            "react",
+            "react-dom",
+            "react-redux",
+            "react-router",
+            "node",
+            "prop-types"
+        ],
+        "typeRoots": [
+            "node_modules/@types"
+        ]
     },
     "include": [
         "./source/client/*"
-    ]
+    ],
+    "exclude": ["node_modules"]
 }

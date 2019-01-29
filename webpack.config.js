@@ -16,7 +16,8 @@ const entryPoint = {
         'react-router-dom',
         'styled-components',
         'redux',
-        'react-redux'
+        'react-redux',
+        'redux-thunk'
     ]
 };
 
