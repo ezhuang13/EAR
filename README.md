@@ -7,9 +7,8 @@ This is the README file for our web application.
 `. venv/bin/activate`
 3. Install the necessary dependencies.  
 `pip install -r requirements.txt`
-4. Set the appropriate configuration variables (FLASK_APP, FLASK_ENV).
+4. Set the appropriate configuration variables.
 ```bash
-$ export FLASK_APP=app_name.py
-
 $ export FLASK_ENV=development
+$ export JWT_SECRET_KEY = password
 ```

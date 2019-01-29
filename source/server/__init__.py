@@ -1,10 +1,5 @@
-# This is the Flask server for our web application!
-import datetime
-import json
-import os
-from flask import Flask, render_template, request
-from flask_restful import Resource, Api
 
+<<<<<<< Updated upstream
 # Create our flask application
 app = Flask(__name__)
 api = Api(app)
@@ -40,3 +35,5 @@ api.add_resource(Test, '/test/<username>')
 
 if __name__ == '__main__':
         app.run()
+=======
+>>>>>>> Stashed changes
