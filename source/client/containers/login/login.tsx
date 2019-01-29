@@ -1,42 +1,87 @@
 import * as React from 'react';
-import { Fragment, Component } from 'react';
-
 import { connect } from 'react-redux';
+import { ThunkDispatch } from 'redux-thunk';
 
+// Import dynamically rendered Form
 import Form from '../../components/form';
-import { Login_Fields } from '../../components/constants';
 
-interface LoginProps {
-    // Nothing in here yet!
-};
+// Imports for Actions and Types
+import * as Actions from './loginActions';
+import * as Types from './loginTypes';
 
-interface LoginState {
-    // Nothing in here yet!
+// Imports for Application State (based on the reducer)
+import { MainState } from '../../reducers';
+import { LoginState } from './loginReducer';
+
+// Import constants for Login
+import { LoginFields } from '../../components/constants';
+import { RouteComponentProps } from 'react-router';
+
+interface StateProps extends RouteComponentProps<{}> {
+    // What we want to add to the state!
 }
-class Login extends Component<LoginProps, LoginState> {
+interface DispatchProps {
+    initializeLogin: () => void;
+    attemptLogin: (loginInformation: Types.LoginInformation) => void;
+    loginFail: (username: Types.LoginUsername) => void;
+    loginSuccess: (username: Types.LoginUsername) => void;
+    testLogin: (loginInformation: Types.LoginInformation) => void;
+}
+
+type LoginProps = DispatchProps & StateProps;
+
+class Login extends React.Component<LoginProps, LoginState> {
     constructor(props: LoginProps) {
         super(props);
         this.submitLogin = this.submitLogin.bind(this);
+        this.logThis = this.logThis.bind(this);
     }
 
-    submitLogin(loginInformation: Object) {
-        console.log(loginInformation);
-        console.log("Submitting log in!");
-        this.props.history.push('/homepage');
+    logThis() {
+        console.log(this);
+    }
+
+    componentDidMount() {
+        this.props.initializeLogin();
+    }
+
+    submitLogin(loginInformation: Types.LoginInformation) {
+        // this.props.attemptLogin(loginInformation);
+        this.props.testLogin(loginInformation);
         return;
     }
 
     render() {
         return (
-            <Fragment>
+            <React.Fragment>
                 <h1>Login Header!</h1>
-                <Form 
-                fields={Login_Fields}
-                submitMethod={this.submitLogin}/>
-            </Fragment>
+                <Form
+                    fields={LoginFields}
+                    submitMethod={this.submitLogin}
+                />
+                <button onClick={this.logThis}>Click!</button>
+            </React.Fragment>
         );
     }
 }
 
+// This gives the component access to the store (state)
+const mapStateToProps = (state: MainState) => {
+    return {
+        storeState: state.login
+    };
+};
+
+// This gives the component access to dispatch / the actions
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): DispatchProps => {
+    return {
+        initializeLogin: () => { dispatch(Actions.initializeLogin()); },
+        loginFail: (username: Types.LoginUsername) => { dispatch(Actions.loginFail(username)); },
+        loginSuccess: (username: Types.LoginUsername) => { dispatch(Actions.loginSuccess(username)); },
+        attemptLogin: (loginInfo: Types.LoginInformation) => { dispatch(Actions.attemptLogin(loginInfo)); },
+        testLogin: async (loginInfo: Types.LoginInformation) => { await dispatch(Actions.testLogin(loginInfo)); }
+    };
+};
+
 // This method wraps the component with the store and dispatch!!!
-export default Login;
+export default connect(mapStateToProps, mapDispatchToProps)(Login);
