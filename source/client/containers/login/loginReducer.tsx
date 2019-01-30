@@ -1,6 +1,6 @@
 import * as Types from './loginTypes';
 
-// Describes the shape of Login's slice of state for the Reducer
+/********** Local State Interface and Initial State Constant **********/
 interface LoginStateLocal {
     loggedIn: boolean;
     pastUsername: string;
@@ -15,6 +15,7 @@ export const initialLoginState: LoginStateLocal = {
     loginInitialized: false
 };
 
+/********** Login Reducer **********/
 export const loginReducer = (state = initialLoginState, action: Types.LoginActionTypes) => {
     switch (action.type) {
         case Types.LOGIN_INITIALIZED:
@@ -44,4 +45,5 @@ export const loginReducer = (state = initialLoginState, action: Types.LoginActio
     }
 };
 
+// Exports the Login Reducer as the Login's State
 export type LoginState = ReturnType<typeof loginReducer>;

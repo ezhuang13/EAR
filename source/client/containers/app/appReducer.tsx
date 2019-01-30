@@ -1,6 +1,6 @@
 import * as Types from './appTypes';
 
-// Describes the shape of Login's slice of state for the Reducer
+/********** Local State Interface and Initial State Constant **********/
 interface AppStateLocal {
     loggedIn: boolean;
     pastUsername: string;
@@ -15,6 +15,7 @@ export const initialAppState: AppStateLocal = {
     loggedIn: false
 };
 
+/********** Application Reducer **********/
 export const appReducer = (state = initialAppState, action: Types.AppActionTypes) => {
     switch (action.type) {
         case Types.APPLICATION_INITIALIZED:
@@ -27,4 +28,5 @@ export const appReducer = (state = initialAppState, action: Types.AppActionTypes
     }
 };
 
+// Exports the Application Reducer as the Application's State
 export type AppState = ReturnType<typeof appReducer>;

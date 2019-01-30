@@ -17,9 +17,10 @@ import { LoginState } from './loginReducer';
 import { LoginFields } from '../../components/constants';
 import { RouteComponentProps } from 'react-router';
 
-interface StateProps extends RouteComponentProps<{}> {
-    // What we want to add to the state!
-}
+// Interface for what we want to pass as props from the parent component
+interface StateProps extends RouteComponentProps<{}> {}
+
+// Interface for Dispatchable Methods (they invoke the store!)
 interface DispatchProps {
     initializeLogin: () => void;
     attemptLogin: (loginInformation: Types.LoginInformation) => void;
@@ -28,6 +29,7 @@ interface DispatchProps {
     testLogin: (loginInformation: Types.LoginInformation) => void;
 }
 
+// Combined Props Type for Register Compoinent (Dispatch and State)
 type LoginProps = DispatchProps & StateProps;
 
 class Login extends React.Component<LoginProps, LoginState> {

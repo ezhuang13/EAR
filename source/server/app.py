@@ -34,6 +34,7 @@ class Test(Resource):
 	def post(self, username):
 		data = request.get_json()
 		testz.append(data)
+		print(data)
 		return data
 api.add_resource(Test, '/test/<username>')
 
