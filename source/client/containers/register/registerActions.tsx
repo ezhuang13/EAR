@@ -42,7 +42,7 @@ export const testRegister = (registerInformation: Types.RegisterInformation):
                     // for our components. Then, once the action is totally completed,
                     // we return an action type just like every other component (which will
                     // be processed by the reducer and then mutate the store)
-                    fetch('/test/' + registerInformation.username, {
+                    fetch('/api/v1/users/', {
                         body: JSON.stringify(registerInformation),
                         credentials: 'include',
                         headers: {

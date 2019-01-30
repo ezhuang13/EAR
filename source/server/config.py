@@ -16,11 +16,13 @@ class Development(object):
 	# this will set SQL_ALCHEMY_DATABASE_URL = 'mydatabaseurl'
 
 	# no debugging or testing just yet
+
+
 	DEBUG = False 
 	TESTING = False
 	JWT_SECRET_KEY = os.getenv('JWT_SECRET_KEY')
 	# this is how we connect to the database
-	#SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
+	SQLALCHEMY_DATABASE_URI = os.getenv('DATABASE_URL')
 
 
 app_config = {

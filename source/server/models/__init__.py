@@ -1,9 +1,8 @@
-# we will initialize the db here
+#we will initialize the db here
 
-#from flask_sqlalchemy import SQLAlchemy
+from flask_sqlalchemy import SQLAlchemy
 
-# initialize db
-#db = SQLAlchemy()
+#initialize db
+db = SQLAlchemy()
 
-# import Models
-# TODO
+from .User import UserModel

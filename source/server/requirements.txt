@@ -1,2 +1,4 @@
 Flask
-Flask-SQLAlchemy
+flask_restful
+flask_sqlalchemy
+flask_migrate
