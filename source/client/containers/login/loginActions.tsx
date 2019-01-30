@@ -2,6 +2,7 @@ import * as Types from './loginTypes';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 
+/********** Action Creators for the Synchronous Typed Actions **********/
 export const initializeLogin = () => {
     return ({
         type: Types.LOGIN_INITIALIZED
@@ -32,11 +33,12 @@ export const attemptLogin = (loginInformation: Types.LoginInformation) => {
     });
 };
 
+/********** Action Creators for Asynchronous Typed Actions **********/
 export const testLogin = (loginInformation: Types.LoginInformation):
     ThunkAction<Promise<void>, {}, {}, AnyAction> => {
         return async (dispatch: ThunkDispatch<{}, {}, AnyAction>):
             Promise<void> => {
-                return new Promise<void>((resolve) => {
+                return new Promise<void>( (resolve: any) => {
                     // This is where we put AJAX requests / any type of asynchronous action
                     // for our components. Then, once the action is totally completed,
                     // we return an action type just like every other component (which will
@@ -48,17 +50,17 @@ export const testLogin = (loginInformation: Types.LoginInformation):
                             'content-type': 'application/json'
                         },
                         method: 'POST'
-                    }).then(() => {
+                    })
+                    .then((response: any) => response.json())
+                    .then((data) => {
+                        // Data correctly parsed, it's what the server sends!
+                        console.log('Login data was sent and responded to.');
+                        console.log(data);
                         resolve();
-
-                        // TODO: Change return action for either success or failure based on
-                        // server response. Can dispatch other actions as well!!
-                        return ({
-                            type: Types.TEST_LOGIN,
-                            status: 'attempting',
-                            ...loginInformation
-                        });
-                    });
+                    })
+                    .catch((error) => {
+                        // Can do whatever with the error?
+                    });;
                 });
             };
 };

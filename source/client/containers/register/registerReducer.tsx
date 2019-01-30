@@ -1,5 +1,6 @@
 import * as Types from './registerTypes';
 
+/********** Local State Interface and Initial State Constant **********/
 interface RegisterStateLocal {
     registerInitialized: boolean;
 }
@@ -7,11 +8,12 @@ export const initialRegisterState: RegisterStateLocal = {
     registerInitialized: false
 };
 
+/********** Register Reducer **********/
 export const registerReducer = (state = initialRegisterState, action: Types.RegisterActionTypes) => {
     switch (action.type) {
         case Types.REGISTER_INITIALIZED:
             return Object.assign({}, state, {
-                loginInitialized: true
+                registerInitialized: true
             });
         case Types.REGISTER_SUCCESS:
             return Object.assign({}, state, {
@@ -36,4 +38,5 @@ export const registerReducer = (state = initialRegisterState, action: Types.Regi
     }
 };
 
+// Exports the Register Reducer as the Register's State
 export type RegisterState = ReturnType<typeof registerReducer>;
