@@ -1,11 +1,11 @@
-// Describes the different Action types!
+/********** Describe the Action Types in Strings **********/
 export const LOGIN_INITIALIZED = 'LOGIN_INITIALIZED';
 export const LOGIN_FAIL = 'LOGIN_FAIL';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const ATTEMPT_LOGIN = 'ATTEMPT_LOGIN';
 export const TEST_LOGIN = 'TEST_LOGIN';
 
-// Interfaces for the different actions and payloads
+/********** Interfaces for the Actions Creators **********/
 interface InitializeLogin {
     type: typeof LOGIN_INITIALIZED;
     payload: Status;
@@ -28,10 +28,10 @@ interface AttemptLogin {
 
 interface TestLogin {
     type: typeof TEST_LOGIN;
-    payload: LoggingIn;
+    payload: LoginInformation;
 }
 
-// Interfaces for payload / incoming information
+/********** Interfaces for Objects in the Login Component**********/
 export interface LoginUsername {
     username: string;
 }
@@ -40,13 +40,9 @@ export interface Status extends LoginUsername {
     status: string;
 }
 
-export interface LoggingIn extends LoginUsername {
+export interface LoginInformation extends LoginUsername {
     password: string;
 }
 
-export interface LoginInformation {
-    username: LoginUsername;
-    password: string;
-}
-
+/********** Combination of all Redux Actions **********/
 export type LoginActionTypes = InitializeLogin | LoginFail | LoginSuccess | AttemptLogin | TestLogin;

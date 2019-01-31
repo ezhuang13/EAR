@@ -17,16 +17,14 @@ import Register from '../register/register';
 import Login from '../login/login';
 import HomePage from '../homepage/homepage';
 
-interface StateProps extends RouteComponentProps<{}> {
-    // What we want to add to the state!
-}
+interface StateProps extends RouteComponentProps<{}> {}
 
-// This defines the typing for dispatching actions (in mapDispatchToProps).
+// Interface for Dispatchable Methods (they invoke the store!)
 interface DispatchProps {
     initializeApplication: () => void
 }
 
-// Combined Application Props Typing
+// Combined Props Type for App Compoinent (Dispatch and State)
 type AppProps = DispatchProps & StateProps;
 
 class Application extends React.Component<AppProps, AppState> {

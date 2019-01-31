@@ -17,9 +17,8 @@ import { RegisterState } from './registerReducer';
 import { RegisterFields } from '../../components/constants';
 import { RouteComponentProps } from 'react-router';
 
-interface StateProps extends RouteComponentProps<{}> {
-    // What we want to add to the state!
-}
+// Interface for what we want to pass as props from the parent component
+interface StateProps extends RouteComponentProps<{}> {}
 
 // Interface for Dispatchable Methods (they invoke the store!)
 interface DispatchProps {
@@ -30,6 +29,7 @@ interface DispatchProps {
     testRegister: (registerInformation: Types.RegisterInformation) => void;
 }
 
+// Combined Props Type for Register Compoinent (Dispatch and State)
 type RegisterProps = DispatchProps & StateProps;
 
 class Register extends React.Component<RegisterProps, RegisterState> {

@@ -61,7 +61,6 @@ class Form extends React.Component<FormProps, FormState> {
     // the key (located in the component state).
     handleChange(event: any) {
         // Obtain variables from event change
-        console.log(this);
         const target = event.target;
         const value = target.value;
         const name = target.name;
@@ -75,7 +74,6 @@ class Form extends React.Component<FormProps, FormState> {
     // Wrapper method for the props-based submit method.
     submitForm(event: any) {
         event.preventDefault();
-        console.log(this);
         const {fields_list, fields_keys, ...formInfo} = this.state;
         const formInformation = JSON.parse(JSON.stringify(formInfo));
         this.props.submitMethod(formInformation);
