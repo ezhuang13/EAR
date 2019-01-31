@@ -2,14 +2,12 @@
 
 from flask import Flask, render_template
 from views.UserView import user_api as user_blueprint
-from config import app_config
 import os
 from models import db
 
-def create_app(env_name):
+def create_app():
 	"""
 	Create the application!
-	@env_name: name of flask environment (i.e. development)
 	"""
 
 
@@ -17,7 +15,7 @@ def create_app(env_name):
 	app = Flask(__name__)
 
 	# configure app based on the configurations we created
-	app.config.from_object(app_config[env_name])
+	app.config.from_object('config.Development')
 
 	db.init_app(app)
 
@@ -43,6 +41,5 @@ def create_app(env_name):
 # create and run the app here
 if __name__ == '__main__':
 	# just development for now
-	env_name = os.getenv('FLASK_ENV')
-	app = create_app(env_name)
+	app = create_app()
 	app.run()

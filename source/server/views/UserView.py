@@ -7,7 +7,6 @@ from models.User import UserModel
 # save the User REST API as a blueprint
 user_api = Blueprint('user_api',__name__)
 
-users = []
 @user_api.route('/', methods=['POST'])
 def create():
 	"""
