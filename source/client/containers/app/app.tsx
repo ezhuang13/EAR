@@ -15,13 +15,12 @@ import { AppState } from './appReducer';
 // Importing the Smart components / Routes
 import Register from '../register/register';
 import Login from '../login/login';
-import HomePage from '../homepage/homepage';
 import { bindActionCreators } from 'redux';
 
 interface ParentProps extends RouteComponentProps<{}> {}
 
 // Combined Props Type for App Compoinent (Dispatch and State)
-type AppProps = Actions.DispatchProps & ParentProps & AppState;
+export type AppProps = Actions.DispatchProps & ParentProps & AppState;
 
 class Application extends React.Component<AppProps, AppState> {
     constructor(props: AppProps) {
@@ -69,10 +68,6 @@ class Application extends React.Component<AppProps, AppState> {
                 <Route
                     path='/register'
                     component={Register}
-                />
-                <Route
-                    path='/homepage'
-                    component={HomePage}
                 />
                 </Switch>
             </BrowserRouter>

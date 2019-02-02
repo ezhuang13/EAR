@@ -22,7 +22,6 @@ export const appReducer = (state = initialAppState, action: Types.AppActionTypes
             return Object.assign({}, state, {
                 appInitialized: action.payload.appInitialized
             });
-            break;
         default:
             return state;
     }
