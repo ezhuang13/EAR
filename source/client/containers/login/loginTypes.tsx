@@ -35,27 +35,13 @@ interface TestLogin {
 export interface CommonArguments {
     status?: string;
     username?: string;
+    loginInitialized?: boolean;
 }
 
 export interface LoginInformation {
     username: string;
     password: string;
 }
-
-/********** Login State Interface and Initial State Constant **********/
-interface LoginStateLocal {
-    loggedIn: boolean;
-    pastUsername: string;
-    status: string;
-    loginInitialized: boolean;
-}
-
-export const initialLoginState: LoginStateLocal = {
-    loggedIn: false,
-    pastUsername: '',
-    status: '',
-    loginInitialized: false
-};
 
 /********** Combination of all Redux Actions **********/
 export type LoginActionTypes = InitializeLogin | LoginFail | LoginSuccess | AttemptLogin | TestLogin;

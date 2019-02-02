@@ -72,7 +72,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.Dispa
         loginFail: Actions.loginFail,
         loginSuccess: Actions.loginSuccess,
         attemptLogin: Actions.attemptLogin,
-        testLogin: Actions.attemptLogin
+        testLogin: Actions.testLogin
     }, dispatch);
 };
 

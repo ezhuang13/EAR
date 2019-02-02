@@ -21,7 +21,7 @@ export const initializeLogin = () => {
     });
 };
 
-export const loginFail = (username: Types.CommonArguments) => {
+export const loginFail = (username: string) => {
     return({
         type: Types.LOGIN_FAIL,
         payload: {
@@ -31,7 +31,7 @@ export const loginFail = (username: Types.CommonArguments) => {
     });
 };
 
-export const loginSuccess = (username: Types.CommonArguments) => {
+export const loginSuccess = (username: string) => {
     return({
         type: Types.LOGIN_SUCCESS,
         payload: {
@@ -54,7 +54,7 @@ export const attemptLogin = (loginInformation: Types.LoginInformation) => {
 /********** Action Creators for Asynchronous Typed Actions **********/
 export const testLogin = (loginInformation: Types.LoginInformation):
     ThunkAction<Promise<void>, {}, {}, AnyAction> => {
-        return async (dispatch: ThunkDispatch<{}, {}, AnyAction>):
+        return (dispatch: ThunkDispatch<{}, {}, AnyAction>):
             Promise<void> => {
                 return new Promise<void>( (resolve: any) => {
                     // This is where we put AJAX requests / any type of asynchronous action
@@ -69,22 +69,19 @@ export const testLogin = (loginInformation: Types.LoginInformation):
                         },
                         method: 'POST'
                     })
-                    .then((response: any) => {
-                        return {
-                            ...response.json(),
-                            statusCode: response.status
-                        };
-                    })
+                    .then((response: any) => response.json()
+                    .then((responseData: any) => ({statusCode: response.status, body: responseData})))
                     .then((responseData) => {
                         // Check the status code for appropriate action!
                         switch (responseData.statusCode) {
                             case 200 || 201:
                                 console.log('Successful login, proceed onwards.');
-                                dispatch(loginSuccess(responseData.username));
+                                console.log(responseData);
+                                dispatch(loginSuccess(responseData.body.username));
                                 break;
                             case 400 || 401:
                                 console.log('Login failure, try again!');
-                                dispatch(loginFail(responseData.username));
+                                dispatch(loginFail(responseData.body.username));
                                 break;
                         }
                         return resolve();
