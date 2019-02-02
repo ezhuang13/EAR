@@ -16,23 +16,15 @@ import { LoginState } from './loginReducer';
 // Import constants for Login
 import { LoginFields } from '../../components/constants';
 import { RouteComponentProps } from 'react-router';
+import { bindActionCreators } from 'redux';
 
 // Interface for what we want to pass as props from the parent component
-interface StateProps extends RouteComponentProps<{}> {}
-
-// Interface for Dispatchable Methods (they invoke the store!)
-interface DispatchProps {
-    initializeLogin: () => void;
-    attemptLogin: (loginInformation: Types.LoginInformation) => void;
-    loginFail: (username: Types.LoginUsername) => void;
-    loginSuccess: (username: Types.LoginUsername) => void;
-    testLogin: (loginInformation: Types.LoginInformation) => void;
-}
+interface ParentProps extends RouteComponentProps<{}> {}
 
 // Combined Props Type for Register Compoinent (Dispatch and State)
-type LoginProps = DispatchProps & StateProps;
+type LoginProps = Actions.DispatchProps & ParentProps & LoginState;
 
-class Login extends React.Component<LoginProps, LoginState> {
+class Login extends React.Component<LoginProps, {}> {
     constructor(props: LoginProps) {
         super(props);
         this.submitLogin = this.submitLogin.bind(this);
@@ -48,7 +40,6 @@ class Login extends React.Component<LoginProps, LoginState> {
     }
 
     submitLogin(loginInformation: Types.LoginInformation) {
-        // this.props.attemptLogin(loginInformation);
         this.props.testLogin(loginInformation);
         return;
     }
@@ -70,19 +61,19 @@ class Login extends React.Component<LoginProps, LoginState> {
 // This gives the component access to the store (state)
 const mapStateToProps = (state: MainState) => {
     return {
-        storeState: state.login
+        ...state.login
     };
 };
 
 // This gives the component access to dispatch / the actions
-const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): DispatchProps => {
-    return {
-        initializeLogin: () => { dispatch(Actions.initializeLogin()); },
-        loginFail: (username: Types.LoginUsername) => { dispatch(Actions.loginFail(username)); },
-        loginSuccess: (username: Types.LoginUsername) => { dispatch(Actions.loginSuccess(username)); },
-        attemptLogin: (loginInfo: Types.LoginInformation) => { dispatch(Actions.attemptLogin(loginInfo)); },
-        testLogin: async (loginInfo: Types.LoginInformation) => { await dispatch(Actions.testLogin(loginInfo)); }
-    };
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
+    return bindActionCreators({
+        initializeLogin: Actions.initializeLogin,
+        loginFail: Actions.loginFail,
+        loginSuccess: Actions.loginSuccess,
+        attemptLogin: Actions.attemptLogin,
+        testLogin: Actions.attemptLogin
+    }, dispatch);
 };
 
 // This method wraps the component with the store and dispatch!!!

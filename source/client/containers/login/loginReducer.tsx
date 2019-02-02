@@ -1,26 +1,11 @@
 import * as Types from './loginTypes';
 
-/********** Local State Interface and Initial State Constant **********/
-interface LoginStateLocal {
-    loggedIn: boolean;
-    pastUsername: string;
-    status: string;
-    loginInitialized: boolean;
-}
-
-export const initialLoginState: LoginStateLocal = {
-    loggedIn: false,
-    pastUsername: '',
-    status: '',
-    loginInitialized: false
-};
-
 /********** Login Reducer **********/
-export const loginReducer = (state = initialLoginState, action: Types.LoginActionTypes) => {
+export const loginReducer = (state = Types.initialLoginState, action: Types.LoginActionTypes) => {
     switch (action.type) {
         case Types.LOGIN_INITIALIZED:
             return Object.assign({}, state, {
-                loginInitialized: true
+                ...action.payload
             });
         case Types.ATTEMPT_LOGIN:
             return Object.assign({}, state, {
