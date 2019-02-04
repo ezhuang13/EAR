@@ -8,22 +8,22 @@ export const TEST_LOGIN = 'TEST_LOGIN';
 /********** Interfaces for the Actions Creators **********/
 interface InitializeLogin {
     type: typeof LOGIN_INITIALIZED;
-    payload: Status;
+    payload: CommonArguments;
 }
 
 interface LoginFail {
     type: typeof LOGIN_FAIL;
-    payload: Status;
+    payload: CommonArguments;
 }
 
 interface LoginSuccess {
     type: typeof LOGIN_SUCCESS;
-    payload: Status;
+    payload: CommonArguments;
 }
 
 interface AttemptLogin {
     type: typeof ATTEMPT_LOGIN;
-    payload: Status;
+    payload: CommonArguments & LoginInformation;
 }
 
 interface TestLogin {
@@ -31,16 +31,15 @@ interface TestLogin {
     payload: LoginInformation;
 }
 
-/********** Interfaces for Objects in the Login Component**********/
-export interface LoginUsername {
+/********** Interfaces for Arguments to and from Component **********/
+export interface CommonArguments {
+    status?: string;
+    username?: string;
+    loginInitialized?: boolean;
+}
+
+export interface LoginInformation {
     username: string;
-}
-
-export interface Status extends LoginUsername {
-    status: string;
-}
-
-export interface LoginInformation extends LoginUsername {
     password: string;
 }
 

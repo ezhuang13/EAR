@@ -15,19 +15,14 @@ import { AppState } from './appReducer';
 // Importing the Smart components / Routes
 import Register from '../register/register';
 import Login from '../login/login';
-import HomePage from '../homepage/homepage';
+import { bindActionCreators } from 'redux';
 
-interface StateProps extends RouteComponentProps<{}> {}
-
-// Interface for Dispatchable Methods (they invoke the store!)
-interface DispatchProps {
-    initializeApplication: () => void
-}
+interface ParentProps extends RouteComponentProps<{}> {}
 
 // Combined Props Type for App Compoinent (Dispatch and State)
-type AppProps = DispatchProps & StateProps;
+export type AppProps = Actions.DispatchProps & ParentProps & AppState;
 
-class Application extends React.Component<AppProps, AppState> {
+class Application extends React.Component<AppProps> {
     constructor(props: AppProps) {
         super(props);
 
@@ -74,10 +69,6 @@ class Application extends React.Component<AppProps, AppState> {
                     path='/register'
                     component={Register}
                 />
-                <Route
-                    path='/homepage'
-                    component={HomePage}
-                />
                 </Switch>
             </BrowserRouter>
         );
@@ -87,17 +78,17 @@ class Application extends React.Component<AppProps, AppState> {
 // This gives the component access to the store (state)
 const mapStateToProps = (state: MainState) => {
     return {
-        storeState: state.app
+        ...state.app
     };
 };
 
 // This gives the component access to dispatch / the actions
-const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): DispatchProps => {
-    return {
-        initializeApplication: () => { dispatch(Actions.initializeApplication()); }
-    };
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
+    return bindActionCreators({
+        initializeApplication: Actions.initializeApplication
+    }, dispatch);
 };
 
 // This method wraps the component with the store and dispatch!!!
-export default connect<any, DispatchProps, any, MainState>
+export default connect<any, Actions.DispatchProps, any, MainState>
 (mapStateToProps, mapDispatchToProps)(Application);
