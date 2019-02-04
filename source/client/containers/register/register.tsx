@@ -19,12 +19,12 @@ import { RouteComponentProps } from 'react-router';
 import { bindActionCreators } from 'redux';
 
 // Interface for what we want to pass as props from the parent component
-interface StateProps extends RouteComponentProps<{}> {}
+interface ParentProps extends RouteComponentProps<{}> {}
 
 // Combined Props Type for Register Compoinent (Dispatch and State)
-type RegisterProps = Actions.DispatchProps & StateProps & RegisterState;
+export type RegisterProps = Actions.DispatchProps & ParentProps & RegisterState;
 
-class Register extends React.Component<RegisterProps, {}> {
+class Register extends React.Component<RegisterProps> {
     constructor(props: RegisterProps) {
         super(props);
         this.submitRegistration = this.submitRegistration.bind(this);
@@ -76,4 +76,4 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.Dispa
 };
 
 // This method wraps the component with the store and dispatch!!!
-export default connect(mapStateToProps, mapDispatchToProps)(Register);
+export default connect<any, Actions.DispatchProps, any, MainState>(mapStateToProps, mapDispatchToProps)(Register);

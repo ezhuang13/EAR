@@ -22,9 +22,9 @@ import { bindActionCreators } from 'redux';
 interface ParentProps extends RouteComponentProps<{}> {}
 
 // Combined Props Type for Register Compoinent (Dispatch and State)
-type LoginProps = Actions.DispatchProps & ParentProps & LoginState;
+export type LoginProps = Actions.DispatchProps & ParentProps & LoginState;
 
-class Login extends React.Component<LoginProps, {}> {
+class Login extends React.Component<LoginProps> {
     constructor(props: LoginProps) {
         super(props);
         this.submitLogin = this.submitLogin.bind(this);
@@ -77,4 +77,4 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.Dispa
 };
 
 // This method wraps the component with the store and dispatch!!!
-export default connect(mapStateToProps, mapDispatchToProps)(Login);
+export default connect<any, Actions.DispatchProps, any, MainState>(mapStateToProps, mapDispatchToProps)(Login);

@@ -22,7 +22,7 @@ interface ParentProps extends RouteComponentProps<{}> {}
 // Combined Props Type for App Compoinent (Dispatch and State)
 export type AppProps = Actions.DispatchProps & ParentProps & AppState;
 
-class Application extends React.Component<AppProps, AppState> {
+class Application extends React.Component<AppProps> {
     constructor(props: AppProps) {
         super(props);
 
