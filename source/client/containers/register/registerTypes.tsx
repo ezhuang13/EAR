@@ -8,22 +8,22 @@ export const TEST_REGISTER = 'TEST_REGISTER';
 /********** Interfaces for Redux Actions for the Register Component **********/
 interface InitializeRegister {
     type: typeof REGISTER_INITIALIZED;
-    payload: Status;
+    payload: CommonArguments;
 }
 
 interface RegisterFail {
     type: typeof REGISTER_FAIL;
-    payload: Status;
+    payload: CommonArguments;
 }
 
 interface RegisterSuccess {
     type: typeof REGISTER_SUCCESS;
-    payload: Status;
+    payload: CommonArguments;
 }
 
 interface AttemptRegister {
     type: typeof ATTEMPT_REGISTER;
-    payload: Status;
+    payload: CommonArguments;
 }
 
 interface TestRegister {
@@ -32,15 +32,16 @@ interface TestRegister {
 }
 
 /********** Interfaces for Objects in the Register Component **********/
-export interface Status extends RegisterUsername {
-    status: string;
+
+export interface CommonArguments {
+    status?: string;
+    username?: string;
+    loginInitialized?: boolean;
 }
 
-export interface RegisterUsername {
+
+export interface RegisterInformation {
     username: string;
-}
-
-export interface RegisterInformation extends RegisterUsername {
     password: string;
     firstName: string;
     lastName: string;

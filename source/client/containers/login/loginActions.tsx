@@ -2,41 +2,59 @@ import * as Types from './loginTypes';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 
+/********** List of Actions for Dispatch Props **********/
+export interface DispatchProps {
+    initializeLogin,
+    loginFail,
+    loginSuccess,
+    attemptLogin,
+    testLogin
+}
+
 /********** Action Creators for the Synchronous Typed Actions **********/
 export const initializeLogin = () => {
     return ({
-        type: Types.LOGIN_INITIALIZED
+        type: Types.LOGIN_INITIALIZED,
+        payload: {
+            loginInitialized: true
+        }
     });
 };
 
-export const loginFail = (username: Types.LoginUsername) => {
+export const loginFail = (username: string) => {
     return({
         type: Types.LOGIN_FAIL,
-        status: 'fail',
-        username
+        payload: {
+            status: 'fail',
+            username
+        }
     });
 };
 
-export const loginSuccess = (username: Types.LoginUsername) => {
+export const loginSuccess = (username: string) => {
     return({
         type: Types.LOGIN_SUCCESS,
-        status: 'success',
-        username
+        payload: {
+            status: 'success',
+            username
+        }
     });
 };
 
 export const attemptLogin = (loginInformation: Types.LoginInformation) => {
     return({
         type: Types.ATTEMPT_LOGIN,
-        status: 'attempting',
-        ...loginInformation
+        payload: {
+            status: 'attempting',
+            ...loginInformation
+        }
     });
 };
 
 /********** Action Creators for Asynchronous Typed Actions **********/
 export const testLogin = (loginInformation: Types.LoginInformation):
     ThunkAction<Promise<void>, {}, {}, AnyAction> => {
-        return async (dispatch: ThunkDispatch<{}, {}, AnyAction>):
+        return (dispatch: ThunkDispatch<{}, {}, AnyAction>):
             Promise<void> => {
                 return new Promise<void>( (resolve: any) => {
                     // This is where we put AJAX requests / any type of asynchronous action
@@ -51,16 +69,28 @@ export const testLogin = (loginInformation: Types.LoginInformation):
                         },
                         method: 'POST'
                     })
-                    .then((response: any) => response.json())
-                    .then((data) => {
-                        // Data correctly parsed, it's what the server sends!
-                        console.log('Login data was sent and responded to.');
-                        console.log(data);
-                        resolve();
+                    .then((response: any) => response.json()
+                    .then((responseData: any) => ({statusCode: response.status, body: responseData})))
+                    .then((responseData) => {
+                        // Check the status code for appropriate action!
+                        switch (responseData.statusCode) {
+                            case 200 || 201:
+                                console.log('Successful login, proceed onwards.');
+                                console.log(responseData);
+                                dispatch(loginSuccess(responseData.body.username));
+                                break;
+                            case 400 || 401:
+                                console.log('Login failure, try again!');
+                                dispatch(loginFail(responseData.body.username));
+                                break;
+                        }
+                        return resolve();
                     })
                     .catch((error) => {
                         // Can do whatever with the error?
-                    });;
+                        console.error('There was an error, see this: ');
+                        console.error(error);
+                    });
                 });
             };
 };

@@ -20,9 +20,8 @@ export const appReducer = (state = initialAppState, action: Types.AppActionTypes
     switch (action.type) {
         case Types.APPLICATION_INITIALIZED:
             return Object.assign({}, state, {
-                appInitialized: true
+                appInitialized: action.payload.appInitialized
             });
-
         default:
             return state;
     }
