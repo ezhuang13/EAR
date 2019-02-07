@@ -15,6 +15,7 @@ class UserModel(db.Model):
 	first_name = db.Column(db.String(128),nullable=False)
 	last_name = db.Column(db.String(128), nullable=False)
 	email = db.Column(db.String(128),nullable=False)
+	
 
 	# class constructor
 	def __init__(self,data):
@@ -22,9 +23,9 @@ class UserModel(db.Model):
 		Class constructor
 		"""
 
-		self.first_name = data.get("First Name")
-		self.last_name = data.get("Last Name")
-		self.email =data.get("Email")
+		self.first_name = data.get("first_name")
+		self.last_name = data.get("last_name")
+		self.email =data.get("email_address")
 
 	def save(self):
 		db.session.add(self)

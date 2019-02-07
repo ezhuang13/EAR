@@ -48,7 +48,8 @@ export const testRegister = (registerInformation: Types.RegisterInformation):
                         credentials: 'include',
                         headers: {
                             'Content-Type': 'application/json'
-                        }
+                        },
+                        method:'POST'
                     })
                     .then((response: any) => response.json())
                     .then((data) => {
