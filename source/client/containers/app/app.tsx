@@ -15,6 +15,8 @@ import { AppState } from './appReducer';
 // Importing the Smart components / Routes
 import Register from '../register/register';
 import Login from '../login/login';
+import Workstation from '../workstation/workstation';
+import CreateProject from '../createProject/createProject';
 import { bindActionCreators } from 'redux';
 
 interface ParentProps extends RouteComponentProps<{}> {}
@@ -42,6 +44,8 @@ class Application extends React.Component<AppProps> {
                     <Link to='/login'>Login</Link>
                     <div/>
                     <Link to='/register'>Register</Link>
+                    <div/>
+                    <Link to='/create_project'>Create Project</Link>
                     <button onClick={this.logApp}>Log this!</button>
             </React.Fragment>
         );
@@ -68,6 +72,14 @@ class Application extends React.Component<AppProps> {
                 <Route
                     path='/register'
                     component={Register}
+                />
+                <Route
+                    path='/workstation'
+                    component={Workstation}
+                />
+                <Route
+                    path='/create_project'
+                    component={CreateProject}
                 />
                 </Switch>
             </BrowserRouter>
