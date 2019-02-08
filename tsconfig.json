@@ -22,7 +22,7 @@
         ]
     },
     "include": [
-        "./source/client/*"
+        "source/client/*"
     ],
-    "exclude": ["node_modules"]
+    "exclude": ["node_modules", "**/*homepage"]
 }

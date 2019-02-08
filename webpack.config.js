@@ -14,10 +14,13 @@ const entryPoint = {
         'react-dom',
         'react-router',
         'react-router-dom',
+        'react-soundplayer',
         'styled-components',
         'redux',
         'react-redux',
-        'redux-thunk'
+        'redux-thunk',
+        'rc-slider',
+        'pizzicato'
     ]
 };
 
@@ -64,9 +67,7 @@ const clientConfig = {
             // Allows mp3 files to be loaded
             {
                 test: /\.mp3$/,
-                use: [
-                    {loader: 'file-loader'}
-                ]
+                loader: 'file-loader'
             }
         ]
     },
