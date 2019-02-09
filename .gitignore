@@ -7,3 +7,4 @@ package-lock.json
 *.mako
 *.ini
 source/server/migrations*
+source/static/*

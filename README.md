@@ -13,7 +13,7 @@ This is the README file for our web application.
 6. Set the appropriate configuration variables.
 ```bash
 $ export FLASK_ENV=development
-$ export DATABASE_URL=databaseurl # (usually something like "postgresql://127.0.0.1/<database_name>", where database_name will be the name of the database you create in step below)
+$ export DATABASE_URL=databaseurl # (usually something like "postgresql://username@localhost:port/<database_name>", where database_name will be the name of the database you create in step below, and everything else depends on your choice of Docker or Postgres App)
 ```
 7. Initialize migrations if you have not already (this initializes the name of your db when you create your app). You should only have to do this once.
 ```bash
@@ -22,7 +22,7 @@ $ python source/server/manage.py db init # this initalizes the database
 
 8. Now, we need to log into the server and create a database (since the migrations needs something to actually connect to on the Postgres server). So, we log into the PostgreSQL instance using the "postgres" username and create the test database (and optionally create users for said database). NOTE: You may need to install psql or a similar SSH client to access the PostgreSQL instance.
 ```bash
-$ psql -h localhost -d postgres -U postgres -p 5432 # logs into postgres at port 5432, host localhost, user postgres (superuser)
+$ psql -h localhost -d postgres -U postgres -p 5432 # logs into postgres at port 5432, host localhost, user postgres (superuser), (5432 if Postgres App, 327** if Docker)
 \# CREATE DATABASE users; # need to create database for each schema (as of now, users)
 \# CREATE USER username;
 ```

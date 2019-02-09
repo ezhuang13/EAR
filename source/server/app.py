@@ -6,7 +6,7 @@ import os
 from config import Development
 
 # Initialize the Flask application
-app = Flask(__name__)
+app = Flask(__name__, static_folder='../static')
 
 # Configure Application based on Configuration Object (JSON)
 app.config.from_object(Development)

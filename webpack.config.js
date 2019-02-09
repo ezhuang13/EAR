@@ -26,9 +26,9 @@ const entryPoint = {
 
 // This is the information about webpack's output directory and path.
 const outputObj = {
-    path: path.join(__dirname, '/source/server/static'),
+    path: path.join(__dirname, '/source/static'),
     filename: '[name].js',
-    publicPath: './js/',
+    publicPath: './public',
     chunkFilename: "[id].js"
 };
 
@@ -87,8 +87,7 @@ const clientConfig = {
           }
     },
     plugins: [
-        new CleanWebpackPlugin(['source/server/static']),
-        // new BundleAnalyzerPlugin()
+        new CleanWebpackPlugin(['source/static'])
     ]
 }
 
