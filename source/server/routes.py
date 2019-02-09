@@ -6,7 +6,7 @@ from models import Users
 user_api = Blueprint('user_api', __name__)
 users = ''
 
-@user_api.route('/', methods=['POST'])
+@user_api.route('/create', methods=['POST'])
 def create():
 		data = request.json
 		print(data)
@@ -15,7 +15,7 @@ def create():
 		user.save()
 		return custom_response(data,201)
 	
-@user_api.route('/', methods=['GET'])
+@user_api.route('/get/all', methods=['GET'])
 def get_users():
 		return custom_response(users, 201)
 
