@@ -1,23 +1,15 @@
-# file to manage migrations
-# which essentially initialize 
-# the database and tables as needed
-
+# Manages the migrations (maps our local schemas to the remote database)
 import os
 from flask_script import Manager
 from flask_migrate import Migrate, MigrateCommand
-from app import create_app,db
+from app import app, db
 
-# create our app
-app = create_app()
+# Perform the necessary migrations!
+migrate = Migrate(app, db)
+manager = Manager(app)
+manager.add_command('db', MigrateCommand)
 
-migrate = Migrate(app=app,db=db)
-manager = Manager(app=app)
-# add migrate command to
-# appropriately initialize
-# the database
-manager.add_command('db',MigrateCommand)
-
+# Runs this thingy.
 if __name__ == '__main__':
-    # run the migration manager!
     manager.run()
 
