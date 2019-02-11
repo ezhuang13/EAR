@@ -1,42 +1,30 @@
-import datetime
-import json
+# create the application
+
+from flask import Flask, render_template
+from flask_sqlalchemy import SQLAlchemy
 import os
-from flask import Flask, render_template, request
-from flask_restful import Resource, Api
+from config import Development
 
-# Create our flask application
-app = Flask(__name__)
-api = Api(app)
+# Initialize the Flask application
+app = Flask(__name__, static_folder='../static')
 
-users = []
-testz = []
-# Create singular entry point for overall application
-@app.route('/', defaults={'path': ''})
-@app.route('/<path:path>')
-def index(path):
-        return render_template('index.html')
-
-# TODO: Write users to database
-class User(Resource):
-	def get(self, username):
-		return users
-
-	def post(self, username):
-		data = request.get_json()
-		users.append(data)
-		return data
-api.add_resource(User, '/user/<username>')
-
-class Test(Resource):
-	def get(self, username):
-		return testz
+# Configure Application based on Configuration Object (JSON)
+app.config.from_object(Development)
 	
-	def post(self, username):
-		data = request.get_json()
-		testz.append(data)
-		print(data)
-		return data
-api.add_resource(Test, '/test/<username>')
+# Initialize the SQLAlchemy Database with our Application
+db = SQLAlchemy(app)
 
+# Import the API Routes as Blueprints
+from routes import user_api as user_blueprint
+
+# Register API's for each model
+app.register_blueprint(user_blueprint, url_prefix='/api/users')
+
+# Render the Tempalte HTML file at the base route!
+@app.route('/')
+def index():
+	return render_template('index.html')
+
+# Create and Run the Application here.
 if __name__ == '__main__':
-        app.run()
+	app.run()

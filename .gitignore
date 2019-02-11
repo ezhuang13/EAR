@@ -4,3 +4,7 @@ source/server/__pycache__
 node_modules/*
 source/server/static/*
 package-lock.json
+*.mako
+*.ini
+source/server/migrations*
+source/static/*

@@ -5,10 +5,10 @@ export const EMAIL = 'Email';
 
 /***** This is where form fields for dynamically generated forms go! *****/
 export const RegisterFields = {
-    'First Name': 'first_name',
-    'Last Name': 'last_name',
+    'First Name': 'firstName',
+    'Last Name': 'lastName',
     [USERNAME]: 'username',
-    [EMAIL]: 'email_address',
+    [EMAIL]: 'emailAddress',
     [PASSWORD]: 'password',
 };
 
