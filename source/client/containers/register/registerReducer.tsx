@@ -1,16 +1,17 @@
 import * as Types from './registerTypes';
-import { string } from 'prop-types';
 
 /********** Local State Interface and Initial State Constant **********/
 interface RegisterStateLocal {
     registerInitialized: boolean;
     pastUsername: string;
     status: string;
+    registerError: string;
 }
 export const initialRegisterState: RegisterStateLocal = {
     registerInitialized: false,
     pastUsername: '',
-    status: ''
+    status: '',
+    registerError: ''
 };
 
 /********** Register Reducer **********/
@@ -23,19 +24,22 @@ export const registerReducer = (state = initialRegisterState, action: Types.Regi
         case Types.REGISTER_SUCCESS:
             return Object.assign({}, state, {
                 pastUsername: action.payload.username,
-                status: action.payload.status
+                status: action.payload.status,
+                registerError: ''
             });
         case Types.REGISTER_FAIL:
+            // Return the proper changed state!
             return Object.assign({}, state, {
                 pastUsername: action.payload.username,
-                status: action.payload.status
+                status: action.payload.status,
+                registerError: action.payload.error
             });
         case Types.ATTEMPT_REGISTER:
             return Object.assign({}, state, {
                 pastUsername: action.payload.username,
                 status: action.payload.status
             });
-        case Types.TEST_REGISTER:
+        case Types.PERFORM_REGISTER:
             // Note that we can put logic here, so maybe use actions for asynchronous middleware
             // and this for logically processing the server response?
             return Object.assign({}, state, {

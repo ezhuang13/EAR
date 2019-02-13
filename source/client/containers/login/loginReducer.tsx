@@ -6,13 +6,15 @@ export interface LoginStateInterface {
     pastUsername: string;
     status: string;
     loginInitialized: boolean;
+    loginError: string;
 }
 
 export const initialLoginState: LoginStateInterface = {
     loggedIn: false,
     pastUsername: '',
     status: '',
-    loginInitialized: false
+    loginInitialized: false,
+    loginError: ''
 };
 
 /********** Login Reducer **********/
@@ -28,17 +30,19 @@ export const loginReducer = (state = initialLoginState, action: Types.LoginActio
                 status: action.payload.status
             });
         case Types.LOGIN_FAIL:
+            // Return the proper changed state!
             return Object.assign({}, state, {
                 pastUsername: action.payload.username,
-                status: action.payload.status
+                status: action.payload.status,
+                loginError: action.payload.error
             });
         case Types.LOGIN_SUCCESS:
-            console.log(action);
             return Object.assign({}, state, {
                 pastUsername: action.payload.username,
-                status: action.payload.status
+                status: action.payload.status,
+                loginError: action.payload.error
             });
-        case Types.TEST_LOGIN:
+        case Types.PERFORM_LOGIN:
             // Note that we can put logic here, so maybe use actions for asynchronous middleware
             // and this for logically processing the server response?
             return Object.assign({}, state, {

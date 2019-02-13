@@ -1,14 +1,15 @@
 import * as Types from './registerTypes';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import * as Schemas from '../../utility/schemas';
 
 /********** List of Actions for Dispatch Props **********/
 export interface DispatchProps {
-    initializeRegister,
-    registerFail,
-    registerSuccess,
-    attemptRegister,
-    testRegister
+    initializeRegister: typeof initializeRegister,
+    registerFail: typeof registerFail,
+    registerSuccess: typeof registerSuccess,
+    attemptRegister: typeof attemptRegister,
+    performRegister: typeof performRegister
 }
 
 /********** Action Creators for the Synchronous Typed Actions **********/
@@ -21,38 +22,61 @@ export const initializeRegister = () => {
     });
 };
 
-export const registerFail = (username: Types.CommonArguments) => {
+export const registerFail = (username: string, error: any) => {
     return({
-        type: Types.REGISTER_INITIALIZED,
+        type: Types.REGISTER_FAIL,
         payload: {
             status: 'fail',
-            username
+            username,
+            error
         }
     });
 };
 
-export const registerSuccess = (username: Types.CommonArguments) => {
+export const registerSuccess = (username: string) => {
     return({
         type: Types.REGISTER_SUCCESS,
         payload: {
             status: 'success',
-            username
+            username,
+            error: ''
         }
     });
 };
 
-export const attemptRegister = (registerInformation: Types.RegisterInformation) => {
-    return({
-        type: Types.ATTEMPT_REGISTER,
-        payload: {
-            status: 'attempting',
-            ...registerInformation
-        }
-    });
+type ThunkActionType = ThunkAction<Promise<void>, {}, {}, AnyAction>;
+
+// Validates the login information against a Joi schema, dispatch the appropriate
+// actions bsaed on the results thereof.
+export const attemptRegister = (registerInformation: Types.RegisterInformation): ThunkActionType => {
+    return (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
+        return new Promise<void>((resolve: any) => {
+
+            // Validate result against Login Schema Joi
+            const validResult = Schemas.performValidation(registerInformation, 'Register');
+            // Check the appropriate error codes and what not
+            if (validResult.error === null) {
+                // No error, thus login information passed client-side validation!
+                // Allow login fetch to actually happen...
+                dispatch(performRegister(registerInformation));
+            } else {
+                // Login failed! Dispatch loginFail, find correct error therein!
+                dispatch(registerFail(registerInformation.username, validResult.mappedError));
+            }
+
+            return resolve({
+                type: Types.ATTEMPT_REGISTER,
+                payload: {
+                    status: 'attempting',
+                    ...registerInformation
+                }
+            });
+        });
+    };
 };
 
 /********** Action Creators for Asynchronous Typed Actions **********/
-export const testRegister = (registerInformation: Types.RegisterInformation):
+export const performRegister = (registerInformation: Types.RegisterInformation):
     ThunkAction<Promise<void>, {}, {}, AnyAction> => {
         return async (dispatch: ThunkDispatch<{}, {}, AnyAction>):
             Promise<void> => {
@@ -74,22 +98,28 @@ export const testRegister = (registerInformation: Types.RegisterInformation):
                     .then((responseData) => {
                         // Check the status code for appropriate action!
                         switch (responseData.statusCode) {
-                            case 200 || 201:
-                                console.log('Successful login, proceed onwards.');
-                                console.log(responseData);
+                            case 200:
+                            case 201:
+                                console.log('Successful register, proceed onwards.');
                                 dispatch(registerSuccess(responseData.body.username));
                                 break;
-                            case 400 || 401:
-                                console.log('Login failure, try again!');
-                                dispatch(registerFail(responseData.body.username));
+                            case 400:
+                            case 401:
+                            case 405:
+                                console.log('Registration failure, try again!');
+                                dispatch(registerFail(responseData.body.username, responseData.body.error));
+                                break;
+                            default:
+                                console.log('Unhandled status code, try something else.');
                                 break;
                         }
                         return resolve();
                     })
                     .catch((error) => {
                         // Can do whatever with the error?
-                        console.error('There was an error, see this: ');
-                        console.error(error);
+                        console.log('See the following error: ', error);
+                        dispatch(registerFail(registerInformation.username,
+                            'Error due to Restful API being under development.'));
                     });
                 });
             };

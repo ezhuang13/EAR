@@ -3,7 +3,7 @@ export const REGISTER_INITIALIZED = 'REGISTER_INITIALIZED';
 export const REGISTER_FAIL = 'REGISTER_FAIL';
 export const REGISTER_SUCCESS = 'REGISTER_SUCCESS';
 export const ATTEMPT_REGISTER = 'ATTEMPT_REGISTER';
-export const TEST_REGISTER = 'TEST_REGISTER';
+export const PERFORM_REGISTER = 'PERFORM_REGISTER';
 
 /********** Interfaces for Redux Actions for the Register Component **********/
 interface InitializeRegister {
@@ -26,8 +26,8 @@ interface AttemptRegister {
     payload: CommonArguments;
 }
 
-interface TestRegister {
-    type: typeof TEST_REGISTER;
+interface PerformRegister {
+    type: typeof PERFORM_REGISTER;
     payload: RegisterInformation;
 }
 
@@ -37,8 +37,8 @@ export interface CommonArguments {
     status?: string;
     username?: string;
     loginInitialized?: boolean;
+    error?: any;
 }
-
 
 export interface RegisterInformation {
     username: string;
@@ -49,4 +49,5 @@ export interface RegisterInformation {
 }
 
 /********** Combination of all Redux Actions **********/
-export type RegisterActionTypes = InitializeRegister | RegisterFail | RegisterSuccess | AttemptRegister | TestRegister;
+export type RegisterActionTypes = InitializeRegister | RegisterFail | RegisterSuccess |
+                                  AttemptRegister | PerformRegister;

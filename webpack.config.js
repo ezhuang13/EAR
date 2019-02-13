@@ -19,6 +19,7 @@ const entryPoint = {
         'redux',
         'react-redux',
         'redux-thunk',
+        'joi',
         'rc-slider',
         'pizzicato'
     ]
@@ -37,6 +38,11 @@ const clientConfig = {
     devtool: 'source-map',
     entry: entryPoint,
     output: outputObj,
+    node: {
+        net: 'empty',
+        tls: 'empty',
+        dns: 'empty'
+    },
     module: {
         rules: [
             // Allows Babel to do its thing

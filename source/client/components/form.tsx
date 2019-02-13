@@ -1,10 +1,15 @@
-import styled from 'styled-components';
 import * as React from 'react';
 import { Label, Input } from './entry';
+import { Error } from './error';
+import { MainState } from '../reducers';
+import { connect } from 'react-redux';
+import * as Fields from './constants';
 
 // Props interface definition for the Form Props
 interface FormProps {
-    fields: object;
+    type: string;
+    loginError: any;
+    registerError: any;
     submitMethod(event: any): void;
 }
 
@@ -33,6 +38,8 @@ class Form extends React.Component<FormProps, FormState> {
         this.handleChange = this.handleChange.bind(this);
         this.createForm = this.createForm.bind(this);
         this.submitForm = this.submitForm.bind(this);
+        this.logForm = this.logForm.bind(this);
+        this.obtainError = this.obtainError.bind(this);
 
         this.createFields();
     }
@@ -83,9 +90,23 @@ class Form extends React.Component<FormProps, FormState> {
     // the fields from props, creates a value for each key in the component state,
     // then create two different lists for the key-values)
     createFields() {
-        for (const key in this.props.fields) {
-            if (this.props.fields.hasOwnProperty(key)) {
-                const currentValue = this.props.fields[key];
+
+        // The typical type check to determine our Fields Object
+        let fieldsObject: object;
+        switch (this.props.type) {
+            case 'Login':
+                fieldsObject = Fields.LoginFields;
+                break;
+            case 'Register':
+                fieldsObject = Fields.RegisterFields;
+                break;
+            default:
+                break;
+        }
+
+        for (const key in fieldsObject) {
+            if (fieldsObject.hasOwnProperty(key)) {
+                const currentValue = fieldsObject[key];
                 this.state = {
                     ...this.state,
                     [currentValue]: ''
@@ -96,15 +117,36 @@ class Form extends React.Component<FormProps, FormState> {
         }
     }
 
+    obtainError() {
+        switch (this.props.type) {
+            case 'Login':
+                return this.props.loginError;
+            case 'Register':
+                return this.props.registerError;
+        }
+    }
+
     // Render method!
     render() {
+        const ourError = this.obtainError();
         return (
-            <form onSubmit={this.submitForm}>
-                {this.createForm()}
-                <button>Click me!</button>
-            </form>
+            <React.Fragment>
+                <form onSubmit={this.submitForm}>
+                    <Error errorText={ourError}/>
+                    {this.createForm()}
+                    <button>Click me!</button>
+                </form>
+            </React.Fragment>
         );
     }
 }
 
-export default Form;
+// This gives the component access to the store (state)
+const mapStateToProps = (state: MainState) => {
+    return {
+        loginError: state.login.loginError,
+        registerError: state.register.registerError
+    };
+};
+
+export default connect(mapStateToProps)(Form);

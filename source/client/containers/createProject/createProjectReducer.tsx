@@ -6,7 +6,7 @@ interface CreateProjectStateInterface {
 }
 
 export const initialCreateProjectState: CreateProjectStateInterface = {
-    url: ""
+    url: ''
 };
 
 // TODO(ezhuang): figure out exact semantics of Object.assign, how to modify parts of state

@@ -14,7 +14,6 @@ import { MainState } from '../../reducers';
 import { LoginState } from './loginReducer';
 
 // Import constants for Login
-import { LoginFields } from '../../components/constants';
 import { RouteComponentProps } from 'react-router';
 import { bindActionCreators } from 'redux';
 
@@ -40,7 +39,10 @@ class Login extends React.Component<LoginProps> {
     }
 
     submitLogin(loginInformation: Types.LoginInformation) {
-        this.props.testLogin(loginInformation);
+
+        // Attempt to login using dispatch!
+        this.props.attemptLogin(loginInformation);
+
         return;
     }
 
@@ -49,7 +51,7 @@ class Login extends React.Component<LoginProps> {
             <React.Fragment>
                 <h1>Login Header!</h1>
                 <Form
-                    fields={LoginFields}
+                    type='Login'
                     submitMethod={this.submitLogin}
                 />
                 <button onClick={this.logThis}>Click!</button>
@@ -69,10 +71,7 @@ const mapStateToProps = (state: MainState) => {
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
     return bindActionCreators({
         initializeLogin: Actions.initializeLogin,
-        loginFail: Actions.loginFail,
-        loginSuccess: Actions.loginSuccess,
-        attemptLogin: Actions.attemptLogin,
-        testLogin: Actions.testLogin
+        attemptLogin: Actions.attemptLogin
     }, dispatch);
 };
 

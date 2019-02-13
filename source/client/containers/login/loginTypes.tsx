@@ -3,7 +3,7 @@ export const LOGIN_INITIALIZED = 'LOGIN_INITIALIZED';
 export const LOGIN_FAIL = 'LOGIN_FAIL';
 export const LOGIN_SUCCESS = 'LOGIN_SUCCESS';
 export const ATTEMPT_LOGIN = 'ATTEMPT_LOGIN';
-export const TEST_LOGIN = 'TEST_LOGIN';
+export const PERFORM_LOGIN = 'PERFORM_LOGIN';
 
 /********** Interfaces for the Actions Creators **********/
 interface InitializeLogin {
@@ -26,8 +26,8 @@ interface AttemptLogin {
     payload: CommonArguments & LoginInformation;
 }
 
-interface TestLogin {
-    type: typeof TEST_LOGIN;
+interface PerformLogin {
+    type: typeof PERFORM_LOGIN;
     payload: LoginInformation;
 }
 
@@ -36,6 +36,7 @@ export interface CommonArguments {
     status?: string;
     username?: string;
     loginInitialized?: boolean;
+    error?: any;
 }
 
 export interface LoginInformation {
@@ -44,4 +45,4 @@ export interface LoginInformation {
 }
 
 /********** Combination of all Redux Actions **********/
-export type LoginActionTypes = InitializeLogin | LoginFail | LoginSuccess | AttemptLogin | TestLogin;
+export type LoginActionTypes = InitializeLogin | LoginFail | LoginSuccess | AttemptLogin | PerformLogin;

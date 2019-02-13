@@ -15,7 +15,8 @@
             "node",
             "prop-types",
             "mocha",
-            "jest"
+            "jest",
+            "joi"
         ],
         "typeRoots": [
             "node_modules/@types"

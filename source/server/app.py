@@ -25,6 +25,12 @@ app.register_blueprint(user_blueprint, url_prefix='/api/users')
 def index():
 	return render_template('index.html')
 
+# Creates a dummy route for all other routes (so whenever you type in /login or
+# /workstation, it will actually take you to that route instead of denying you)
+@app.route('/<path:dummy>')
+def dummy(dummy):
+	return render_template('index.html')
+
 # Create and Run the Application here.
 if __name__ == '__main__':
 	app.run()

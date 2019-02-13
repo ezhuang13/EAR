@@ -1,6 +1,7 @@
 Flask
 Flask-Restful
 Flask-SQLAlchemy
+flask_restful
 Flask-Migrate
 Flask-Script
 psycopg2

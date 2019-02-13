@@ -14,7 +14,6 @@ import { MainState } from '../../reducers';
 import { RegisterState } from './registerReducer';
 
 // Import constants for Register
-import { RegisterFields } from '../../components/constants';
 import { RouteComponentProps } from 'react-router';
 import { bindActionCreators } from 'redux';
 
@@ -40,7 +39,7 @@ class Register extends React.Component<RegisterProps> {
     }
 
     submitRegistration(registrationInfo: Types.RegisterInformation) {
-        this.props.testRegister(registrationInfo);
+        this.props.attemptRegister(registrationInfo);
     }
 
     render() {
@@ -48,7 +47,7 @@ class Register extends React.Component<RegisterProps> {
             <React.Fragment>
                 <h1>Register!</h1>
                 <Form
-                    fields={RegisterFields}
+                    type='Register'
                     submitMethod={this.submitRegistration}
                 />
                 <button onClick={this.logThis}>Log Register.</button>
@@ -70,7 +69,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.Dispa
         initializeRegister: Actions.initializeRegister,
         registerFail: Actions.registerFail,
         registerSuccess: Actions.registerSuccess,
-        testRegister: Actions.testRegister,
+        performRegister: Actions.performRegister,
         attemptRegister: Actions.attemptRegister
     }, dispatch);
 };
