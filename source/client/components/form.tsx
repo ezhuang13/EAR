@@ -38,7 +38,6 @@ class Form extends React.Component<FormProps, FormState> {
         this.handleChange = this.handleChange.bind(this);
         this.createForm = this.createForm.bind(this);
         this.submitForm = this.submitForm.bind(this);
-        this.logForm = this.logForm.bind(this);
         this.obtainError = this.obtainError.bind(this);
 
         this.createFields();

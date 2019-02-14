@@ -19,7 +19,9 @@
         "semicolon": [true, "always", "ignore-interfaces"],
         "object-literal-sort-keys": false,
         "interface-name": false,
-        "no-namespace": false
+        "no-namespace": false,
+        "one-line": false,
+        "jsx-no-lambda": false
     },
     "rulesDirectory": []
 }

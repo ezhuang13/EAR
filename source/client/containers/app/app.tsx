@@ -40,7 +40,7 @@ class Application extends React.Component<AppProps> {
     createIndex() {
         return (
             <React.Fragment>
-                    <h1>Ear</h1>
+                    <h1>EAR!</h1>
                     <Link to='/login'>Login</Link>
                     <div/>
                     <Link to='/register'>Register</Link>

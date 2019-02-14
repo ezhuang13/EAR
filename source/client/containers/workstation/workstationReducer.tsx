@@ -9,7 +9,10 @@ interface WorkstationStateInterface {
     volume?: number,
     checkedEffects?: any,
     effects?: any,
-    audio?: Pizzicato.Sound
+    audio?: Pizzicato.Sound,
+    isPlaying?: boolean,
+    isRecording?: boolean,
+    downloadUrl?: string
 }
 
 export const initialWorkstationState: WorkstationStateInterface = {
@@ -48,10 +51,12 @@ export const initialWorkstationState: WorkstationStateInterface = {
             mix: 0.8
         }),
     },
-    audio: null
+    audio: null,
+    isPlaying: false,
+    isRecording: false,
+    downloadUrl: ''
 };
 
-// TODO(ezhuang): figure out exact semantics of Object.assign, how to modify parts of state
 /********** Workstation Reducer **********/
 export const workstationReducer = (state = initialWorkstationState, action: Types.WorkstationActionTypes) => {
     switch (action.type) {
@@ -61,7 +66,7 @@ export const workstationReducer = (state = initialWorkstationState, action: Type
                 volume: action.volume
             });
         case Types.TOGGLE_EFFECT:
-            let newEffects = Object.assign({}, state.checkedEffects);
+            const newEffects = Object.assign({}, state.checkedEffects);
             newEffects[action.effect] = !newEffects[action.effect];
             newEffects[action.effect] ?
                 state.audio.addEffect(state.effects[action.effect]) :
@@ -70,12 +75,24 @@ export const workstationReducer = (state = initialWorkstationState, action: Type
                 checkedEffects: newEffects
             });
         case Types.CREATE_SOUND:
-            let newSound = new Pizzicato.Sound({ 
+            const newSound = new Pizzicato.Sound({ 
                 source: 'file',
                 options: { path: action.url }
             });
             return Object.assign({}, state, {
                 audio: newSound
+            });
+        case Types.SET_PLAY:
+            return Object.assign({}, state, {
+                isPlaying: action.isPlaying
+            });
+        case Types.SET_RECORDING:
+            return Object.assign({}, state, {
+                isRecording: action.isRecording
+            });
+        case Types.SET_DOWNLOAD:
+            return Object.assign({}, state, {
+                downloadUrl: action.url
             });
         default:
             return state;

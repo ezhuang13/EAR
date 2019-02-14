@@ -9,7 +9,7 @@ import { createStore, applyMiddleware } from 'redux';
 import { rootReducer } from './reducers';
 
 const store = createStore(rootReducer, composeWithDevTools(
-	applyMiddleware(thunk)));
+    applyMiddleware(thunk)));
 
 const renderApplication = () => {
     ReactDOM.render(

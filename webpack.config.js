@@ -21,7 +21,8 @@ const entryPoint = {
         'redux-thunk',
         'joi',
         'rc-slider',
-        'pizzicato'
+        'pizzicato',
+        'inline-worker'
     ]
 };
 
@@ -74,7 +75,9 @@ const clientConfig = {
             {
                 test: /\.mp3$/,
                 loader: 'file-loader'
-            }
+            },
+
+            { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ }
         ]
     },
     resolve: {

@@ -2,6 +2,9 @@
 export const VOLUME_CHANGE = 'VOLUME_CHANGE';
 export const TOGGLE_EFFECT = 'TOGGLE_EFFECT';
 export const CREATE_SOUND = 'CREATE_SOUND';
+export const SET_PLAY = 'SET_PLAY';
+export const SET_RECORDING = 'SET_RECORDING';
+export const SET_DOWNLOAD = 'SET_DOWNLOAD';
 
 /********** Interfaces for the Actions Creators **********/
 interface VolumeChange {
@@ -19,6 +22,21 @@ interface CreateSound {
     url: string;
 }
 
+interface SetPlay {
+    type: typeof SET_PLAY;
+    isPlaying: boolean;
+}
+
+interface SetRecording {
+    type: typeof SET_RECORDING;
+    isRecording: boolean;
+}
+
+interface SetDownload {
+    type: typeof SET_DOWNLOAD;
+    url: string;
+}
+
 /********** Interfaces for Objects in the Login Component**********/
 export interface TremoloOptions {
     on: boolean,
@@ -28,4 +46,5 @@ export interface TremoloOptions {
 }
 
 /********** Combination of all Redux Actions **********/
-export type WorkstationActionTypes = VolumeChange | ToggleEffect | CreateSound;
+export type WorkstationActionTypes = VolumeChange | ToggleEffect | CreateSound |
+                                     SetPlay | SetRecording | SetDownload;
