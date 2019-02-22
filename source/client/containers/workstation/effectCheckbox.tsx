@@ -25,12 +25,13 @@ class EffectCheckbox extends React.Component<EffectCheckboxProps, any> {
         this.toggleCheckboxChange = this.toggleCheckboxChange.bind(this);
     }
 
-    // TODO(eric): fix this so it updates faster, perhaps make async?
     toggleCheckboxChange(effect: string) {
         this.props.toggleEffect(effect);
     }
 
     render() {
+        // TODO: look into removing lambdas in render
+        // https://maarten.mulders.it/blog/2017/07/no-bind-or-arrow-in-jsx-props-why-how.html
         return (
             <React.Fragment>
                 <label>

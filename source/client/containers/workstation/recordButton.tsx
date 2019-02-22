@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 // Imports for Application State
 import { MainState } from '../../reducers';
@@ -20,7 +21,7 @@ class RecordButton extends React.Component<RecordButtonProps> {
     recorderNode: MediaStreamAudioDestinationNode;
     rec: Recorder;
 
-    constructor(props: any) {
+    constructor(props: RecordButtonProps) {
         super(props);
 
         this.startRecording = this.startRecording.bind(this);
@@ -35,6 +36,10 @@ class RecordButton extends React.Component<RecordButtonProps> {
 
         // Create recorder attached to media stream node
         this.rec = new Recorder(source);
+    }
+
+    componentWillUnmount() {
+        this.props.setDownload(null);
     }
 
     // TODO: Use events to trigger setRecording() and setPlay()
@@ -57,8 +62,7 @@ class RecordButton extends React.Component<RecordButtonProps> {
         this.props.setRecording(false);
 
         this.rec.exportWAV((blob: Blob) => {
-            const url = window.URL.createObjectURL(blob);
-            this.props.setDownload(url);
+            this.props.setDownload(blob);
         });
     }
 
@@ -86,11 +90,11 @@ const mapStateToProps = (state: MainState) => {
 
 // This gives the component access to dispatch / the actions
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
-    return {
-        setRecording: (isRecording: boolean) => { dispatch(Actions.setRecording(isRecording)); },
-        setPlay: (isPlaying: boolean) => { dispatch(Actions.setPlay(isPlaying)); },
-        setDownload: (downloadUrl: string) => { dispatch(Actions.setDownload(downloadUrl)); },
-    };
+    return bindActionCreators({
+        setRecording: Actions.setRecording,
+        setPlay: Actions.setPlay,
+        setDownload: Actions.setDownload,
+    }, dispatch);
 };
 
 // This method wraps the component with the store and dispatch!!!

@@ -5,6 +5,7 @@ export const CREATE_SOUND = 'CREATE_SOUND';
 export const SET_PLAY = 'SET_PLAY';
 export const SET_RECORDING = 'SET_RECORDING';
 export const SET_DOWNLOAD = 'SET_DOWNLOAD';
+export const REMOVE_EFFECTS = 'REMOVE_EFFECTS';
 
 /********** Interfaces for the Actions Creators **********/
 interface VolumeChange {
@@ -34,17 +35,13 @@ interface SetRecording {
 
 interface SetDownload {
     type: typeof SET_DOWNLOAD;
-    url: string;
+    download: Blob;
 }
 
-/********** Interfaces for Objects in the Login Component**********/
-export interface TremoloOptions {
-    on: boolean,
-    speed: number,
-    depth: number,
-    mix: number
+interface RemoveEffects {
+    type: typeof REMOVE_EFFECTS;
 }
 
 /********** Combination of all Redux Actions **********/
 export type WorkstationActionTypes = VolumeChange | ToggleEffect | CreateSound |
-                                     SetPlay | SetRecording | SetDownload;
+                                    RemoveEffects | SetPlay | SetRecording | SetDownload;

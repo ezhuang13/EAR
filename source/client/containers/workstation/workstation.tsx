@@ -1,24 +1,30 @@
 import * as React from 'react';
+import { Link } from 'react-router-dom';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
+import { bindActionCreators } from 'redux';
 
 // Imports for Application State
 import { MainState } from '../../reducers';
 import { RouteComponentProps } from 'react-router';
 import { WorkstationState } from './workstationReducer';
-import { CreateProjectState } from '../createProject/createProjectReducer';
+import { ProjectsState } from '../projects/projectsReducer';
 import * as Actions from './workstationActions';
+import * as ProjectsActions from '../projects/projectsActions';
+import * as ProjectsTypes from '../projects/projectsTypes';
 
 // Import custom components and 3rd party libs
 import MusicSlider from '../../components/slider';
 import EffectsSelector from './effectsSelector';
 import RecordButton from './recordButton';
+import RecorderButtons from './recorderButtons';
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
 
 // Combined Props Type for Workstation Component (Dispatch and State)
-export type WorkstationProps = Actions.DispatchProps & ParentProps & WorkstationState & CreateProjectState;
+export type WorkstationProps = Actions.DispatchProps & ParentProps & ProjectsActions.DispatchProps
+& WorkstationState & ProjectsState;
 
 // TODO(Eric): Look into react-soundplayer, soundcloud-audio,
 // and react audio spectrum for visualization and playback tools
@@ -28,13 +34,27 @@ class Workstation extends React.Component<WorkstationProps, any> {
     constructor(props: WorkstationProps) {
         super(props);
 
+        this.replaceAudio = this.replaceAudio.bind(this);
         this.changeVolume = this.changeVolume.bind(this);
         this.stopAudio = this.stopAudio.bind(this);
         this.togglePlay = this.togglePlay.bind(this);
     }
 
     componentDidMount() {
-        this.props.createSound(this.props.url);
+        const url = URL.createObjectURL(this.props.projects[this.props.currentProject].audio);
+        this.props.createSound(url);
+    }
+
+    componentWillUnmount() {
+        this.props.audio.stop();
+        this.props.setPlay(false);
+    }
+
+    replaceAudio(project: ProjectsTypes.ProjectKV) {
+        this.props.createProject(project);
+        const url = URL.createObjectURL(this.props.download);
+        this.props.createSound(url);
+        this.props.removeEffects();
     }
 
     changeVolume(value: number) {
@@ -52,10 +72,9 @@ class Workstation extends React.Component<WorkstationProps, any> {
         this.props.setPlay(!this.props.isPlaying);
     }
 
+    // TODO: ask hemingway why I have to pass ...this.props to RecorderButtons
     render() {
         const playButton = this.props.isPlaying ? 'Pause' : 'Play';
-        const downloadButton = this.props.downloadUrl === '' ? <div/> :
-            <a href={this.props.downloadUrl} download='test'> Download </a>;
 
         return (
             <React.Fragment>
@@ -73,7 +92,9 @@ class Workstation extends React.Component<WorkstationProps, any> {
                 />
                 <EffectsSelector/>
                 <br/>
-                {downloadButton}
+                <RecorderButtons replaceAudio={this.replaceAudio} {...this.props}/>
+                <br/>
+                <Link to={`/projects/`}>My Projects</Link>
             </React.Fragment>
         );
     }
@@ -83,20 +104,24 @@ class Workstation extends React.Component<WorkstationProps, any> {
 const mapStateToProps = (state: MainState) => {
     return {
         volume: state.workstation.volume,
-        url: state.createProject.url,
+        currentProject: state.projects.currentProject,
+        projects: state.projects.projects,
         audio: state.workstation.audio,
         isPlaying: state.workstation.isPlaying,
-        downloadUrl: state.workstation.downloadUrl,
+        download: state.workstation.download,
     };
 };
 
 // This gives the component access to dispatch / the actions
-const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
-    return {
-        volumeChange: (volume: number) => { dispatch(Actions.volumeChange(volume)); },
-        createSound: (url: string) => { dispatch(Actions.createSound(url)); },
-        setPlay: (isPlaying: boolean) => { dispatch(Actions.setPlay(isPlaying)); },
-    };
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>):
+    Actions.DispatchProps & ProjectsActions.DispatchProps => {
+    return bindActionCreators({
+        volumeChange: Actions.volumeChange,
+        createSound: Actions.createSound,
+        setPlay: Actions.setPlay,
+        createProject: ProjectsActions.createProject,
+        removeEffects: Actions.removeEffects,
+    }, dispatch);
 };
 
 // This method wraps the component with the store and dispatch!!!

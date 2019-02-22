@@ -1,13 +1,15 @@
 import * as Types from './workstationTypes';
+import { bindActionCreators } from 'redux';
 
 /********** List of Actions for Dispatch Props **********/
 export interface DispatchProps {
-    volumeChange?,
-    toggleEffect?,
-    createSound?,
-    setPlay?,
-    setRecording?,
-    setDownload?
+    volumeChange?: typeof volumeChange;
+    toggleEffect?: typeof toggleEffect;
+    createSound?: typeof createSound;
+    setPlay?: typeof setPlay;
+    setRecording?: typeof setRecording;
+    setDownload?: typeof setDownload;
+    removeEffects?: typeof removeEffects;
 }
 
 /********** Action Creators for the Synchronous Typed Actions **********/
@@ -46,10 +48,16 @@ export const setRecording = (isRecording: boolean) => {
     });
 };
 
-export const setDownload = (url: string) => {
+export const setDownload = (download: Blob) => {
     return ({
         type: Types.SET_DOWNLOAD,
-        url
+        download
+    });
+};
+
+export const removeEffects = () => {
+    return ({
+        type: Types.REMOVE_EFFECTS
     });
 };
 

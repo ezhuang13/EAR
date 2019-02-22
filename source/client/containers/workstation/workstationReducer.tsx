@@ -2,6 +2,7 @@ import * as Types from './workstationTypes';
 import * as Constants from './effectConstants';
 
 import Pizzicato from 'pizzicato';
+import { bindActionCreators } from 'redux';
 
 /********** Local State Interface and Initial State Constant **********/
 // TODO: create an interface for effects and audio
@@ -12,7 +13,7 @@ interface WorkstationStateInterface {
     audio?: Pizzicato.Sound,
     isPlaying?: boolean,
     isRecording?: boolean,
-    downloadUrl?: string
+    download?: Blob,
 }
 
 export const initialWorkstationState: WorkstationStateInterface = {
@@ -54,7 +55,7 @@ export const initialWorkstationState: WorkstationStateInterface = {
     audio: null,
     isPlaying: false,
     isRecording: false,
-    downloadUrl: ''
+    download: null,
 };
 
 /********** Workstation Reducer **********/
@@ -70,12 +71,20 @@ export const workstationReducer = (state = initialWorkstationState, action: Type
             newEffects[action.effect] = !newEffects[action.effect];
             newEffects[action.effect] ?
                 state.audio.addEffect(state.effects[action.effect]) :
-                state.audio.removeEffect(state.effects[action.effect])
+                state.audio.removeEffect(state.effects[action.effect]);
             return Object.assign({}, state, {
                 checkedEffects: newEffects
             });
+        case Types.REMOVE_EFFECTS:
+            const noEffects = Object.assign({}, state.checkedEffects);
+            Object.keys(noEffects).forEach((effect) => {
+                noEffects[effect] = false;
+            });
+            return Object.assign({}, state, {
+                checkedEffects: noEffects,
+            });
         case Types.CREATE_SOUND:
-            const newSound = new Pizzicato.Sound({ 
+            const newSound = new Pizzicato.Sound({
                 source: 'file',
                 options: { path: action.url }
             });
@@ -92,7 +101,7 @@ export const workstationReducer = (state = initialWorkstationState, action: Type
             });
         case Types.SET_DOWNLOAD:
             return Object.assign({}, state, {
-                downloadUrl: action.url
+                download: action.download
             });
         default:
             return state;

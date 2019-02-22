@@ -2,15 +2,17 @@ import * as React from 'react';
 import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { bindActionCreators } from 'redux';
 
 // Imports for Actions and Types
-import * as Actions from './createProjectActions';
-import * as Types from './createProjectTypes';
+import * as Actions from './projectsActions';
+import * as Types from './projectsTypes';
 
 // Imports for Application State (based on the reducer)
 import { MainState } from '../../reducers';
 import { RouteComponentProps } from 'react-router';
-import { CreateProjectState } from './createProjectReducer';
+import { ProjectsState } from './projectsReducer';
+import { ErrorMessage } from '../../utility/shared';
 
 const NewDiv = styled.div`
 border-style: solid;
@@ -27,25 +29,42 @@ height: 50px;
 interface ParentProps extends RouteComponentProps<{}> {}
 
 // Combined Props Type for CreateProject Component (Dispatch and State)
-export type CreateProjectProps = Actions.DispatchProps & ParentProps & CreateProjectState;
+export type CreateProjectProps = Actions.DispatchProps & ParentProps & ProjectsState;
 
 class CreateProject extends React.Component<CreateProjectProps, any> {
     constructor(props: CreateProjectProps) {
         super(props);
 
         this.state = {
-            audio: ''
+            name: '',
+            audio: '',
+            filetype: '',
+            errorMsg: '',
         };
+
+        this.createProject = this.createProject.bind(this);
         this.uploadAudio = this.uploadAudio.bind(this);
         this.allowDrop = this.allowDrop.bind(this);
+        this.changeName = this.changeName.bind(this);
     }
 
     allowDrop(event: any) {
         event.preventDefault();
     }
 
-    uploadAudio(audioFile: any) {
+    changeName(event: any) {
+        const newName = event.target.value;
 
+        const duplicateName = this.props.projects.hasOwnProperty(newName);
+        const errorMsg = duplicateName ? 'You already have a project with this name!' : '';
+
+        this.setState({
+            name: newName,
+            errorMsg,
+        });
+    }
+
+    uploadAudio(audioFile: any) {
         // Stop the default action for either input or div audio entry
         audioFile.stopPropagation();
         audioFile.preventDefault();
@@ -55,29 +74,49 @@ class CreateProject extends React.Component<CreateProjectProps, any> {
         const targetType = audioFile.target.nodeName.toLowerCase();
 
         // Obtain the music file from the input
-        let ourMusic: any;
+        let ourMusic: File;
         if (targetType === 'div') {
             ourMusic = audioFile.dataTransfer.files[0];
         } else if (targetType === 'input') {
             ourMusic = audioFile.target.files[0];
         }
 
-        // Create a source on the host for the audio file!
-        const newSource = URL.createObjectURL(ourMusic);
+        const blobMusic = new Blob([ourMusic], {type: ourMusic.type});
+        const filetype = ourMusic.type.split('/')[1].toUpperCase();
 
-        // Call the setAudio props function and redirect to the workpage
-        this.props.setAudio(newSource);
-        this.props.history.push('/workstation');
+        this.setState({
+            audio: blobMusic,
+            filetype,
+        });
     }
 
-    componentDidMount() {
-        return;
+    createProject(){
+        const projectInfo: Types.ProjectInfo = {
+            audio: this.state.audio,
+            dateCreated: new Date().toLocaleString(),
+            filetype: this.state.filetype,
+        };
+        const newProject: Types.ProjectKV = {
+            [this.state.name]: projectInfo,
+        };
+        this.props.createProject(newProject);
+        this.props.history.push('/projects');
     }
 
     render() {
+        const allowCreation = this.state.errorMsg === '' && this.state.name !== '' && this.state.audio !== '';
         return (
             <React.Fragment>
-                <h1>Testing!</h1>
+                <h1>Create a Project!</h1>
+                <div>Name your project:</div>
+                <input
+                    type='text'
+                    name='name'
+                    value={this.state.name}
+                    onChange={this.changeName}
+                />
+                <br/>
+                <div>Select some audio:</div>
                 <input
                     type='file'
                     id='upload'
@@ -87,7 +126,11 @@ class CreateProject extends React.Component<CreateProjectProps, any> {
                 />
                 <HeightDiv/>
                 <NewDiv onDrop={this.uploadAudio} onDragOver={this.allowDrop}>Drag and Drop Audio!</NewDiv>
-
+                <br/>
+                <button disabled={!allowCreation} onClick={this.createProject}>CREATE</button>
+                <ErrorMessage
+                    msg={this.state.errorMsg}
+                />
             </React.Fragment>
         );
     }
@@ -96,16 +139,16 @@ class CreateProject extends React.Component<CreateProjectProps, any> {
 // This gives the component access to the store (state)
 const mapStateToProps = (state: MainState) => {
     return {
-        volume: state.workstation.volume
+        projects: state.projects.projects,
     };
 };
 
 // This gives the component access to dispatch / the actions
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
-    return {
-        setAudio: (url: string) => { dispatch(Actions.setAudio(url)); },
-    }
-}
+    return bindActionCreators({
+        createProject: Actions.createProject,
+    }, dispatch);
+};
 
 // This method wraps the component with the store and dispatch!!!
 export default connect(mapStateToProps, mapDispatchToProps)(CreateProject);

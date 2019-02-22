@@ -6,7 +6,6 @@ import { connect } from 'react-redux';
 
 // Imports for Actions and Types
 import * as Actions from './appActions';
-import * as Types from './appTypes';
 
 // Imports for Application State (based on the reducer)
 import { MainState } from '../../reducers';
@@ -16,7 +15,8 @@ import { AppState } from './appReducer';
 import Register from '../register/register';
 import Login from '../login/login';
 import Workstation from '../workstation/workstation';
-import CreateProject from '../createProject/createProject';
+import CreateProject from '../projects/createProject';
+import Projects from '../projects/projects';
 import { bindActionCreators } from 'redux';
 
 interface ParentProps extends RouteComponentProps<{}> {}
@@ -80,6 +80,10 @@ class Application extends React.Component<AppProps> {
                 <Route
                     path='/create_project'
                     component={CreateProject}
+                />
+                <Route
+                    path='/projects'
+                    component={Projects}
                 />
                 </Switch>
             </BrowserRouter>
