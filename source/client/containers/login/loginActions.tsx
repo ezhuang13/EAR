@@ -89,7 +89,7 @@ export const performLogin = (loginInformation: Types.LoginInformation): ThunkAct
                     // for our components. Then, once the action is totally completed,
                     // we return an action type just like every other component (which will
                     // be processed by the reducer and then mutate the store)
-                    fetch('/api/login', {
+                    fetch('/api/v1/users/login', {
                         body: JSON.stringify(loginInformation),
                         credentials: 'include',
                         headers: {

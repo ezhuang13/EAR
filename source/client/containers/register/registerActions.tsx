@@ -85,7 +85,7 @@ export const performRegister = (registerInformation: Types.RegisterInformation):
                     // for our components. Then, once the action is totally completed,
                     // we return an action type just like every other component (which will
                     // be processed by the reducer and then mutate the store)
-                    fetch('/api/users/create', {
+                    fetch('/api/v1/users/', {
                         body: JSON.stringify(registerInformation),
                         credentials: 'include',
                         headers: {
@@ -96,6 +96,7 @@ export const performRegister = (registerInformation: Types.RegisterInformation):
                     .then((response: any) => response.json()
                     .then((responseData: any) => ({statusCode: response.status, body: responseData})))
                     .then((responseData) => {
+                        console.log('Register through.');
                         // Check the status code for appropriate action!
                         switch (responseData.statusCode) {
                             case 200:

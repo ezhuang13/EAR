@@ -5,3 +5,5 @@ flask_restful
 Flask-Migrate
 Flask-Script
 psycopg2
+flask_bcrypt
+marshmallow
