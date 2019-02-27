@@ -64,6 +64,10 @@ class CreateProject extends React.Component<CreateProjectProps, any> {
         });
     }
 
+    componentWillUpdate() {
+        return false;
+    }
+
     uploadAudio(audioFile: any) {
         // Stop the default action for either input or div audio entry
         audioFile.stopPropagation();
@@ -121,7 +125,6 @@ class CreateProject extends React.Component<CreateProjectProps, any> {
                     type='file'
                     id='upload'
                     name='audio'
-                    accept='.mp3, .wav'
                     onChange={this.uploadAudio}
                 />
                 <HeightDiv/>

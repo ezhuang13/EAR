@@ -1,5 +1,4 @@
 import * as Types from './workstationTypes';
-import { bindActionCreators } from 'redux';
 
 /********** List of Actions for Dispatch Props **********/
 export interface DispatchProps {
@@ -20,10 +19,11 @@ export const volumeChange = (volume: number) => {
     });
 };
 
-export const toggleEffect = (effect: string) => {
+export const toggleEffect = (effect: string, wave: any) => {
     return ({
         type: Types.TOGGLE_EFFECT,
-        effect
+        effect,
+        wave
     });
 };
 

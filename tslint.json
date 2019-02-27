@@ -21,7 +21,8 @@
         "interface-name": false,
         "no-namespace": false,
         "one-line": false,
-        "jsx-no-lambda": false
+        "jsx-no-lambda": true,
+        "curly": false
     },
     "rulesDirectory": []
 }

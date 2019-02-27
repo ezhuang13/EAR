@@ -4,6 +4,7 @@ import * as App from './containers/app/appReducer';
 import * as Login from './containers/login/loginReducer';
 import * as Register from './containers/register/registerReducer';
 import * as Workstation from './containers/workstation/workstationReducer';
+import * as Wavesurfer from './containers/workstation/wavesurfer/wavesurferReducer';
 import * as Projects from './containers/projects/projectsReducer';
 
 export const rootReducer = combineReducers({
@@ -11,6 +12,7 @@ export const rootReducer = combineReducers({
     login: Login.loginReducer,
     register: Register.registerReducer,
     workstation: Workstation.workstationReducer,
+    wave: Wavesurfer.waveReducer,
     projects: Projects.projectsReducer
 });
 

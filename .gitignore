@@ -10,3 +10,4 @@ package-lock.json
 source/server/migrations*
 source/static/*
 source/server/__pycache__
+node_modules

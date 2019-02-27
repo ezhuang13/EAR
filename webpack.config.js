@@ -30,7 +30,7 @@ const entryPoint = {
 const outputObj = {
     path: path.join(__dirname, '/source/static'),
     filename: '[name].js',
-    publicPath: './public',
+    publicPath: './source/static',
     chunkFilename: "[id].js"
 };
 

@@ -16,6 +16,7 @@ interface VolumeChange {
 interface ToggleEffect {
     type: typeof TOGGLE_EFFECT;
     effect: string;
+    wave?: any;
 }
 
 interface CreateSound {

@@ -1,6 +1,4 @@
 import * as Types from './appTypes';
-import { ThunkAction, ThunkDispatch } from 'redux-thunk';
-import { AnyAction } from 'redux';
 
 /********** List of Actions for Dispatch Props **********/
 export interface DispatchProps {

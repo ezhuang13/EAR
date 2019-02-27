@@ -1,8 +1,7 @@
 import * as Types from './workstationTypes';
-import * as Constants from './effectConstants';
+import * as Constants from './effects/effectConstants';
 
 import Pizzicato from 'pizzicato';
-import { bindActionCreators } from 'redux';
 
 /********** Local State Interface and Initial State Constant **********/
 // TODO: create an interface for effects and audio
@@ -11,9 +10,10 @@ interface WorkstationStateInterface {
     checkedEffects?: any,
     effects?: any,
     audio?: Pizzicato.Sound,
+    audioUrl?: string,
     isPlaying?: boolean,
     isRecording?: boolean,
-    download?: Blob,
+    downloadBlob?: Blob
 }
 
 export const initialWorkstationState: WorkstationStateInterface = {
@@ -32,30 +32,66 @@ export const initialWorkstationState: WorkstationStateInterface = {
         [Constants.TREMOLO]: false
     },
     effects: {
-        [Constants.COMPRESSOR]: new Pizzicato.Effects.Compressor(),
-        [Constants.DELAY]: new Pizzicato.Effects.Delay(),
-        [Constants.DISTORTION]: new Pizzicato.Effects.Distortion(),
-        [Constants.DUB]: new Pizzicato.Effects.DubDelay(),
-        [Constants.FLANGER]: new Pizzicato.Effects.Flanger(),
-        [Constants.PING_PONG]: new Pizzicato.Effects.PingPongDelay(),
-        [Constants.QUADRAFUZZ]: new Pizzicato.Effects.Quadrafuzz(),
-        [Constants.REVERB]: new Pizzicato.Effects.Reverb(),
-        [Constants.RING_MOD] : new Pizzicato.Effects.RingModulator({
-            speed: 30,
-            distortion: 1,
-            mix: 0.5
-        }),
-        [Constants.STEREO_PANNER]: new Pizzicato.Effects.StereoPanner(),
-        [Constants.TREMOLO] : new Pizzicato.Effects.Tremolo({
-            speed: 15,
-            depth: 1,
-            mix: 0.8
-        }),
+        [Constants.COMPRESSOR]: null,
+        [Constants.DELAY]: null,
+        [Constants.DISTORTION]: null,
+        [Constants.DUB]: null,
+        [Constants.FLANGER]: null,
+        [Constants.PING_PONG]: null,
+        [Constants.QUADRAFUZZ]: null,
+        [Constants.REVERB]: null,
+        [Constants.RING_MOD]: null,
+        [Constants.STEREO_PANNER]: null,
+        [Constants.TREMOLO]: null
     },
     audio: null,
+    audioUrl: '',
     isPlaying: false,
     isRecording: false,
-    download: null,
+    downloadBlob: null
+};
+
+/********** Effects Reducer **********/
+const effectsReducer = (checkedEffect: string) => {
+    let newEffect = null;
+    switch (checkedEffect) {
+        case Constants.COMPRESSOR:
+            newEffect = new Pizzicato.Effects.Compressor();
+            break;
+        case Constants.DELAY:
+            newEffect = new Pizzicato.Effects.Delay({options: {detached: true}});
+            break;
+        case Constants.DISTORTION:
+            newEffect = new Pizzicato.Effects.Distortion({options: {detached: true}});
+            break;
+        case Constants.DUB:
+            newEffect = new Pizzicato.Effects.DubDelay();
+            break;
+        case Constants.FLANGER:
+            newEffect = new Pizzicato.Effects.Flanger();
+            break;
+        case Constants.PING_PONG:
+            newEffect = new Pizzicato.Effects.PingPongDelay();
+            break;
+        case Constants.QUADRAFUZZ:
+            newEffect = new Pizzicato.Effects.Quadrafuzz();
+            break;
+        case Constants.REVERB:
+            newEffect = new Pizzicato.Effects.Reverb();
+            break;
+        case Constants.RING_MOD:
+            newEffect = new Pizzicato.Effects.RingModulator();
+            break;
+        case Constants.STEREO_PANNER:
+            newEffect = new Pizzicato.Effects.StereoPanner();
+        case Constants.TREMOLO:
+            newEffect = new Pizzicato.Effects.Tremolo();
+            break;
+        default:
+            break;
+    }
+
+    return newEffect;
 };
 
 /********** Workstation Reducer **********/
@@ -67,13 +103,28 @@ export const workstationReducer = (state = initialWorkstationState, action: Type
                 volume: action.volume
             });
         case Types.TOGGLE_EFFECT:
-            const newEffects = Object.assign({}, state.checkedEffects);
-            newEffects[action.effect] = !newEffects[action.effect];
-            newEffects[action.effect] ?
-                state.audio.addEffect(state.effects[action.effect]) :
-                state.audio.removeEffect(state.effects[action.effect]);
+            // Obtain New Effects from checkEffects array.
+            let newEffect = effectsReducer(action.effect);
+            // Check if the effect is on or off, add or remove effect!
+            if (!state.checkedEffects[action.effect]) {
+                state.audio.addEffect(newEffect);
+            }
+            else {
+                newEffect = state.effects[action.effect];
+                state.audio.removeEffect(newEffect);
+                newEffect = null;
+            }
+
+            // Assign the payload!
             return Object.assign({}, state, {
-                checkedEffects: newEffects
+                checkedEffects: {
+                    ...state.checkedEffects,
+                    [action.effect]: !state.checkedEffects[action.effect]
+                },
+                effects: {
+                    ...state.effects,
+                    [action.effect]: newEffect
+                }
             });
         case Types.REMOVE_EFFECTS:
             const noEffects = Object.assign({}, state.checkedEffects);
@@ -101,7 +152,7 @@ export const workstationReducer = (state = initialWorkstationState, action: Type
             });
         case Types.SET_DOWNLOAD:
             return Object.assign({}, state, {
-                download: action.download
+                downloadBlob: action.download
             });
         default:
             return state;

@@ -46,6 +46,7 @@ class Application extends React.Component<AppProps> {
                     <Link to='/register'>Register</Link>
                     <div/>
                     <Link to='/create_project'>Create Project</Link>
+                    <div/>
                     <button onClick={this.logApp}>Log this!</button>
             </React.Fragment>
         );
