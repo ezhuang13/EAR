@@ -59,7 +59,7 @@ class UserModel(db.Model):
 		""" get a user by their email address """
 
 		return UserModel.query.filter_by(emailAddress=value).first()
-
+	@staticmethod
 	def get_user_by_username(value):
 		""" get a user by their username """
 

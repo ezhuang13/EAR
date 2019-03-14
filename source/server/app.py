@@ -20,7 +20,7 @@ def create_app():
 	from routes.routes import user_api as user_blueprint
 
 	# Register API's for each model
-	app.register_blueprint(user_blueprint, url_prefix='/api/v1/users')
+	app.register_blueprint(user_blueprint, url_prefix='/users')
 
 	# Render the Template HTML file at the base route!
 	@app.route('/')

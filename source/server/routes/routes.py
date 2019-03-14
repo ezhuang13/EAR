@@ -30,7 +30,7 @@ def create():
 	# if the user is already in the database, don't add database
 	if user_in_db:
 		message = {'error': 'User already exist, please supply another username'}
-		return custom_response(message,400)
+		return custom_response(message, 400)
 	
 	
 	print(data)
@@ -40,7 +40,7 @@ def create():
 	user.save()
 
 	# successful response!
-	return custom_response(data,201)
+	return custom_response(data, 201)
 	
 @user_api.route('/', methods=['GET'])
 def get_all():
@@ -56,12 +56,12 @@ def get_all():
 	# return successful response
 	return custom_response(ser_user,201)
 
-@user_api.route('/<user_id>',methods=['GET'])
-def get_a_user(user_id):
+@user_api.route('/<username>',methods=['GET'])
+def get_a_user(username):
 	"""
-	Get one user by id
+	Get one user by username
 	"""
-	user = UserModel.get_one_user(user_id)
+	user = UserModel.get_user_by_username(username)
 
 	# user not in db, return error
 	if not user:
@@ -89,6 +89,7 @@ def delete(user_id):
 	# successful delete
 	return custom_response({'message':'deleted'},204)
 
+
 @user_api.route('/login',methods=['POST'])
 def login():
 	"""
@@ -112,7 +113,7 @@ def login():
 
 	# make sure user is in db
 	if not user:
-		return custom_response({'error':'invalid credentials'},400)
+		return custom_response({'error':'user does not exist'},400)
 	
 	# check the password to make sure it's correct
 	if not user.check_hash(data.get('password')):

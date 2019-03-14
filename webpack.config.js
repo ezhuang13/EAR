@@ -22,7 +22,8 @@ const entryPoint = {
         'joi',
         'rc-slider',
         'pizzicato',
-        'inline-worker'
+        'inline-worker',
+        'md5',
     ]
 };
 

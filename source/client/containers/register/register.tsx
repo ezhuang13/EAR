@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { Link } from 'react-router-dom';
 
-// Import dynamically rendered Form
+// Import shared components
 import Form from '../../components/form';
+import * as Schemas from '../../utility/schemas';
+import { ErrorMessage, ModalNotify } from '../../utility/shared';
 
 // Imports for Actions and Types
 import * as Actions from './registerActions';
@@ -26,31 +29,48 @@ export type RegisterProps = Actions.DispatchProps & ParentProps & RegisterState;
 class Register extends React.Component<RegisterProps> {
     constructor(props: RegisterProps) {
         super(props);
+
+        this.onAcceptRegister = this.onAcceptRegister.bind(this);
         this.submitRegistration = this.submitRegistration.bind(this);
-        this.logThis = this.logThis.bind(this);
     }
 
-    componentDidMount() {
-        this.props.initializeRegister();
+    componentWillMount() {
+        if (localStorage.getItem('user') !== null) {
+            this.props.history.push(`/projects/${localStorage.getItem('user')}`);
+        }
     }
 
-    logThis() {
-        console.log(this);
+    onAcceptRegister() {
+        this.props.history.push('/login');
     }
 
     submitRegistration(registrationInfo: Types.RegisterInformation) {
-        this.props.attemptRegister(registrationInfo);
+        const validResult = Schemas.performValidation(registrationInfo, 'Register');
+        if (validResult.error === null) {
+            // No error, thus login information passed client-side validation!
+            // Allow login fetch to actually happen...
+            this.props.performRegister(registrationInfo);
+        } else {
+            // Login failed! Dispatch loginFail, find correct error therein!
+            this.props.registerFail(validResult.mappedError);
+        }
     }
 
     render() {
         return (
             <React.Fragment>
                 <h1>Register!</h1>
+                <Link to={'/login'}>Login</Link>
                 <Form
                     type='Register'
                     submitMethod={this.submitRegistration}
                 />
-                <button onClick={this.logThis}>Log Register.</button>
+                {this.props.notify ? (
+                <ModalNotify
+                    msg={this.props.notify}
+                    onAccept={this.onAcceptRegister}
+                />
+                ) : null}
             </React.Fragment>
         );
     }
@@ -59,18 +79,16 @@ class Register extends React.Component<RegisterProps> {
 // This gives the component access to the store (state)
 const mapStateToProps = (state: MainState) => {
     return {
-        ...state.register
+        registerError: state.register.registerError,
+        notify: state.register.notify,
     };
 };
 
 // This gives the component access to dispatch / the actions
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
     return bindActionCreators({
-        initializeRegister: Actions.initializeRegister,
-        registerFail: Actions.registerFail,
-        registerSuccess: Actions.registerSuccess,
         performRegister: Actions.performRegister,
-        attemptRegister: Actions.attemptRegister
+        registerFail: Actions.registerFail,
     }, dispatch);
 };
 

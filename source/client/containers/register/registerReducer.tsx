@@ -2,42 +2,26 @@ import * as Types from './registerTypes';
 
 /********** Local State Interface and Initial State Constant **********/
 interface RegisterStateLocal {
-    registerInitialized: boolean;
-    pastUsername: string;
-    status: string;
     registerError: string;
+    notify: string;
 }
 export const initialRegisterState: RegisterStateLocal = {
-    registerInitialized: false,
-    pastUsername: '',
-    status: '',
-    registerError: ''
+    registerError: '',
+    notify: '',
 };
 
 /********** Register Reducer **********/
 export const registerReducer = (state = initialRegisterState, action: Types.RegisterActionTypes) => {
     switch (action.type) {
-        case Types.REGISTER_INITIALIZED:
-            return Object.assign({}, state, {
-                ...action.payload
-            });
-        case Types.REGISTER_SUCCESS:
-            return Object.assign({}, state, {
-                pastUsername: action.payload.username,
-                status: action.payload.status,
-                registerError: ''
-            });
         case Types.REGISTER_FAIL:
             // Return the proper changed state!
             return Object.assign({}, state, {
-                pastUsername: action.payload.username,
-                status: action.payload.status,
-                registerError: action.payload.error
+                registerError: action.error
             });
-        case Types.ATTEMPT_REGISTER:
+        case Types.REGISTER_SUCCESS:
             return Object.assign({}, state, {
-                pastUsername: action.payload.username,
-                status: action.payload.status
+                registerError: '',
+                notify: `${action.username} successfully registered.  You will now need to log in.`,
             });
         case Types.PERFORM_REGISTER:
             // Note that we can put logic here, so maybe use actions for asynchronous middleware

@@ -4,16 +4,22 @@ import * as Types from './projectsTypes';
 interface ProjectsStateInterface {
     projects?: any,
     currentProject?: string,
+    currentUser?: Types.UserInfo,
 }
 
 export const initialProjectsState: ProjectsStateInterface = {
     projects: {},
     currentProject: null,
+    currentUser: null,
 };
 
 /********** Projects Reducer **********/
 export const projectsReducer = (state = initialProjectsState, action: Types.ProjectsActionTypes) => {
     switch (action.type) {
+        case Types.SET_USER:
+            return Object.assign({}, state, {
+               currentUser: action.user
+            });
         case Types.CREATE_PROJECT:
             return Object.assign({}, state, {
                 projects: Object.assign({}, state.projects, action.newProject),

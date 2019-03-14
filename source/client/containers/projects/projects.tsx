@@ -1,11 +1,11 @@
 import * as React from 'react';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
+import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 
 // Imports for Actions and Types
 import * as Actions from './projectsActions';
-import * as Types from './projectsTypes';
 
 // Imports for Application State
 import { MainState } from '../../reducers';
@@ -15,13 +15,21 @@ import { ProjectsState } from './projectsReducer';
 // Import custom components and 3rd party libs
 import styled from 'styled-components';
 import {
-    ErrorMessage,
     InfoBlock,
     InfoData,
     InfoLabels,
     ShortP
   } from './../../utility/shared';
 import { ProjectList } from './projectsList';
+import md5 from 'md5';
+
+// create grav hash profile image
+const GravHash = (email: string, size: number) => {
+  let hash = email && email.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+  hash = hash && hash.toLowerCase();
+  hash = hash && md5(hash);
+  return `https://www.gravatar.com/avatar/${hash}?size=${size}`;
+}
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
@@ -56,7 +64,7 @@ const ProfileBlock = (props) => {
   return (
     <ProfileBlockBase>
         <ProfileImage
-            src='https://upload.wikimedia.org/wikipedia/commons/f/f9/Phoenicopterus_ruber_in_S%C3%A3o_Paulo_Zoo.jpg'
+            src={GravHash(props.emailAddress, 150)}
         />
       <InfoBlock>
         <InfoLabels>
@@ -67,9 +75,9 @@ const ProfileBlock = (props) => {
         </InfoLabels>
         <InfoData>
           <ShortP>{props.username}</ShortP>
-          <ShortP>{props.first_name}</ShortP>
-          <ShortP>{props.last_name}</ShortP>
-          <ShortP>{props.primary_email}</ShortP>
+          <ShortP>{props.firstName}</ShortP>
+          <ShortP>{props.lastName}</ShortP>
+          <ShortP>{props.emailAddress}</ShortP>
         </InfoData>
       </InfoBlock>
     </ProfileBlockBase>
@@ -88,54 +96,69 @@ const ProfileBase = styled.div`
 export type ProjectsProps = Actions.DispatchProps & ParentProps & ProjectsState;
 
 class Projects extends React.Component<ProjectsProps, any> {
+  constructor(props: ProjectsProps) {
+    super(props);
 
-    constructor(props: ProjectsProps) {
-      super(props);
-      this.state = {
-          username: 'test',
-          first_name: 'mr',
-          last_name: 'tester',
-          primary_email: 'test@test.com',
-          balance: 0,
-          projects: [],
-          error: ''
-        };
+    this.setCurrentProject = this.setCurrentProject.bind(this);
+    this.deleteProject = this.deleteProject.bind(this);
+    this.logout = this.logout.bind(this);
+  }
 
-      this.setCurrentProject = this.setCurrentProject.bind(this);
-      this.deleteProject = this.deleteProject.bind(this);
+  componentWillMount(){
+    if (localStorage.getItem('user') === null) {
+      this.props.history.push('/login');
     }
-
-    setCurrentProject(name: string){
-      this.props.setProject(name);
+    else {
+      fetch(`/users/${localStorage.getItem('user')}`, {
+        credentials: 'include',
+        headers: {
+            'content-type': 'application/json'
+        },
+        method: 'GET'
+      }).then((response: any) => response.json()
+      .then((userResponseData: any) => {
+        this.props.setUser(userResponseData);
+      }));
+      // TODO: handle error
     }
+  }
 
-    deleteProject(name: string) {
-      this.props.deleteProject(name);
-    }
+  logout(){
+    localStorage.removeItem('user');
+  }
 
-    render() {
-        // TODO: make this dynamic
-        const isUser = true;
-        return (
-        <React.Fragment>
-        <ProfileBase style={{ gridArea: 'main' }}>
-          <ErrorMessage msg={this.state.err} hide={true} />
-          <ProfileBlock {...this.state} />
-          <ProjectList
-            toCreateProj={isUser}
-            projects={this.props.projects}
-            setProject={this.setCurrentProject}
-            deleteProject={this.deleteProject}
-          />
-        </ProfileBase>
-      </React.Fragment>);
-    }
+  setCurrentProject(name: string){
+    this.props.setProject(name);
+  }
+
+  deleteProject(name: string) {
+    this.props.deleteProject(name);
+  }
+
+  render() {
+      // TODO: make this dynamic
+      const isUser = true;
+      return (
+      <React.Fragment>
+      <Link to={`/login/`} onClick={this.logout}>Logout</Link>
+      <ProfileBase style={{ gridArea: 'main' }}>
+        <ProfileBlock {...this.props.currentUser} />
+        <ProjectList
+          toCreateProj={isUser}
+          projects={this.props.projects}
+          setProject={this.setCurrentProject}
+          deleteProject={this.deleteProject}
+        />
+      </ProfileBase>
+    </React.Fragment>);
+  }
 }
 
 // This gives the component access to the store (state)
 const mapStateToProps = (state: MainState) => {
     return {
-      projects: state.projects.projects
+      projects: state.projects.projects,
+      currentUser: state.projects.currentUser,
     };
 };
 
@@ -143,6 +166,7 @@ const mapStateToProps = (state: MainState) => {
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
   return bindActionCreators({
     setProject: Actions.setProject,
+    setUser: Actions.setUser,
     deleteProject: Actions.deleteProject,
   }, dispatch);
 };

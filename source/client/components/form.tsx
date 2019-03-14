@@ -47,14 +47,16 @@ class Form extends React.Component<FormProps, FormState> {
     // returns the contents of the dynamic form.
     createForm() {
         const formOutline = this.state.fields_list.map((name, index) => {
+            const type = name === 'password' ? 'password' : 'text';
             return (
                 <React.Fragment key={index}>
                     <Label labelText={this.state.fields_keys[index]}/>
                     <Input
                         name={name}
-                        type='text'
+                        type={type}
                         value={this.state[name]}
                         onChange={this.handleChange}
+                        id={index + this.props.type}
                     />
                     <br/>
                 </React.Fragment>
@@ -133,7 +135,7 @@ class Form extends React.Component<FormProps, FormState> {
                 <form onSubmit={this.submitForm}>
                     <Error errorText={ourError}/>
                     {this.createForm()}
-                    <button>Click me!</button>
+                    <button>{this.props.type}</button>
                 </form>
             </React.Fragment>
         );

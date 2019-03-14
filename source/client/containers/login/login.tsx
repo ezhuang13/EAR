@@ -1,9 +1,12 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
+import { Link } from 'react-router-dom';
 
-// Import dynamically rendered Form
+// Import custom components
 import Form from '../../components/form';
+import * as Schemas from '../../utility/schemas';
+import { ErrorMessage, ModalNotify } from '../../utility/shared';
 
 // Imports for Actions and Types
 import * as Actions from './loginActions';
@@ -26,35 +29,55 @@ export type LoginProps = Actions.DispatchProps & ParentProps & LoginState;
 class Login extends React.Component<LoginProps> {
     constructor(props: LoginProps) {
         super(props);
-        this.submitLogin = this.submitLogin.bind(this);
-        this.logThis = this.logThis.bind(this);
-    }
 
-    logThis() {
-        console.log(this);
+        this.onAcceptLogin = this.onAcceptLogin.bind(this);
+        this.submitLogin = this.submitLogin.bind(this);
     }
 
     componentDidMount() {
-        this.props.initializeLogin();
+        if (localStorage.getItem('user') !== null) {
+            this.props.history.push(`/projects/${localStorage.getItem('user')}`);
+        }
+        else {
+            this.props.initializeLogin();
+        }
+    }
+
+    onAcceptLogin() {
+        localStorage.setItem('user', this.props.currentUsername);
+        this.props.history.push(`/projects/${this.props.currentUsername}`);
     }
 
     submitLogin(loginInformation: Types.LoginInformation) {
+        // Validate result against Login Schema Joi
+        const validationStuff = Schemas.performValidation(loginInformation, 'Login');
 
-        // Attempt to login using dispatch!
-        this.props.attemptLogin(loginInformation);
-
-        return;
+        // Check the appropriate error codes and what not
+        if (validationStuff.error === null) {
+            // No error, thus login information passed client-side validation!
+            // Allow login fetch to actually happen...
+            this.props.performLogin(loginInformation);
+        } else {
+            // Login failed! Dispatch loginFail, find correct error therein!
+            this.props.loginFail(validationStuff.mappedError);
+        }
     }
 
     render() {
         return (
             <React.Fragment>
                 <h1>Login Header!</h1>
+                <Link to={'/register'}>Register</Link>
                 <Form
                     type='Login'
                     submitMethod={this.submitLogin}
                 />
-                <button onClick={this.logThis}>Click!</button>
+                {this.props.notify ? (
+                <ModalNotify
+                    msg={this.props.notify}
+                    onAccept={this.onAcceptLogin}
+                />
+                ) : null}
             </React.Fragment>
         );
     }
@@ -63,7 +86,9 @@ class Login extends React.Component<LoginProps> {
 // This gives the component access to the store (state)
 const mapStateToProps = (state: MainState) => {
     return {
-        ...state.login
+        loginError: state.login.loginError,
+        notify: state.login.notify,
+        currentUsername: state.login.currentUsername,
     };
 };
 
@@ -71,7 +96,8 @@ const mapStateToProps = (state: MainState) => {
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
     return bindActionCreators({
         initializeLogin: Actions.initializeLogin,
-        attemptLogin: Actions.attemptLogin
+        performLogin: Actions.performLogin,
+        loginFail: Actions.loginFail,
     }, dispatch);
 };
 

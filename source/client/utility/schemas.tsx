@@ -53,7 +53,7 @@ export const RegisterSchemaOptions = {
     },
     emailAddress: {
         min: 5,
-        max: 20
+        max: 50
     }
 };
 

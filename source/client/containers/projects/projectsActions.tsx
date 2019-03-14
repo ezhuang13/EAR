@@ -5,6 +5,7 @@ export interface DispatchProps {
     createProject?: typeof createProject;
     setProject?: typeof setProject;
     deleteProject?: typeof deleteProject;
+    setUser?: typeof setUser;
 }
 
 /********** Action Creators for the Synchronous Typed Actions **********/
@@ -26,6 +27,13 @@ export const deleteProject = (projectName: string) => {
     return ({
         type: Types.DELETE_PROJECT,
         projectName
+    });
+};
+
+export const setUser = (user: Types.UserInfo) => {
+    return ({
+        type: Types.SET_USER,
+        user
     });
 };
 
