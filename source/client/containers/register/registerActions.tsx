@@ -33,13 +33,9 @@ export const performRegister = (registerInformation: Types.RegisterInformation):
         return async (dispatch: ThunkDispatch<{}, {}, AnyAction>):
             Promise<void> => {
                 return new Promise<void>( async (resolve: any) => {
-                    // This is where we put AJAX requests / any type of asynchronous action
-                    // for our components. Then, once the action is totally completed,
-                    // we return an action type just like every other component (which will
-                    // be processed by the reducer and then mutate the store)
-                    fetch('/users/', {
+                    fetch('http://localhost:5000/users/', {
                         body: JSON.stringify(registerInformation),
-                        credentials: 'include',
+                        mode: 'cors',
                         headers: {
                             'Content-Type': 'application/json'
                         },

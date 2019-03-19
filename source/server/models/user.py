@@ -5,11 +5,10 @@ from . import db, bcrypt
 import datetime
 
 class UserModel(db.Model):
-	""" User Model """
-	# define name of table
+	# Define the name of the table.
 	__tablename__ = 'users'
 
-	# define the model for the User
+	# Define the UserModel for Postgres.
 	id = db.Column(db.Integer,primary_key=True)
 	firstName = db.Column(db.String(128),nullable=False)
 	lastName = db.Column(db.String(128), nullable=False)
@@ -19,67 +18,25 @@ class UserModel(db.Model):
 	createdAt = db.Column(db.DateTime)
 	
 
-	# class constructor
+	# Class constructor for UserModel class.
 	def __init__(self,data):
-		""" Class constructor """
-
 		self.firstName = data.get("firstName")
 		self.lastName = data.get("lastName")
 		self.emailAddress = data.get("emailAddress")
 		self.username = data.get("username")
-		self.password = self.__generate_hash(data.get('password'))
+		self.password = bcrypt.generate_password_hash(data.get("password"), rounds=10).decode("utf-8")	
 		self.createdAt = datetime.datetime.utcnow()
 
-
+	# Saves a user to the database.
 	def save(self):
-		""" save a user to the database """
-
 		db.session.add(self)
 		db.session.commit()
 
+	# Deletes a user from the database.
 	def delete(self):
-		""" delete a user from the database """
-
 		db.session.delete(self)
 		db.session.commit()
 
-	@staticmethod
-	def get_all_users():
-		""" return all users from the DB """
-
-		return UserModel.query.all()
-	
-	@staticmethod
-	def get_one_user(id):
-		""" return one user from the db """
-
-		return UserModel.query.get(id)
-	@staticmethod
-	def get_user_by_email(value):
-		""" get a user by their email address """
-
-		return UserModel.query.filter_by(emailAddress=value).first()
-	@staticmethod
-	def get_user_by_username(value):
-		""" get a user by their username """
-
-		return UserModel.query.filter_by(username=value).first()
-	
-	def __generate_hash(self,password):
-		""" function to generate hash based on the password """
-
-		return bcrypt.generate_password_hash(password,rounds=10).decode("utf-8")
-	
-	def check_hash(self,password):
-		""" method to check if hash is correct """
-
-		return bcrypt.check_password_hash(self.password,password)
-
-		def __repr(self):
-			return '<id {}>'.format(self.id)
-
-# allows the objects to be JSON serializable
-# so define a User schema
 class UserSchema(Schema):
 	id = fields.Int(dump_only=True)
 	firstName = fields.Str(required=True)

@@ -5,10 +5,12 @@ from flask_sqlalchemy import SQLAlchemy
 import os
 from config import Development
 from models import db
+from flask_cors import CORS
 
 def create_app():
 	# Initialize the Flask application
-	app = Flask(__name__, static_folder='../static')
+	app = Flask(__name__)
+	CORS(app, support_credentials=True)
 
 	# Configure Application based on Configuration Object (JSON)
 	app.config.from_object(Development)
@@ -17,25 +19,15 @@ def create_app():
 	db.init_app(app)
 
 	# Import the API Routes as Blueprints
-	from routes.routes import user_api as user_blueprint
+	from routes.user import user_api as user_blueprint
 
 	# Register API's for each model
 	app.register_blueprint(user_blueprint, url_prefix='/users')
 
-	# Render the Template HTML file at the base route!
-	@app.route('/')
-	def index():
-		return render_template('index.html')
-
-	# Creates a dummy route for all other routes (so whenever you type in /login or
-	# /workstation, it will actually take you to that route instead of denying you)
-	@app.route('/<path:dummy>')
-	def dummy(dummy):
-		return render_template('index.html')
-	
+	# Return the Application!
 	return app
 
 # Create and Run the Application here.
 if __name__ == '__main__':
 	app = create_app()
-	app.run()
+	app.run(debug=True, host='0.0.0.0')

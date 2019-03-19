@@ -109,8 +109,8 @@ class Projects extends React.Component<ProjectsProps, any> {
       this.props.history.push('/login');
     }
     else {
-      fetch(`/users/${localStorage.getItem('user')}`, {
-        credentials: 'include',
+      fetch(`http://localhost:5000/users/${localStorage.getItem('user')}`, {
+        mode: 'cors',
         headers: {
             'content-type': 'application/json'
         },

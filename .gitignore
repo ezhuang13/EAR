@@ -1,13 +1,27 @@
+# Ignore Visual Studio Code settings.
 .vscode/*
-source/server/venv/*
-source/server/__pycache__
-node_modules/*
-source/server/static/*
-package-lock.json
-*.pyc
+
+# Ignore node_modules!
+node_modules
+
+# Ignore static folder's compiled code.
+source/static/main.js
+source/static/vendor.js
+
+# Ignoring migrations-related stuff.
+source/server/migrations*
 *.mako
 *.ini
-source/server/migrations*
-source/static/*
-source/server/__pycache__
-node_modules
+
+# Ignoring pycache stuff.
+__pycache__
+**/__pycache__
+
+# Ignoring Python-C byte code.
+*.pyc
+**/*.pyc
+
+# Other things to ignore.
+.DS_Store
+package-lock.json
+source/client/webpack-stats.json

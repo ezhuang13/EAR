@@ -7,3 +7,4 @@ Flask-Script
 psycopg2
 flask_bcrypt
 marshmallow
+flask-cors

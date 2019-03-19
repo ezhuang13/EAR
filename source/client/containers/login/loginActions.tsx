@@ -34,21 +34,16 @@ export const loginSuccess = (username: string) => {
 /********** Action Creators for Asynchronous Typed Actions **********/
 type ThunkActionType = ThunkAction<Promise<void>, {}, {}, AnyAction>;
 
-// Actually performs the AJAX request to the server for POSTing the login information, checking to
-// see what's good with the entered account.
+// Performs the AJAX request to the server for POSTing the login information.
 export const performLogin = (loginInformation: Types.LoginInformation): ThunkActionType => {
         return (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
                 return new Promise<void>((resolve: any) => {
-                    // This is where we put AJAX requests / any type of asynchronous action
-                    // for our components. Then, once the action is totally completed,
-                    // we return an action type just like every other component (which will
-                    // be processed by the reducer and then mutate the store)
-                    fetch('/users/login', {
+                    fetch('http://localhost:5000/users/login', {
                         body: JSON.stringify(loginInformation),
-                        credentials: 'include',
                         headers: {
                             'content-type': 'application/json'
                         },
+                        mode: 'cors',
                         method: 'POST'
                     })
                     .then((response: any) => response.json()

@@ -1,38 +1,27 @@
 This is the README file for our web application.
 
-# Installing the Server
-1. Create a virtual environment.  
-`python3 -m venv venv`
-2. Activate the virtual environment.  
-`. venv/bin/activate`
-3. Install the necessary dependencies.  
-`pip install -r requirements.txt`
-4. Run the front end.
-`npm run build`
-5. Start up your SQL database (we use PostgreSQL, but you can also use MySQL)
-6. Set the appropriate configuration variables (use set instead of export for Windows).
-```bash
-$ export FLASK_ENV=development
-$ export DATABASE_URL=databaseurl # (usually something like "postgresql://username:password@localhost:port/<database_name>", where database_name will be the name of the database you create in step below, and everything else depends on your choice of Docker or Postgres App)
-```
-7. Initialize migrations if you have not already (this initializes the name of your db when you create your app). You should only have to do this once.
-```bash
-$ python source/server/manage.py db init # this initalizes the database
-```
+# How to Use Our Application
 
-8. Now, we need to log into the server and create a database (since the migrations needs something to actually connect to on the Postgres server). So, we log into the PostgreSQL instance using the "postgres" username and create the test database (and optionally create users for said database). NOTE: You may need to install psql or a similar SSH client to access the PostgreSQL instance.
-```bash
-$ psql -h localhost -d postgres -U postgres -p 5432 # logs into postgres at port 5432, host localhost, user postgres (superuser), (5432 if Postgres App, 327** if Docker)
-\# CREATE DATABASE users; # need to create database for each schema (as of now, users)
-```
-9. Then, after creating the database, you need to create the first migration (temporarily connects to the server to format the database you created based on the schemas provided in models) and then upgrade the database too!
-```bash
-$ python source/server/manage.py db migrate # creates the first migration
-$ python source/server/manage.py db upgrade # apply upgrades to the database
-```
+1. You need to have docker and docker-compose, so go install those. They can be found at the following links:
+` https://docs.docker.com/install/ `  
+`https://docs.docker.com/compose/install/`  
 
-10. Set the environment variables for your flask app and run the application!
-```bash
-$ export FLASK_APP=app.py
-python -m flask run
-```
+2. Now, you need to open two separate terminal windows, as we need to run docker for both the client (React and Nginx) and the server (Flask, Postgres, Minio / S3).
+
+3. For the client, run the following commands (from /source/client):  
+`docker build . -t "tag_name"`  
+`docker run -p 3000:80 tag_name:latest`
+
+4. For the server, run the following commands (from /source/server):  
+`docker-compose build`  
+`docker-compose up`
+
+5. If you're running the docker-compose commands for the first time, you need to set up migrations for the Flask API and the Postgres Database. Perform the following commands:  
+`docker exec -it <container_name> bash`  
+`python manage.py db init`  
+`python manage.py db migrate`  
+`python manage.py db upgrade`
+
+6. Now, migrations are in place and everything should work!
+
+7. Important Note: Docker for the front-end is only for deployment. To develop with React, use docker-compose for the back-end (API, Database, Storage, etc.) and the development server / webpack for the front-end (lightweight Express-based server). 

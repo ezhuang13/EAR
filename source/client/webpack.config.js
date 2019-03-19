@@ -1,43 +1,40 @@
 // Necessary inclusions!
 const path = require('path');
-const webpack = require('webpack');
-const CleanWebpackPlugin = require('clean-webpack-plugin');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
-// Necessary declarations!
-const nodeModulesPath = path.resolve(__dirname, 'node_modules');
+// Create Bundling Regex (for Chunk Splitting).
+const bundleRegex = new RegExp(['[\\/]',
+                            'react|',
+                            'react-dom|',
+                            'react-router|',
+                            'react-router-dom|',
+                            'react-soundplayer|',
+                            'styled-components|',
+                            'redux|',
+                            'react-redux|',
+                            'redux-thunk|',
+                            'joi-browser|',
+                            'rc-slider|',
+                            'pizzicato|',
+                            'inline-worker|',
+                            'md5|',
+                            'minio',
+                            '[\\/]'].join(''));
 
 // This is the file that the app will look towards to render!
 const entryPoint = {
-    main: './main',
-    vendor: [
-        'react',
-        'react-dom',
-        'react-router',
-        'react-router-dom',
-        'react-soundplayer',
-        'styled-components',
-        'redux',
-        'react-redux',
-        'redux-thunk',
-        'joi',
-        'rc-slider',
-        'pizzicato',
-        'inline-worker',
-        'md5',
-    ]
+    main: './main'
 };
 
 // This is the information about webpack's output directory and path.
 const outputObj = {
-    path: path.join(__dirname, '/source/static'),
-    filename: '[name].js',
-    publicPath: './source/static',
-    chunkFilename: "[id].js"
+    path: path.join(__dirname, '../static'),
+    filename: '[name].js'
 };
 
 const clientConfig = {
-    context: path.join(__dirname, '/source/client'),
-    devtool: 'source-map',
+    context: path.join(__dirname, './'),
+    // devtool: 'source-map',
     entry: entryPoint,
     output: outputObj,
     node: {
@@ -50,7 +47,7 @@ const clientConfig = {
             // Allows Babel to do its thing
             { 
                 test: /\.tsx$/, 
-                exclude: /node_modules/, 
+                exclude: [/node_modules/, /joi-browser/], 
                 loader: 'babel-loader'
             },
     
@@ -78,18 +75,19 @@ const clientConfig = {
                 loader: 'file-loader'
             },
 
-            { test: /\.js$/, loader: 'babel-loader', exclude: /node_modules/ }
+            { test: /\.js$/, loader: 'babel-loader', exclude: [/node_modules/, /joi-browser/] }
         ]
     },
     resolve: {
         // This allows us to require('file') in place of require('file.js')
         extensions: ['.ts', '.tsx', '.js', '.jsx', '.json', '.css', '.pug']
     },
+
     optimization: {
         splitChunks: {
             cacheGroups: {
               commons: {
-                test: /[\\/]node_modules[\\/]/,
+                test: bundleRegex,
                 name: "vendor",
                 chunks: "all",
               }
@@ -97,7 +95,7 @@ const clientConfig = {
           }
     },
     plugins: [
-        new CleanWebpackPlugin(['source/static'])
+        new BundleAnalyzerPlugin({analyzerMode: 'disabled'})
     ]
 }
 
