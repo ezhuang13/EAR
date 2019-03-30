@@ -3,14 +3,18 @@ import * as Types from './projectsTypes';
 /********** Local State Interface and Initial State Constant **********/
 interface ProjectsStateInterface {
     projects?: any,
-    currentProject?: string,
+    currentProject?: Blob,
     currentUser?: Types.UserInfo,
+    createSuccess?: boolean,
+    currentProjectName?: string,
 }
 
 export const initialProjectsState: ProjectsStateInterface = {
-    projects: {},
+    projects: [],
     currentProject: null,
     currentUser: null,
+    createSuccess: false,
+    currentProjectName: null,
 };
 
 /********** Projects Reducer **********/
@@ -18,21 +22,25 @@ export const projectsReducer = (state = initialProjectsState, action: Types.Proj
     switch (action.type) {
         case Types.SET_USER:
             return Object.assign({}, state, {
-               currentUser: action.user
+               currentUser: action.user,
             });
-        case Types.CREATE_PROJECT:
+        case Types.CREATE_PROJ_STATUS:
             return Object.assign({}, state, {
-                projects: Object.assign({}, state.projects, action.newProject),
+                createSuccess: action.status,
             });
         case Types.SET_PROJECT:
             return Object.assign({}, state, {
-               currentProject: action.projectName
+               currentProject: action.project,
             });
-        case Types.DELETE_PROJECT:
-            const newProjects = Object.assign({}, state.projects);
-            delete newProjects[action.projectName];
+        case Types.SET_PROJECTS:
+            // Show most recently created first
+            action.projects.reverse();
             return Object.assign({}, state, {
-                projects: newProjects,
+                projects: action.projects,
+            });
+        case Types.SET_PROJECT_NAME:
+            return Object.assign({}, state, {
+                currentProjectName: action.name,
             });
         default:
             return state;

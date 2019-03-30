@@ -1,3 +1,6 @@
+# Delete this first line later, version 0.15.0 is not
+# compatible with Docker for Windows
+werkzeug==0.14.1
 Flask
 Flask-Restful
 Flask-SQLAlchemy
@@ -7,4 +10,5 @@ Flask-Script
 psycopg2
 flask_bcrypt
 marshmallow
+minio
 flask-cors

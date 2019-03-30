@@ -3,6 +3,8 @@ import styled from 'styled-components';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { bindActionCreators } from 'redux';
+import { clientIP } from '../../utility/constants';
+import { Link } from 'react-router-dom';
 
 // Imports for Actions and Types
 import * as Actions from './projectsActions';
@@ -55,13 +57,44 @@ class CreateProject extends React.Component<CreateProjectProps, any> {
     changeName(event: any) {
         const newName = event.target.value;
 
-        const duplicateName = this.props.projects.hasOwnProperty(newName);
+        let duplicateName = false;
+        this.props.projects.forEach((projectInfo: Types.ProjectInfo) => {
+            if (projectInfo.name === newName) {
+                duplicateName = true;
+            }
+        });
         const errorMsg = duplicateName ? 'You already have a project with this name!' : '';
 
         this.setState({
             name: newName,
             errorMsg,
         });
+    }
+
+    componentDidUpdate() {
+        if (this.props.createSuccess) {
+            this.props.history.push(`/projects/${localStorage.getItem('user')}`);
+        }
+    }
+
+    componentWillMount() {
+        if (localStorage.getItem('user') === null) {
+            this.props.history.push('/login');
+        }
+        this.props.createProjStatus(false);
+        fetch(`${clientIP}/project/${localStorage.getItem('user')}`, {
+            mode: 'cors',
+            headers: {
+                'content-type': 'application/json'
+            },
+            method: 'GET'
+          }).then((response: any) => response.json()
+          .then((projectResponseData: any) => {
+            this.props.setProjects(projectResponseData);
+          }))
+          .catch((error) => {
+              console.log(error);
+          });
     }
 
     componentWillUpdate() {
@@ -95,16 +128,14 @@ class CreateProject extends React.Component<CreateProjectProps, any> {
     }
 
     createProject(){
-        const projectInfo: Types.ProjectInfo = {
+        const newProject: Types.ProjectInfo = {
+            name: this.state.name,
             audio: this.state.audio,
             dateCreated: new Date().toLocaleString(),
             filetype: this.state.filetype,
-        };
-        const newProject: Types.ProjectKV = {
-            [this.state.name]: projectInfo,
+            id: null,
         };
         this.props.createProject(newProject);
-        this.props.history.push('/projects');
     }
 
     render() {
@@ -112,6 +143,7 @@ class CreateProject extends React.Component<CreateProjectProps, any> {
         return (
             <React.Fragment>
                 <h1>Create a Project!</h1>
+                <Link to={`/projects/${localStorage.getItem('user')}`}>Back to Projects</Link>
                 <div>Name your project:</div>
                 <input
                     type='text'
@@ -143,6 +175,7 @@ class CreateProject extends React.Component<CreateProjectProps, any> {
 const mapStateToProps = (state: MainState) => {
     return {
         projects: state.projects.projects,
+        createSuccess: state.projects.createSuccess,
     };
 };
 
@@ -150,6 +183,8 @@ const mapStateToProps = (state: MainState) => {
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
     return bindActionCreators({
         createProject: Actions.createProject,
+        createProjStatus: Actions.createProjStatus,
+        setProjects: Actions.setProjects,
     }, dispatch);
 };
 

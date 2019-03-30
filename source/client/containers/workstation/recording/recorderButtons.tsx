@@ -32,27 +32,36 @@ class RecorderButtons extends React.Component<RecorderButtonsProps> {
         this.replaceAudio = this.replaceAudio.bind(this);
     }
 
-    makeNewProject() {
+    async makeNewProject() {
         const newProject = {
-            [this.props.currentProject + '-copy']: {
-                audio: this.props.downloadBlob,
-                dateCreated: new Date().toLocaleString(),
-                filetype: 'WAV',
-            }
+            name: this.props.currentProjectName + '-copy',
+            audio: this.props.downloadBlob,
+            dateCreated: new Date().toLocaleString(),
+            filetype: 'WAV',
+            id: null,
         };
-        this.props.createProject(newProject);
+        await this.props.createProject(newProject);
         this.props.history.push('/projects');
     }
 
     replaceAudio() {
-        const newProject = {
-            [this.props.currentProject]: {
-                audio: this.props.downloadBlob,
-                dateCreated: this.props.projects[this.props.currentProject].dateCreated,
-                filetype: this.props.projects[this.props.currentProject].filetype,
+        let newDateCreated = '';
+        let newFiletype = '';
+        for (const project of this.props.projects) {
+            if (project.name === this.props.currentProjectName) {
+                newDateCreated = project.dateCreated;
+                newFiletype = project.filetype;
+                break;
             }
+        }
+        const newProject = {
+            name: this.props.currentProjectName,
+            audio: this.props.downloadBlob,
+            dateCreated: newDateCreated,
+            filetype: newFiletype,
+            id: null,
         };
-        this.props.deleteProject(this.props.currentProject);
+        this.props.deleteProject(this.props.currentProjectName);
         this.props.replaceAudio(newProject);
     }
 
@@ -85,6 +94,7 @@ const mapStateToProps = (state: MainState) => {
         projects: state.projects.projects,
         audio: state.workstation.audio,
         downloadBlob: state.workstation.downloadBlob,
+        currentProjectName: state.projects.currentProjectName,
     };
 };
 

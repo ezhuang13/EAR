@@ -3,9 +3,11 @@ import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
+import { clientIP } from '../../utility/constants';
 
 // Imports for Actions and Types
 import * as Actions from './projectsActions';
+import * as Types from './projectsTypes';
 
 // Imports for Application State
 import { MainState } from '../../reducers';
@@ -29,7 +31,7 @@ const GravHash = (email: string, size: number) => {
   hash = hash && hash.toLowerCase();
   hash = hash && md5(hash);
   return `https://www.gravatar.com/avatar/${hash}?size=${size}`;
-}
+};
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
@@ -109,7 +111,7 @@ class Projects extends React.Component<ProjectsProps, any> {
       this.props.history.push('/login');
     }
     else {
-      fetch(`http://localhost:5000/users/${localStorage.getItem('user')}`, {
+      fetch(`${clientIP}/users/${localStorage.getItem('user')}`, {
         mode: 'cors',
         headers: {
             'content-type': 'application/json'
@@ -118,8 +120,23 @@ class Projects extends React.Component<ProjectsProps, any> {
       }).then((response: any) => response.json()
       .then((userResponseData: any) => {
         this.props.setUser(userResponseData);
-      }));
-      // TODO: handle error
+      }))
+      .catch((error) => {
+        console.log(error);
+      });
+      fetch(`${clientIP}/project/${localStorage.getItem('user')}`, {
+        mode: 'cors',
+        headers: {
+            'content-type': 'application/json'
+        },
+        method: 'GET'
+      }).then((response: any) => response.json()
+      .then((projectResponseData: any) => {
+        this.props.setProjects(projectResponseData);
+      }))
+      .catch((error) => {
+        console.log(error);
+      });
     }
   }
 
@@ -128,7 +145,21 @@ class Projects extends React.Component<ProjectsProps, any> {
   }
 
   setCurrentProject(name: string){
-    this.props.setProject(name);
+    this.props.setProjectName(name);
+    fetch(`${clientIP}/project/${localStorage.getItem('user')}/${name}`, {
+      mode: 'cors',
+      headers: {
+          'content-type': 'application/json'
+      },
+      method: 'GET'
+    }).then((response: any) => response.blob()
+    .then((projectResponseData: Blob) => {
+      this.props.setProject(projectResponseData);
+      this.props.history.push('/workstation/' + name);
+    }))
+    .catch((error) => {
+      console.log(error);
+    });
   }
 
   deleteProject(name: string) {
@@ -140,7 +171,7 @@ class Projects extends React.Component<ProjectsProps, any> {
       const isUser = true;
       return (
       <React.Fragment>
-      <Link to={`/login/`} onClick={this.logout}>Logout</Link>
+      <Link to={`/login/`} onClick={this.logout}>Logout!</Link>
       <ProfileBase style={{ gridArea: 'main' }}>
         <ProfileBlock {...this.props.currentUser} />
         <ProjectList
@@ -168,6 +199,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.Dispa
     setProject: Actions.setProject,
     setUser: Actions.setUser,
     deleteProject: Actions.deleteProject,
+    setProjects: Actions.setProjects,
+    setProjectName: Actions.setProjectName,
   }, dispatch);
 };
 

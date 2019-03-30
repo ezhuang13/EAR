@@ -1,3 +1,4 @@
+# Specifies parent image
 FROM node:9.11.1 as build
 
 # Set the environment stuffs for node_modules.
@@ -15,6 +16,8 @@ ADD . /app
 RUN npm run build
 
 # Do the production environment.
+# Proxy server for serving up html on HTTP server
+# Handles load balancing, memory, and performance optimization
 FROM nginx:1.13.3-alpine
 COPY --from=build /static /usr/share/nginx/html
 COPY --from=build /app/index.html /usr/share/nginx/html/index.html

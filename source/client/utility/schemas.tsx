@@ -143,4 +143,4 @@ export const performValidation = (validationInfo: ValidationInfo, infoType: stri
             error: null
         };
     }
-}
+};

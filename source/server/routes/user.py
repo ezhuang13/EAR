@@ -2,6 +2,14 @@
 from flask import request, Response, json, Blueprint, g
 from models.user import UserModel, UserSchema
 from . import bcrypt
+from minio import Minio
+import os
+
+# TODO: generalize to clientIP for minio
+minioClient = Minio(os.environ['BRIDGE_IP'] + ':' + os.environ['MINIO_PORT'],
+                  access_key='minio',
+                  secret_key='minio123',
+				  secure=False)
 
 # Save the User Restful API as a blueprint (named "user_api")
 user_api = Blueprint('user_api',__name__)
@@ -26,7 +34,6 @@ def custom_response(res, status_code):
 	# Method: POST
 @user_api.route('/', methods=['POST'])
 def create():
-
 	# Obtain JSON and serialize it for consumption.
 	req_data = request.get_json()
 	data, error = user_schema.load(req_data)
@@ -43,9 +50,9 @@ def create():
 		message = {'error': 'User already exist, please supply another username'}
 		return custom_response(message, 400)
 	
-	# Print the data for clarity.
-	print(data)
-
+	# Create minio bucket
+	minioClient.make_bucket(data['username'])
+	
 	# Turn the data into a UserModel, and save it!
 	user = UserModel(data)
 	user.save()
@@ -58,7 +65,6 @@ def create():
 	# Method: GET	
 @user_api.route('/', methods=['GET'])
 def get_all():
-	
 	# Obtain all users.
 	users = UserModel.query.all()
 
@@ -72,7 +78,6 @@ def get_all():
 	# Param -- username: The username to be queried for.
 @user_api.route('/<username>',methods=['GET'])
 def get_a_user(username):
-
 	# Query the UserModel for the User ID (user_id).
 	user = UserModel.query.filter_by(username=username).first()
 
@@ -91,10 +96,8 @@ def get_a_user(username):
 	# Param -- user_id: The ID to be queried for.
 @user_api.route('/<user_id>', methods=['DELETE'])
 def delete(user_id):
-	
 	# Obtain the User based on the User ID (user_id).
 	user = UserModel.query.get(user_id)
-
 	# Delete the particular user from the UserModel.
 	user.delete()
 
@@ -104,13 +107,9 @@ def delete(user_id):
 # Attempts to login a user!
 @user_api.route('/login',methods=['POST'])
 def login():
-
 	# Obtain JSON (serialize) and load into schema format.
 	req_data = request.get_json()
 	data,error = user_schema.load(req_data, partial=True)
-
-	# Print the information received.
-	print(data)
 
 	# If error, return status code (400) and error.
 	if error:

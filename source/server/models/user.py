@@ -12,11 +12,11 @@ class UserModel(db.Model):
 	id = db.Column(db.Integer,primary_key=True)
 	firstName = db.Column(db.String(128),nullable=False)
 	lastName = db.Column(db.String(128), nullable=False)
-	username = db.Column(db.String(128),nullable=False)
+	username = db.Column(db.String(128),unique=True,nullable=False)
 	emailAddress = db.Column(db.String(128),unique=True,nullable=False)
 	password = db.Column(db.String(128),nullable=False)
 	createdAt = db.Column(db.DateTime)
-	
+	projects = db.relationship('ProjectModel', backref='user', lazy='dynamic')
 
 	# Class constructor for UserModel class.
 	def __init__(self,data):
@@ -35,6 +35,10 @@ class UserModel(db.Model):
 	# Deletes a user from the database.
 	def delete(self):
 		db.session.delete(self)
+		db.session.commit()
+	
+	@staticmethod
+	def commit():
 		db.session.commit()
 
 class UserSchema(Schema):

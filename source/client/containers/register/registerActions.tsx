@@ -1,7 +1,7 @@
 import * as Types from './registerTypes';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
-import * as Schemas from '../../utility/schemas';
+import { clientIP } from '../../utility/constants';
 
 /********** List of Actions for Dispatch Props **********/
 export interface DispatchProps {
@@ -33,7 +33,7 @@ export const performRegister = (registerInformation: Types.RegisterInformation):
         return async (dispatch: ThunkDispatch<{}, {}, AnyAction>):
             Promise<void> => {
                 return new Promise<void>( async (resolve: any) => {
-                    fetch('http://localhost:5000/users/', {
+                    fetch(clientIP + '/users/', {
                         body: JSON.stringify(registerInformation),
                         mode: 'cors',
                         headers: {

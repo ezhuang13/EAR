@@ -46,7 +46,7 @@ class Wavesurfer extends React.Component<WaveProps> {
                     this.props.replaceAudio(downloadBlob, this.props.wave);
                 } else {
                     // Initialize the waveform with the current audio.
-                    const projectBlob = this.props.projects[this.props.currentProject].audio;
+                    const projectBlob = this.props.currentProject;
 
                     // Initialize Wave, then set seeking options!
                     // @ts-ignore

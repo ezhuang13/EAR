@@ -6,6 +6,7 @@ services:
     container_name: postgresql
     image: postgres
     restart: always
+    # Set environment variables
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
@@ -16,17 +17,28 @@ services:
   flask:
     container_name: flask
     build: .
+    # Forwards exposed port 5000 on container to port 5000 on host machine
     ports:
       - 5000:5000
+    volumes:
+      - .:/app
     environment:
+      # Not sure if the Bridge IP is configured differently for Mac and Windows, can
+      # discuss this later? For me I use the IP of my docker machine/daemon
       DATABASE_URL: postgresql://postgres:postgres@db:5432/database
       FLASK_ENV: docker
+      PYTHONUNBUFFERED: 0
+      MINIO_PORT: 9001
+      BRIDGE_IP: 192.168.99.101
     depends_on:
       - db
+      - minio1
     links:
       - db
+      - minio1
   
   minio1:
+    # Using DockerHub images
     image: minio/minio:RELEASE.2019-03-13T21-59-47Z
     volumes:
     - data1:/data

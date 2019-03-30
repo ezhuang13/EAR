@@ -6,7 +6,7 @@ import { Link } from 'react-router-dom';
 // Import shared components
 import Form from '../../components/form';
 import * as Schemas from '../../utility/schemas';
-import { ErrorMessage, ModalNotify } from '../../utility/shared';
+import { ModalNotify } from '../../utility/shared';
 
 // Imports for Actions and Types
 import * as Actions from './registerActions';

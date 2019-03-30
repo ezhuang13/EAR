@@ -46,7 +46,7 @@ class Workstation extends React.Component<WorkstationProps, any> {
     }
 
     componentDidMount() {
-        const url = URL.createObjectURL(this.props.projects[this.props.currentProject].audio);
+        const url = URL.createObjectURL(this.props.currentProject);
         this.props.createSound(url);
     }
 
@@ -55,7 +55,7 @@ class Workstation extends React.Component<WorkstationProps, any> {
         this.props.setPlay(false);
     }
 
-    replaceAudio(project: ProjectsTypes.ProjectKV) {
+    replaceAudio(project: ProjectsTypes.ProjectInfo) {
         this.props.createProject(project);
         const url = URL.createObjectURL(this.props.downloadBlob);
         this.props.createSound(url);
@@ -63,14 +63,13 @@ class Workstation extends React.Component<WorkstationProps, any> {
     }
 
     changeVolume(value: number) {
-
         // Change the master volume.
         this.props.volumeChange(value / 100); // Volume is between 0 and 1
     }
 
     stopAudio() {
 
-        // Stop the Audio and Wavesurfer when stopAudio() is called.
+        // Stop the Audio and Wavesurfer when stopAudio() is called
         this.props.audio.stop();
         this.props.wave.stop();
 
@@ -199,7 +198,6 @@ const mapStateToProps = (state: MainState) => {
         isPlaying: state.workstation.isPlaying,
 
         currentProject: state.projects.currentProject,
-        projects: state.projects.projects,
 
         wave: state.wave.wave,
         songData: state.wave.songData

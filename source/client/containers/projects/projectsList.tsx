@@ -10,7 +10,6 @@ import * as Types from './projectsTypes';
 /*************************************************************************/
 
 interface ProjectPropsPassed {
-    projectName: string;
     projectInfo: Types.ProjectInfo;
     setProject: any;
     deleteProject: any;
@@ -27,23 +26,23 @@ class Project extends React.Component<ProjectProps, any> {
   }
 
   clickProject() {
-    this.props.setProject(this.props.projectName);
+    this.props.setProject(this.props.projectInfo.name);
   }
 
   deleteProject() {
-    this.props.deleteProject(this.props.projectName);
+    this.props.deleteProject(this.props.projectInfo.name);
   }
 
   render(){
     return (
       <tr>
         <td>
-          <Link
-            to={`/workstation/${this.props.projectName}`}
-            onClick={this.clickProject}
-          >
-          {this.props.projectName}
-          </Link>
+        <Link
+          to={`#`}
+          onClick={this.clickProject}
+        >
+        {this.props.projectInfo.name}
+        </Link>
         </td>
         <td>{this.props.projectInfo.filetype}</td>
         <td>{this.props.projectInfo.dateCreated}</td>
@@ -108,11 +107,10 @@ export interface ProjectListProps {
 export const ProjectList = (props: ProjectListProps) => {
   // Build array of projects
   const projects = [];
-  Object.keys(props.projects).forEach((key: string, index: number) => {
+  props.projects.forEach((projectInfo: Types.ProjectInfo) => {
     projects.push(<Project
-      key={index}
-      projectName={key}
-      projectInfo={props.projects[key]}
+      key={projectInfo.id}
+      projectInfo={projectInfo}
       setProject={props.setProject}
       deleteProject={props.deleteProject}
     />);

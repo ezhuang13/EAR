@@ -7,3 +7,4 @@ db = SQLAlchemy()
 bcrypt = Bcrypt()
 
 from .user import UserModel, UserSchema
+from .project import ProjectModel, ProjectSchema

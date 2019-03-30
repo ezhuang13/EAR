@@ -1,6 +1,7 @@
 import * as Types from './loginTypes';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
+import { clientIP } from '../../utility/constants';
 
 /********** List of Actions for Dispatch Props **********/
 export interface DispatchProps {
@@ -38,7 +39,7 @@ type ThunkActionType = ThunkAction<Promise<void>, {}, {}, AnyAction>;
 export const performLogin = (loginInformation: Types.LoginInformation): ThunkActionType => {
         return (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
                 return new Promise<void>((resolve: any) => {
-                    fetch('http://localhost:5000/users/login', {
+                    fetch(clientIP + '/users/login', {
                         body: JSON.stringify(loginInformation),
                         headers: {
                             'content-type': 'application/json'

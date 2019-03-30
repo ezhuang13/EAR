@@ -1,5 +1,4 @@
 # create the application
-
 from flask import Flask, render_template
 from flask_sqlalchemy import SQLAlchemy
 import os
@@ -20,9 +19,11 @@ def create_app():
 
 	# Import the API Routes as Blueprints
 	from routes.user import user_api as user_blueprint
+	from routes.project import project_api as project_blueprint
 
 	# Register API's for each model
 	app.register_blueprint(user_blueprint, url_prefix='/users')
+	app.register_blueprint(project_blueprint, url_prefix='/project')
 
 	# Return the Application!
 	return app
