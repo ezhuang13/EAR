@@ -9,6 +9,7 @@ export const REPLACE_AUDIO = 'REPLACE_AUDIO';
 export const REMOVE_PLUGIN = 'REMOVE_PLUGIN';
 export const CLIP_AUDIO = 'CLIP_AUDIO';
 export const PLAY_REGION = 'PLAY_REGION';
+export const ADD_REGION_OPTIONS = 'ADD_REGION_OPTIONS';
 
 /********** Interfaces for Redux Actions for the Register Component **********/
 interface InitializeWave {
@@ -61,6 +62,10 @@ interface PlayRegion {
     payload: CommonArguments
 }
 
+interface AddRegionOptions {
+    type: typeof ADD_REGION_OPTIONS;
+}
+
 /********** Interfaces for Objects in the Component **********/
 
 export interface CommonArguments {
@@ -83,4 +88,4 @@ export interface Options {
 /********** Combination of all Redux Actions **********/
 export type WaveActionTypes =   InitializeWave | ChangeWaveColor | ChangeProgressColor |
                                 AddPlugin | SetOptions | SetWave | ReplaceAudio | RemovePlugin |
-                                ClipAudio | PlayRegion;
+                                ClipAudio | PlayRegion | AddRegionOptions;

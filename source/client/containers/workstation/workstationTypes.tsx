@@ -6,6 +6,9 @@ export const SET_PLAY = 'SET_PLAY';
 export const SET_RECORDING = 'SET_RECORDING';
 export const SET_DOWNLOAD = 'SET_DOWNLOAD';
 export const REMOVE_EFFECTS = 'REMOVE_EFFECTS';
+export const TOGGLE_PLAY = 'TOGGLE_PLAY';
+export const ADD_CHECKED_EFFECTS = 'ADD_CHECKED_EFFECTS';
+export const RESET_EFFECTS = 'RESET_EFFECTS';
 
 /********** Interfaces for the Actions Creators **********/
 interface VolumeChange {
@@ -17,6 +20,8 @@ interface ToggleEffect {
     type: typeof TOGGLE_EFFECT;
     effect: string;
     wave?: any;
+    audio?: any;
+    currentKey?: string;
 }
 
 interface CreateSound {
@@ -43,6 +48,20 @@ interface RemoveEffects {
     type: typeof REMOVE_EFFECTS;
 }
 
+interface TogglePlay {
+    type: typeof TOGGLE_PLAY;
+}
+
+interface AddCheckedEffects {
+    type: typeof ADD_CHECKED_EFFECTS;
+    currentKey: string;
+}
+
+interface ResetEffects {
+    type: typeof RESET_EFFECTS;
+}
+
 /********** Combination of all Redux Actions **********/
 export type WorkstationActionTypes = VolumeChange | ToggleEffect | CreateSound |
-                                    RemoveEffects | SetPlay | SetRecording | SetDownload;
+                                    RemoveEffects | SetPlay | SetRecording | SetDownload |
+                                    TogglePlay | AddCheckedEffects | ResetEffects;

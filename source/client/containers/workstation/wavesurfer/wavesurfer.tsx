@@ -5,7 +5,8 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 
-import * as Actions from './wavesurferActions';
+import * as WaveActions from './wavesurferActions';
+import * as WorkActions from '../workstationActions';
 
 // Imports for Application State (based on the reducer)
 import { MainState } from '../../../reducers';
@@ -24,7 +25,8 @@ const StyledDiv = styled.div`
 interface ParentProps extends RouteComponentProps<{}> {}
 
 // Combined Props Type for App Compoinent (Dispatch and State)
-export type WaveProps = Actions.DispatchProps & ParentProps & WaveState & WorkstationState & ProjectsState;
+export type WaveProps = WaveActions.DispatchProps & WorkActions.DispatchProps &
+    ParentProps & WaveState & WorkstationState & ProjectsState;
 
 class Wavesurfer extends React.Component<WaveProps> {
     constructor(props: WaveProps) {
@@ -32,7 +34,6 @@ class Wavesurfer extends React.Component<WaveProps> {
 
         this.changeWaveColor = this.changeWaveColor.bind(this);
         this.changeProgressColor = this.changeProgressColor.bind(this);
-        this.addPlugin = this.addPlugin.bind(this);
     }
 
     componentDidMount() {
@@ -42,6 +43,7 @@ class Wavesurfer extends React.Component<WaveProps> {
     componentWillUpdate(nextProps: WaveProps) {
         if (nextProps.audio !== this.props.audio) {
                 if (this.props.waveInitialized && this.props.downloadBlob) {
+                    this.props.audio.pause();
                     const downloadBlob = this.props.downloadBlob;
                     this.props.replaceAudio(downloadBlob, this.props.wave);
                 } else {
@@ -55,19 +57,29 @@ class Wavesurfer extends React.Component<WaveProps> {
                         // Once the waveform is initialized, set the appropriate callbacks.
                         this.props.wave.on('seek', (progressValue: number) => {
 
-                        // Pause the audio before setting anything.
-                        this.props.audio.pause();
+                            // Pause before any manipulation of the audio!
+                            this.props.audio.pause();
 
-                        // Obtain the songDuration, then calculate the seekedValue.
-                        const songDuration = this.props.wave.getDuration();
-                        const seekedValue = songDuration * progressValue;
+                            // Obtain the songDuration, then calculate the seekedValue.
+                            const songDuration = this.props.wave.getDuration();
+                            const seekedValue = songDuration * progressValue;
 
-                        // Set the audio's new time.
-                        this.props.audio.offsetTime = seekedValue;
+                            // Set the audio's new time.
+                            this.props.audio.offsetTime = seekedValue;
 
-                        // Play the audio if it were playing before seeking occurred.
-                        if (this.props.isPlaying)
-                            this.props.audio.play();
+                            if (this.props.isPlaying) {
+                                this.props.audio.play();
+                            }
+                        });
+
+                        // Once the waveform hits the end, reset the start time
+                        this.props.wave.on('finish', () => {
+
+                            // Reset the audio and wave times.
+                            this.props.audio.offsetTime = 0;
+
+                            // Turn off the isPlaying workstation option.
+                            this.props.togglePlay();
                         });
                     });
                 }
@@ -82,15 +94,10 @@ class Wavesurfer extends React.Component<WaveProps> {
         this.props.changeProgressColor(event.target.name, this.props.wave);
     }
 
-    addPlugin() {
-        this.props.addPlugin('regions', this.props.wave);
-    }
-
     render() {
         return (
             <React.Fragment>
                 <StyledDiv id={'wavesurfer'}/>
-                <button onClick={this.addPlugin}>Add A Region!</button>
             </React.Fragment>
         );
     }
@@ -113,20 +120,22 @@ const mapStateToProps = (state: MainState) => {
 };
 
 // This gives the component access to dispatch / the actions
-const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): WaveActions.DispatchProps &
+WorkActions.DispatchProps => {
     return bindActionCreators({
-        initializeWave: Actions.initializeWave,
-        changeWaveColor: Actions.changeWaveColor,
-        changeProgressColor: Actions.changeProgressColor,
-        addPlugin: Actions.addPlugin,
-        setOptions: Actions.setOptions,
-        replaceAudio: Actions.replaceAudio,
-        removePlugin: Actions.removePlugin,
-        clipAudio: Actions.clipAudio,
-        playRegion: Actions.playRegion
+        initializeWave: WaveActions.initializeWave,
+        changeWaveColor: WaveActions.changeWaveColor,
+        changeProgressColor: WaveActions.changeProgressColor,
+        addPlugin: WaveActions.addPlugin,
+        setOptions: WaveActions.setOptions,
+        replaceAudio: WaveActions.replaceAudio,
+        removePlugin: WaveActions.removePlugin,
+        clipAudio: WaveActions.clipAudio,
+        playRegion: WaveActions.playRegion,
+        togglePlay: WorkActions.togglePlay
     }, dispatch);
 };
 
 // This method wraps the component with the store and dispatch!!!
-export default connect<any, Actions.DispatchProps, any, MainState>
+export default connect<any, WaveActions.DispatchProps, any, MainState>
 (mapStateToProps, mapDispatchToProps)(Wavesurfer);

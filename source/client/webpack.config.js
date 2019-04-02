@@ -18,7 +18,8 @@ const bundleRegex = new RegExp(['[\\/]',
                             'pizzicato|',
                             'inline-worker|',
                             'md5|',
-                            'minio',
+                            'minio|',
+                            'interactjs',
                             '[\\/]'].join(''));
 
 // This is the file that the app will look towards to render!

@@ -25,35 +25,6 @@ export const initialWaveState: WaveStateLocal = {
     }
 };
 
-const generatePlugin = (pluginType: string) => {
-    let ourPlugin: any = null;
-    switch (pluginType) {
-        case 'regions':
-            ourPlugin = RegionsPlugin.create({
-                    regions: [
-                        {
-                            start: 120,
-                            end: 140,
-                            color: 'hsla(400, 100%, 30%, 0.5)'
-                        }
-                    ],
-                    dragSelection: {
-                        slop: 5
-                    }
-                });
-            break;
-        case 'cursor':
-            ourPlugin = CursorPlugin.create({
-                showTime: true,
-                opacity: 1
-            });
-            break;
-        default:
-            break;
-    }
-    return ourPlugin;
-}
-
 /********** Application Reducer **********/
 export const waveReducer = (state = initialWaveState, action: Types.WaveActionTypes) => {
     switch (action.type) {
@@ -73,22 +44,6 @@ export const waveReducer = (state = initialWaveState, action: Types.WaveActionTy
                 wave: action.payload.wave
             });
         case Types.ADD_PLUGIN:
-
-            // Obtain the payload's wave, then generate the appropriate Wavesurfer Plugin
-            const wave = action.payload.wave;
-            const ourPlugin = generatePlugin(action.payload.pluginType);
-
-            // Check the Wavesurfer's Initialized Plugin List
-            // Assign "null" if initialized already, ourPlugin if not
-            const pluginToAdd = (wave.initialisedPluginList[action.payload.pluginType]) ? null : ourPlugin;
-
-            if (pluginToAdd !== null) {
-                // Add and initialize the Wavesurfer plugin, add it to the params!
-                wave.addPlugin(pluginToAdd);
-                wave.initPlugin(pluginToAdd.name);
-                wave.params.plugins.push(pluginToAdd);
-            }
-
             // Return the new wave (with a new plugin or without changing)
             return Object.assign({}, state, {
                 wave: action.payload.wave

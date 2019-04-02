@@ -9,6 +9,9 @@ export interface DispatchProps {
     setRecording?: typeof setRecording;
     setDownload?: typeof setDownload;
     removeEffects?: typeof removeEffects;
+    togglePlay?: typeof togglePlay;
+    addCheckedEffects?: typeof addCheckedEffects;
+    resetEffects?: typeof resetEffects;
 }
 
 /********** Action Creators for the Synchronous Typed Actions **********/
@@ -19,11 +22,13 @@ export const volumeChange = (volume: number) => {
     });
 };
 
-export const toggleEffect = (effect: string, wave: any) => {
+export const toggleEffect = (effect: string, wave: any, audio: any, currentKey: string) => {
     return ({
         type: Types.TOGGLE_EFFECT,
         effect,
-        wave
+        wave,
+        audio,
+        currentKey
     });
 };
 
@@ -61,4 +66,21 @@ export const removeEffects = () => {
     });
 };
 
-/********** Action Creators for Asynchronous Typed Actions **********/
+export const togglePlay = () => {
+    return ({
+        type: Types.TOGGLE_PLAY
+    });
+};
+
+export const addCheckedEffects = (currentKey: string) => {
+    return ({
+        type: Types.ADD_CHECKED_EFFECTS,
+        currentKey
+    });
+};
+
+export const resetEffects = () => {
+    return ({
+        type: Types.RESET_EFFECTS
+    });
+};

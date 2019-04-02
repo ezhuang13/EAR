@@ -1,5 +1,5 @@
 import * as Types from './workstationTypes';
-import * as Constants from './effects/effectConstants';
+import * as Constants from './better_effects/effectConstants';
 
 import Pizzicato from 'pizzicato';
 
@@ -16,9 +16,8 @@ interface WorkstationStateInterface {
     downloadBlob?: Blob
 }
 
-export const initialWorkstationState: WorkstationStateInterface = {
-    volume: .5,
-    checkedEffects: {
+export const generateCheckedEffects = () => {
+    return {
         [Constants.COMPRESSOR]: false,
         [Constants.DELAY]: false,
         [Constants.DISTORTION]: false,
@@ -30,8 +29,11 @@ export const initialWorkstationState: WorkstationStateInterface = {
         [Constants.RING_MOD]: false,
         [Constants.STEREO_PANNER]: false,
         [Constants.TREMOLO]: false
-    },
-    effects: {
+    };
+};
+
+export const generateEffects = () => {
+    return {
         [Constants.COMPRESSOR]: null,
         [Constants.DELAY]: null,
         [Constants.DISTORTION]: null,
@@ -43,7 +45,13 @@ export const initialWorkstationState: WorkstationStateInterface = {
         [Constants.RING_MOD]: null,
         [Constants.STEREO_PANNER]: null,
         [Constants.TREMOLO]: null
-    },
+    };
+}
+
+export const initialWorkstationState: WorkstationStateInterface = {
+    volume: .5,
+    checkedEffects: {},
+    effects: {},
     audio: null,
     audioUrl: '',
     isPlaying: false,
@@ -104,26 +112,47 @@ export const workstationReducer = (state = initialWorkstationState, action: Type
             });
         case Types.TOGGLE_EFFECT:
             // Obtain New Effects from checkEffects array.
-            let newEffect = effectsReducer(action.effect);
-            // Check if the effect is on or off, add or remove effect!
-            if (!state.checkedEffects[action.effect]) {
-                state.audio.addEffect(newEffect);
+            const newEffect = effectsReducer(action.effect);
+
+            // Obtain other constants.
+            if (action.wave.initialisedPluginList.regions) {
+                const regionStart = action.wave.regions.list[action.currentKey].start;
+                const regionEnd = action.wave.regions.list[action.currentKey].end;
+                const currentTime = action.wave.getCurrentTime();
+
+                // If we're already in the region, add the effect!
+                if (regionStart < currentTime && regionEnd > currentTime) {
+                    if (!state.checkedEffects[action.currentKey][action.effect]) {
+                        action.audio.addEffect(newEffect);
+                    }
+                }
             }
-            else {
-                newEffect = state.effects[action.effect];
-                state.audio.removeEffect(newEffect);
-                newEffect = null;
+
+            // Check if the effect is checked and that it exists in effects.
+            const removeFlag = state.checkedEffects[action.currentKey][action.effect] &&
+                state.effects[action.currentKey][action.effect];
+
+            // Remove the effect if it's there!
+            if (removeFlag) {
+                const effectToRemove = state.effects[action.currentKey][action.effect];
+                action.audio.removeEffect(effectToRemove);
             }
 
             // Assign the payload!
             return Object.assign({}, state, {
                 checkedEffects: {
                     ...state.checkedEffects,
-                    [action.effect]: !state.checkedEffects[action.effect]
+                    [action.currentKey]: {
+                        ...state.checkedEffects[action.currentKey],
+                        [action.effect]: !(state.checkedEffects[action.currentKey][action.effect])
+                    }
                 },
                 effects: {
                     ...state.effects,
-                    [action.effect]: newEffect
+                    [action.currentKey]: {
+                        ...state.effects[action.currentKey],
+                        [action.effect]: removeFlag ? null : newEffect
+                    }
                 }
             });
         case Types.REMOVE_EFFECTS:
@@ -132,7 +161,7 @@ export const workstationReducer = (state = initialWorkstationState, action: Type
                 noEffects[effect] = false;
             });
             return Object.assign({}, state, {
-                checkedEffects: noEffects,
+                checkedEffects: noEffects
             });
         case Types.CREATE_SOUND:
             const newSound = new Pizzicato.Sound({
@@ -153,6 +182,28 @@ export const workstationReducer = (state = initialWorkstationState, action: Type
         case Types.SET_DOWNLOAD:
             return Object.assign({}, state, {
                 downloadBlob: action.download
+            });
+        case Types.TOGGLE_PLAY:
+            return Object.assign({}, state, {
+                isPlaying: !state.isPlaying
+            });
+        case Types.ADD_CHECKED_EFFECTS:
+            const newCheckedEffects = generateCheckedEffects();
+            const newEffects = generateEffects();
+            return Object.assign({}, state, {
+                checkedEffects: {
+                    ...state.checkedEffects,
+                    [action.currentKey]: newCheckedEffects
+                },
+                effects: {
+                    ...state.effects,
+                    [action.currentKey]: newEffects
+                }
+            });
+        case Types.RESET_EFFECTS:
+            return Object.assign({}, state, {
+                checkedEffects: {},
+                effects: {}
             });
         default:
             return state;

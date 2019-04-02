@@ -12,6 +12,8 @@ export interface DispatchProps {
     createProjStatus?: typeof createProjStatus;
     setProjects?: typeof setProjects;
     setProjectName?: typeof setProjectName;
+    obtainProjectData?: typeof obtainProjectData;
+    obtainUser?: typeof obtainUser;
 }
 
 /********** Action Creators for the Synchronous Typed Actions **********/
@@ -126,4 +128,48 @@ export const deleteProject = (projectName: string): ThunkActionType => {
                 });
             });
         };
+};
+
+export const obtainProjectData = (user: string): ThunkActionType => {
+    return (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
+        return new Promise<void>((resolve: any) => {
+            fetch(clientIP + '/project/' + user, {
+                mode: 'cors',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                method: 'GET'
+              })
+              .then((response: any) => response.json()
+              .then((projectResponseData: any) => {
+                dispatch(setProjects(projectResponseData));
+                return resolve();
+              }))
+              .catch((error) => {
+                console.log(error);
+              });
+        });
+    };
+};
+
+export const obtainUser = (user: string): ThunkActionType => {
+    return (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
+        return new Promise<void>((resolve: any) => {
+            fetch(clientIP + '/users/' + user, {
+                mode: 'cors',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                method: 'GET'
+              })
+              .then((response: any) => response.json()
+              .then((userResponseData: any) => {
+                dispatch(setUser(userResponseData));
+                return resolve();
+              }))
+              .catch((error) => {
+                console.log(error);
+              });
+        });
+    };
 };

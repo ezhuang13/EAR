@@ -6,6 +6,8 @@ export const SET_USER = 'SET_USER';
 export const CREATE_PROJ_STATUS = 'CREATE_PROJ_STATUS';
 export const SET_PROJECTS = 'SET_PROJECTS';
 export const SET_PROJECT_NAME = 'SET_PROJECT_NAME';
+export const OBTAIN_PROJECT_DATA = 'OBTAIN_PROJECT_DATA';
+export const OBTAIN_USER = 'OBTAIN_USER';
 
 /********** Interfaces for the Actions Creators **********/
 interface CreateProject {
@@ -43,6 +45,16 @@ interface SetProjectName {
     name: string;
 }
 
+interface ObtainProjectData {
+    type: typeof OBTAIN_PROJECT_DATA;
+    user: string;
+}
+
+interface ObtainUser {
+    type: typeof OBTAIN_USER;
+    user: string;
+}
+
 /********** Interfaces for Arguments to and from Component **********/
 export interface ProjectInfo {
     name: string;
@@ -63,4 +75,4 @@ export interface UserInfo {
 
 /********** Combination of all Redux Actions **********/
 export type ProjectsActionTypes = CreateProject | SetProject | DeleteProject | SetUser | CreateProjStatus
-                                    | SetProjects | SetProjectName;
+                                    | SetProjects | SetProjectName | ObtainProjectData | ObtainUser;

@@ -111,32 +111,9 @@ class Projects extends React.Component<ProjectsProps, any> {
       this.props.history.push('/login');
     }
     else {
-      fetch(`${clientIP}/users/${localStorage.getItem('user')}`, {
-        mode: 'cors',
-        headers: {
-            'content-type': 'application/json'
-        },
-        method: 'GET'
-      }).then((response: any) => response.json()
-      .then((userResponseData: any) => {
-        this.props.setUser(userResponseData);
-      }))
-      .catch((error) => {
-        console.log(error);
-      });
-      fetch(`${clientIP}/project/${localStorage.getItem('user')}`, {
-        mode: 'cors',
-        headers: {
-            'content-type': 'application/json'
-        },
-        method: 'GET'
-      }).then((response: any) => response.json()
-      .then((projectResponseData: any) => {
-        this.props.setProjects(projectResponseData);
-      }))
-      .catch((error) => {
-        console.log(error);
-      });
+      const currentUser = localStorage.getItem('user');
+      this.props.obtainUser(currentUser);
+      this.props.obtainProjectData(currentUser);
     }
   }
 
@@ -201,6 +178,8 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.Dispa
     deleteProject: Actions.deleteProject,
     setProjects: Actions.setProjects,
     setProjectName: Actions.setProjectName,
+    obtainProjectData: Actions.obtainProjectData,
+    obtainUser: Actions.obtainUser
   }, dispatch);
 };
 

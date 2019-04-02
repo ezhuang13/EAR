@@ -10,3 +10,5 @@ export const REVERB = 'REVERB';
 export const RING_MOD = 'RING_MOD';
 export const STEREO_PANNER = 'STEREO_PANNER';
 export const TREMOLO = 'TREMOLO';
+export const EffectList = [COMPRESSOR, DELAY, DISTORTION, DUB, FLANGER, PING_PONG,
+                            QUADRAFUZZ, REVERB, RING_MOD, STEREO_PANNER, TREMOLO];

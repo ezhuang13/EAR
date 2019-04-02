@@ -44,11 +44,10 @@ class RecordButton extends React.Component<RecordButtonProps> {
 
     // TODO: Use events to trigger setRecording() and setPlay()
     startRecording() {
-        this.rec.clear();
-
         this.props.audio.play();
         this.props.setPlay(true);
-
+        this.props.wave.play();
+        this.rec.clear();
         this.rec.record();
         this.props.setRecording(true);
     }
@@ -57,10 +56,9 @@ class RecordButton extends React.Component<RecordButtonProps> {
     stopRecording() {
         this.props.audio.pause();
         this.props.setPlay(false);
-
+        this.props.wave.pause();
         this.rec.stop();
         this.props.setRecording(false);
-
         this.rec.exportWAV((blob: Blob) => {
             this.props.setDownload(blob);
         });
@@ -83,6 +81,7 @@ class RecordButton extends React.Component<RecordButtonProps> {
 const mapStateToProps = (state: MainState) => {
     return {
         audio: state.workstation.audio,
+        wave: state.wave.wave,
         isPlaying: state.workstation.isPlaying,
         isRecording: state.workstation.isRecording
     };

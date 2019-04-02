@@ -143,3 +143,31 @@ export const ShortP = styled.p`
   white-space: nowrap;
   text-overflow: ellipsis;
 `;
+
+export const dragMoveListener = (event: any) => {
+  // Obtain the event target.
+  const target = event.target;
+
+  // Dragged position into "data-x" and "data-y" for interact.js
+  const x = (parseFloat(target.getAttribute('data-x')) || 0) + event.dx;
+  const y = (parseFloat(target.getAttribute('data-y')) || 0) + event.dy;
+
+  // Translate the element (actually move it).
+  target.style.webkitTransform =
+  target.style.transform =
+    'translate(' + x + 'px, ' + y + 'px)';
+
+  // Update the position attributes (sync-ed with transformation).
+  target.setAttribute('data-x', x);
+  target.setAttribute('data-y', y);
+};
+
+// Method to check for an empty object.
+export const isEmpty = (object: object) => {
+  for (const key in object) {
+      if (object.hasOwnProperty(key)) {
+          return false;
+      }
+  }
+  return true;
+};
