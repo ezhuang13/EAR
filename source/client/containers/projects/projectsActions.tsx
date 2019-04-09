@@ -14,6 +14,7 @@ export interface DispatchProps {
     setProjectName?: typeof setProjectName;
     obtainProjectData?: typeof obtainProjectData;
     obtainUser?: typeof obtainUser;
+    getProjectBlob?: typeof getProjectBlob;
 }
 
 /********** Action Creators for the Synchronous Typed Actions **********/
@@ -166,6 +167,27 @@ export const obtainUser = (user: string): ThunkActionType => {
               .then((userResponseData: any) => {
                 dispatch(setUser(userResponseData));
                 return resolve();
+              }))
+              .catch((error) => {
+                console.log(error);
+              });
+        });
+    };
+};
+
+export const getProjectBlob = (user: string, projectName: string): ThunkActionType => {
+    return (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
+        return new Promise<void>((resolve: any) => {
+            fetch(`${clientIP}/project/${user}/${projectName}`, {
+                mode: 'cors',
+                headers: {
+                    'content-type': 'application/json'
+                },
+                method: 'GET'
+              }).then((response: any) => response.blob()
+              .then((projectResponseData: Blob) => {
+                dispatch(setProject(projectResponseData));
+                resolve();
               }))
               .catch((error) => {
                 console.log(error);

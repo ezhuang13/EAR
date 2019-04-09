@@ -34,9 +34,12 @@ class Register extends React.Component<RegisterProps> {
         this.submitRegistration = this.submitRegistration.bind(this);
     }
 
-    componentWillMount() {
+    componentDidMount() {
         if (localStorage.getItem('user') !== null) {
             this.props.history.push(`/projects/${localStorage.getItem('user')}`);
+        }
+        else {
+            this.props.initializeRegister();
         }
     }
 
@@ -89,6 +92,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.Dispa
     return bindActionCreators({
         performRegister: Actions.performRegister,
         registerFail: Actions.registerFail,
+        initializeRegister: Actions.initializeRegister,
     }, dispatch);
 };
 

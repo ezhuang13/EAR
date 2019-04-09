@@ -13,7 +13,20 @@ interface WorkstationStateInterface {
     audioUrl?: string,
     isPlaying?: boolean,
     isRecording?: boolean,
-    downloadBlob?: Blob
+    downloadBlob?: Blob,
+    selectedEffect?: string,
+    // Effect options
+    [Constants.COMPRESSOR]?: any,
+    [Constants.DELAY]?: any,
+    [Constants.DISTORTION]?: any,
+    [Constants.DUB]?: any,
+    [Constants.FLANGER]?: any,
+    [Constants.PING_PONG]?: any,
+    [Constants.QUADRAFUZZ]?: any,
+    [Constants.REVERB]?: any,
+    [Constants.RING_MOD]?: any,
+    [Constants.STEREO_PANNER]?: any,
+    [Constants.TREMOLO]?: any
 }
 
 export const generateCheckedEffects = () => {
@@ -46,7 +59,7 @@ export const generateEffects = () => {
         [Constants.STEREO_PANNER]: null,
         [Constants.TREMOLO]: null
     };
-}
+};
 
 export const initialWorkstationState: WorkstationStateInterface = {
     volume: .5,
@@ -56,44 +69,105 @@ export const initialWorkstationState: WorkstationStateInterface = {
     audioUrl: '',
     isPlaying: false,
     isRecording: false,
-    downloadBlob: null
+    downloadBlob: null,
+    selectedEffect: null,
+    [Constants.COMPRESSOR]: {
+        threshold: -24,
+        knee: 30,
+        attack: .003,
+        release: .025,
+        ratio: 12,
+        mix: .5,
+    },
+    [Constants.DELAY]: {
+        feedback: .5,
+        time: .3,
+        mix: .5,
+    },
+    [Constants.DISTORTION]: {
+        gain: .5,
+    },
+    [Constants.DUB]: {
+        feedback: .5,
+        time: .3,
+        cutoff: 700,
+        mix: .5,
+    },
+    [Constants.FLANGER]: {
+        lowGain: .6,
+        midLowGain: .8,
+        midHighGain: .5,
+        highGain: .6,
+    },
+    [Constants.PING_PONG]: {
+        feedback: .5,
+        time: .3,
+        mix: .5,
+    },
+    [Constants.QUADRAFUZZ]: {
+        lowGain: .6,
+        midLowGain: .8,
+        midHighGain: .5,
+        highGain: .6,
+    },
+    [Constants.REVERB]: {
+        time: .01,
+        decay: .01,
+        reverse: true,
+        mix: .5,
+    },
+    [Constants.RING_MOD]: {
+        speed: 30,
+        distortion: 1,
+        mix: .5,
+    },
+    [Constants.STEREO_PANNER]: {
+        pan: 0,
+    },
+    [Constants.TREMOLO]: {
+        speed: 4,
+        depth: 1,
+        mix: .5,
+    },
 };
 
 /********** Effects Reducer **********/
-const effectsReducer = (checkedEffect: string) => {
+const effectsReducer = (checkedEffect: string, options: any) => {
     let newEffect = null;
     switch (checkedEffect) {
         case Constants.COMPRESSOR:
-            newEffect = new Pizzicato.Effects.Compressor();
+            newEffect = new Pizzicato.Effects.Compressor(options);
             break;
         case Constants.DELAY:
-            newEffect = new Pizzicato.Effects.Delay({options: {detached: true}});
+            options[options] = {detached: true};
+            newEffect = new Pizzicato.Effects.Delay(options);
             break;
         case Constants.DISTORTION:
-            newEffect = new Pizzicato.Effects.Distortion({options: {detached: true}});
+            options[options] = {detached: true};
+            newEffect = new Pizzicato.Effects.Distortion(options);
             break;
         case Constants.DUB:
-            newEffect = new Pizzicato.Effects.DubDelay();
+            newEffect = new Pizzicato.Effects.DubDelay(options);
             break;
         case Constants.FLANGER:
-            newEffect = new Pizzicato.Effects.Flanger();
+            newEffect = new Pizzicato.Effects.Flanger(options);
             break;
         case Constants.PING_PONG:
-            newEffect = new Pizzicato.Effects.PingPongDelay();
+            newEffect = new Pizzicato.Effects.PingPongDelay(options);
             break;
         case Constants.QUADRAFUZZ:
-            newEffect = new Pizzicato.Effects.Quadrafuzz();
+            newEffect = new Pizzicato.Effects.Quadrafuzz(options);
             break;
         case Constants.REVERB:
-            newEffect = new Pizzicato.Effects.Reverb();
+            newEffect = new Pizzicato.Effects.Reverb(options);
             break;
         case Constants.RING_MOD:
-            newEffect = new Pizzicato.Effects.RingModulator();
+            newEffect = new Pizzicato.Effects.RingModulator(options);
             break;
         case Constants.STEREO_PANNER:
-            newEffect = new Pizzicato.Effects.StereoPanner();
+            newEffect = new Pizzicato.Effects.StereoPanner(options);
         case Constants.TREMOLO:
-            newEffect = new Pizzicato.Effects.Tremolo();
+            newEffect = new Pizzicato.Effects.Tremolo(options);
             break;
         default:
             break;
@@ -111,8 +185,7 @@ export const workstationReducer = (state = initialWorkstationState, action: Type
                 volume: action.volume
             });
         case Types.TOGGLE_EFFECT:
-            // Obtain New Effects from checkEffects array.
-            const newEffect = effectsReducer(action.effect);
+            const newEffect = effectsReducer(action.effect, state[action.effect]);
 
             // Obtain other constants.
             if (action.wave.initialisedPluginList.regions) {
@@ -204,6 +277,17 @@ export const workstationReducer = (state = initialWorkstationState, action: Type
             return Object.assign({}, state, {
                 checkedEffects: {},
                 effects: {}
+            });
+        case Types.SELECT_EFFECT:
+            return Object.assign({}, state, {
+                selectedEffect: action.selectedEffect,
+            });
+        case Types.MODIFY_EFFECT:
+            const optionsCopy = Object.assign({}, state[action.effectName], {
+                [action.effectOption]: action.value,
+            });
+            return Object.assign({}, state, {
+                [action.effectName]: optionsCopy,
             });
         default:
             return state;

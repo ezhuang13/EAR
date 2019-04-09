@@ -8,6 +8,7 @@ export interface DispatchProps {
     registerFail?: typeof registerFail,
     registerSuccess?: typeof registerSuccess,
     performRegister?: typeof performRegister,
+    initializeRegister?: typeof initializeRegister,
 }
 
 /********** Action Creators for the Synchronous Typed Actions **********/
@@ -22,6 +23,12 @@ export const registerSuccess = (username: string) => {
     return({
         type: Types.REGISTER_SUCCESS,
         username
+    });
+};
+
+export const initializeRegister = () => {
+    return({
+        type: Types.INITIALIZE_REGISTER,
     });
 };
 

@@ -17,6 +17,7 @@ import Login from '../login/login';
 import Workstation from '../workstation/workstation';
 import CreateProject from '../projects/createProject';
 import Projects from '../projects/projects';
+import Info from '../info/info';
 import { bindActionCreators } from 'redux';
 
 interface ParentProps extends RouteComponentProps<{}> {}
@@ -85,6 +86,10 @@ class Application extends React.Component<AppProps> {
                 <Route
                     path='/projects'
                     component={Projects}
+                />
+                <Route
+                    path='/help'
+                    component={Info}
                 />
                 </Switch>
             </BrowserRouter>

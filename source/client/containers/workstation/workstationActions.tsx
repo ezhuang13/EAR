@@ -12,6 +12,8 @@ export interface DispatchProps {
     togglePlay?: typeof togglePlay;
     addCheckedEffects?: typeof addCheckedEffects;
     resetEffects?: typeof resetEffects;
+    selectEffect?: typeof selectEffect;
+    modifyEffect?: typeof modifyEffect;
 }
 
 /********** Action Creators for the Synchronous Typed Actions **********/
@@ -82,5 +84,21 @@ export const addCheckedEffects = (currentKey: string) => {
 export const resetEffects = () => {
     return ({
         type: Types.RESET_EFFECTS
+    });
+};
+
+export const selectEffect = (selectedEffect: string) => {
+    return ({
+        type: Types.SELECT_EFFECT,
+        selectedEffect,
+    });
+};
+
+export const modifyEffect = (effectName: string, effectOption: string, value: number) => {
+    return ({
+        type: Types.MODIFY_EFFECT,
+        effectName,
+        effectOption,
+        value,
     });
 };

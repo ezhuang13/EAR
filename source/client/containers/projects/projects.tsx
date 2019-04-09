@@ -3,11 +3,9 @@ import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
-import { clientIP } from '../../utility/constants';
 
 // Imports for Actions and Types
 import * as Actions from './projectsActions';
-import * as Types from './projectsTypes';
 
 // Imports for Application State
 import { MainState } from '../../reducers';
@@ -123,20 +121,8 @@ class Projects extends React.Component<ProjectsProps, any> {
 
   setCurrentProject(name: string){
     this.props.setProjectName(name);
-    fetch(`${clientIP}/project/${localStorage.getItem('user')}/${name}`, {
-      mode: 'cors',
-      headers: {
-          'content-type': 'application/json'
-      },
-      method: 'GET'
-    }).then((response: any) => response.blob()
-    .then((projectResponseData: Blob) => {
-      this.props.setProject(projectResponseData);
-      this.props.history.push('/workstation/' + name);
-    }))
-    .catch((error) => {
-      console.log(error);
-    });
+    localStorage.setItem('project', name);
+    this.props.history.push('/workstation/' + name);
   }
 
   deleteProject(name: string) {

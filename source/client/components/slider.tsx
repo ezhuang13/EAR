@@ -42,18 +42,22 @@ interface SliderProps {
     step: number;
     label: string;
     marks?: any;
-    onAfterChange(value: number): void;
+    onAfterChange(value: number, label: string): void;
 }
 
 interface SliderState {}
 
 class MusicSlider extends React.Component<SliderProps, SliderState> {
+    onAfterChange: (value: number) => void;
+
     constructor(props: SliderProps) {
         super(props);
+
+        this.onAfterChange = (value: number) => this.props.onAfterChange(value, this.props.label);
     }
 
     render() {
-      const wrapperStyle = { width: 400, margin: 50 };
+      const wrapperStyle = { width: 300, margin: 50 };
       const marks = this.props.marks ? this.props.marks :
       { [this.props.min]: this.props.min, [this.props.max]: this.props.max };
 
@@ -67,7 +71,7 @@ class MusicSlider extends React.Component<SliderProps, SliderState> {
             defaultValue={this.props.defaultValue}
             handle={handle}
             marks={marks}
-            onAfterChange={this.props.onAfterChange}
+            onAfterChange={this.onAfterChange}
           />
         </div>
         );

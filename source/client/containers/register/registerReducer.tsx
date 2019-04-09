@@ -29,6 +29,11 @@ export const registerReducer = (state = initialRegisterState, action: Types.Regi
             return Object.assign({}, state, {
                 ...action.payload
             });
+        case Types.INITIALIZE_REGISTER:
+            return Object.assign({}, state, {
+               registerError: '',
+               notify: '',
+            });
         default:
             return state;
     }

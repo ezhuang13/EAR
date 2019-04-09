@@ -22,6 +22,7 @@ import Wave from './wavesurfer/wavesurfer';
 import RecorderButtons from './recording/recorderButtons';
 import EffectSource from './better_effects/effectSource';
 import EffectVisualizer from './better_effects/effectVisualizer';
+import EffectCustomizer from './better_effects/effectCustomizer';
 import interact from 'interactjs';
 import * as Utility from '../../utility/shared';
 
@@ -41,7 +42,7 @@ class Workstation extends React.Component<WorkstationProps, any> {
         this.state = {
             regionsInfo: {},
             effectControllers: [],
-            highlightedRegion: ''
+            highlightedRegion: '',
         };
 
         this.replaceAudio = this.replaceAudio.bind(this);
@@ -53,15 +54,18 @@ class Workstation extends React.Component<WorkstationProps, any> {
         this.addRegion = this.addRegion.bind(this);
     }
 
-    componentDidMount() {
+    async componentDidMount() {
         // Project exists, we can now create audio for it.
-        if  (this.props.currentProject) {
+        if (localStorage.getItem('user') === null) {
+            this.props.history.push('/login/');
+        }
+        else if (localStorage.getItem('project') === null) {
+            this.props.history.push('/project/');
+        }
+        else {
+            await this.props.getProjectBlob(localStorage.getItem('user'), localStorage.getItem('project'));
             const url = URL.createObjectURL(this.props.currentProject);
             this.props.createSound(url);
-        } else {
-            // We need to fetch and set the project here.
-            const currentUser = localStorage.getItem('user');
-            this.props.history.push('/projects/' + currentUser);
         }
     }
 
@@ -94,6 +98,7 @@ class Workstation extends React.Component<WorkstationProps, any> {
     }
 
     componentWillUnmount() {
+        localStorage.removeItem('project');
 
         // Disable the dropzone interact.js thingy!
         interact('.wavesurfer-region').unset();
@@ -116,7 +121,7 @@ class Workstation extends React.Component<WorkstationProps, any> {
         this.deleteRegion();
     }
 
-    changeVolume(value: number) {
+    changeVolume(value: number, label: string) {
         // Change the master volume.
         this.props.volumeChange(value / 100); // Volume is between 0 and 1
     }
@@ -217,6 +222,7 @@ class Workstation extends React.Component<WorkstationProps, any> {
         return (
             <React.Fragment>
                 <h1>Workshop your Audio!!</h1>
+                <Link to='/help'>Help</Link>
                 <button onClick={() => console.log(this)}>Log Workstation!</button>
                 <button onClick={this.togglePlay}>{playButton}</button>
                 <button onClick={this.addRegion}>Add Region!</button>
@@ -240,6 +246,7 @@ class Workstation extends React.Component<WorkstationProps, any> {
                 <br/>
                 <EffectSource/>
                 {this.state.effectControllers}
+                <EffectCustomizer/>
             </React.Fragment>
         );
     }
@@ -277,6 +284,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>):
 
         createProject: ProjectsActions.createProject,
         obtainProjectData: ProjectsActions.obtainProjectData,
+        getProjectBlob: ProjectsActions.getProjectBlob,
 
         addPlugin: WaveActions.addPlugin,
         removePlugin: WaveActions.removePlugin,

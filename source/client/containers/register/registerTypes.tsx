@@ -20,6 +20,10 @@ interface PerformRegister {
     payload: RegisterInformation;
 }
 
+interface InitializeRegister {
+    type: typeof INITIALIZE_REGISTER;
+}
+
 /********** Interfaces for Objects in the Register Component **********/
 
 export interface RegisterInformation {
@@ -31,4 +35,4 @@ export interface RegisterInformation {
 }
 
 /********** Combination of all Redux Actions **********/
-export type RegisterActionTypes = RegisterFail | PerformRegister | RegisterSuccess;
+export type RegisterActionTypes = RegisterFail | PerformRegister | RegisterSuccess | InitializeRegister;
