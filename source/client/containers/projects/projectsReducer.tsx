@@ -4,7 +4,7 @@ import * as Types from './projectsTypes';
 interface ProjectsStateInterface {
     projects?: any,
     currentProject?: Blob,
-    currentUser?: Types.UserInfo,
+    currentUserInfo?: Types.UserInfo,
     createSuccess?: boolean,
     currentProjectName?: string,
 }
@@ -12,7 +12,7 @@ interface ProjectsStateInterface {
 export const initialProjectsState: ProjectsStateInterface = {
     projects: [],
     currentProject: null,
-    currentUser: null,
+    currentUserInfo: null,
     createSuccess: false,
     currentProjectName: null,
 };
@@ -20,9 +20,9 @@ export const initialProjectsState: ProjectsStateInterface = {
 /********** Projects Reducer **********/
 export const projectsReducer = (state = initialProjectsState, action: Types.ProjectsActionTypes) => {
     switch (action.type) {
-        case Types.SET_USER:
+        case Types.SET_USERZ:
             return Object.assign({}, state, {
-               currentUser: action.user,
+                currentUserInfo: action.user,
             });
         case Types.CREATE_PROJ_STATUS:
             return Object.assign({}, state, {

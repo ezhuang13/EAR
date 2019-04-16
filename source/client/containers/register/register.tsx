@@ -6,7 +6,6 @@ import { Link } from 'react-router-dom';
 // Import shared components
 import Form from '../../components/form';
 import * as Schemas from '../../utility/schemas';
-import { ModalNotify } from '../../utility/shared';
 
 // Imports for Actions and Types
 import * as Actions from './registerActions';
@@ -15,16 +14,19 @@ import * as Types from './registerTypes';
 // Imports for Application State (based on the reducer)
 import { MainState } from '../../reducers';
 import { RegisterState } from './registerReducer';
+import { AppState } from '../app/appReducer';
 
 // Import constants for Register
 import { RouteComponentProps } from 'react-router';
 import { bindActionCreators } from 'redux';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+import { StyledPaper, firstTheme, linkStyle, ModalNotify } from '../../utility/shared';
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
 
 // Combined Props Type for Register Compoinent (Dispatch and State)
-export type RegisterProps = Actions.DispatchProps & ParentProps & RegisterState;
+export type RegisterProps = Actions.DispatchProps & ParentProps & RegisterState & AppState;
 
 class Register extends React.Component<RegisterProps> {
     constructor(props: RegisterProps) {
@@ -34,9 +36,9 @@ class Register extends React.Component<RegisterProps> {
         this.submitRegistration = this.submitRegistration.bind(this);
     }
 
-    componentDidMount() {
-        if (localStorage.getItem('user') !== null) {
-            this.props.history.push(`/projects/${localStorage.getItem('user')}`);
+    componentWillMount() {
+        if (this.props.currentUser !== '') {
+            this.props.history.push('/projects/' + this.props.currentUser);
         }
         else {
             this.props.initializeRegister();
@@ -62,18 +64,20 @@ class Register extends React.Component<RegisterProps> {
     render() {
         return (
             <React.Fragment>
-                <h1>Register!</h1>
-                <Link to={'/login'}>Login</Link>
-                <Form
-                    type='Register'
-                    submitMethod={this.submitRegistration}
-                />
-                {this.props.notify ? (
-                <ModalNotify
-                    msg={this.props.notify}
-                    onAccept={this.onAcceptRegister}
-                />
-                ) : null}
+                <MuiThemeProvider theme={firstTheme}>
+                    <StyledPaper>
+                        <Form
+                            type='Register'
+                            submitMethod={this.submitRegistration}
+                        />
+                        {this.props.notify ? (
+                        <ModalNotify
+                            msg={this.props.notify}
+                            onAccept={this.onAcceptRegister}
+                        />
+                        ) : null}
+                    </StyledPaper>
+                    </MuiThemeProvider>
             </React.Fragment>
         );
     }
@@ -84,6 +88,7 @@ const mapStateToProps = (state: MainState) => {
     return {
         registerError: state.register.registerError,
         notify: state.register.notify,
+        currentUser: state.app.currentUser
     };
 };
 

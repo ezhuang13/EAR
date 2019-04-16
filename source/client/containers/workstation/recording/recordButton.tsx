@@ -11,6 +11,7 @@ import * as Actions from '../workstationActions';
 // Import custom components and 3rd party libs
 import Recorder from '../../../utility/Recorder';
 import Pizzicato from 'pizzicato';
+import { StyledButton } from '../../../utility/shared';
 
 // Combined Props Type for RecordButton Component (Dispatch and State)
 export type RecordButtonProps = Actions.DispatchProps & WorkstationState;
@@ -66,8 +67,8 @@ class RecordButton extends React.Component<RecordButtonProps> {
 
     render() {
         const recordButton = this.props.isRecording ?
-            <button onClick={this.stopRecording}>Stop</button> :
-            <button onClick={this.startRecording}>Record</button>;
+            <StyledButton variant='contained' onClick={this.stopRecording}>Stop</StyledButton> :
+            <StyledButton variant='contained' onClick={this.startRecording}>Record</StyledButton>;
 
         return (
             <React.Fragment>

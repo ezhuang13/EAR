@@ -57,7 +57,7 @@ class MusicSlider extends React.Component<SliderProps, SliderState> {
     }
 
     render() {
-      const wrapperStyle = { width: 300, margin: 50 };
+      const wrapperStyle = { width: '9em', margin: '0.5em' };
       const marks = this.props.marks ? this.props.marks :
       { [this.props.min]: this.props.min, [this.props.max]: this.props.max };
 

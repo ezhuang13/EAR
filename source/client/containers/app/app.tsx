@@ -1,6 +1,6 @@
 import * as React from 'react';
-import { Route, Switch, RouteComponentProps } from 'react-router';
-import { BrowserRouter, Link } from 'react-router-dom';
+import { Route, RouteComponentProps } from 'react-router';
+import { BrowserRouter } from 'react-router-dom';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 
@@ -17,8 +17,11 @@ import Login from '../login/login';
 import Workstation from '../workstation/workstation';
 import CreateProject from '../projects/createProject';
 import Projects from '../projects/projects';
+import Homepage from '../homepage/homepage';
 import Info from '../info/info';
 import { bindActionCreators } from 'redux';
+
+import AppBar from '../../components/appBar';
 
 interface ParentProps extends RouteComponentProps<{}> {}
 
@@ -31,68 +34,53 @@ class Application extends React.Component<AppProps> {
 
         // Binding "this" object to the different methods
         this.logApp = this.logApp.bind(this);
-        this.createIndex = this.createIndex.bind(this);
     }
 
     logApp() {
         console.log(this);
     }
 
-    createIndex() {
-        return (
-            <React.Fragment>
-                    <h1>EAR!</h1>
-                    <Link to='/login'>Login</Link>
-                    <div/>
-                    <Link to='/register'>Register</Link>
-                    <div/>
-                    <Link to='/create_project'>Create Project</Link>
-                    <div/>
-                    <button onClick={this.logApp}>Log this!</button>
-            </React.Fragment>
-        );
-    }
-
     componentDidMount() {
+        // Initialize the application.
         this.props.initializeApplication();
-        return;
     }
 
     render() {
         return (
             <BrowserRouter>
-                <Switch>
-                <Route
-                    exact={true}
-                    path='/'
-                    component={this.createIndex}
-                />
-                <Route
-                    path='/login'
-                    component={Login}
-                />
-                <Route
-                    path='/register'
-                    component={Register}
-                />
-                <Route
-                    path='/workstation'
-                    component={Workstation}
-                />
-                <Route
-                    path='/create_project'
-                    component={CreateProject}
-                />
-                <Route
-                    path='/projects'
-                    component={Projects}
-                />
-                <Route
-                    path='/help'
-                    component={Info}
-                />
-                </Switch>
-            </BrowserRouter>
+                    <div style={{width: '100%'}}>
+                        <Route
+                            exact={false}
+                            path='/'
+                            component={AppBar}
+                        />
+                        <Route
+                            exact={true}
+                            path='/'
+                            component={Homepage}
+                        />
+                        <Route
+                            path='/login'
+                            component={Login}
+                        />
+                        <Route
+                            path='/register'
+                            component={Register}
+                        />
+                        <Route
+                            path='/workstation'
+                            component={Workstation}
+                        />
+                        <Route
+                            path='/create_project'
+                            component={CreateProject}
+                        />
+                        <Route
+                            path='/projects'
+                            component={Projects}
+                        />
+                    </div>
+                </BrowserRouter>
         );
     }
 }
@@ -100,14 +88,15 @@ class Application extends React.Component<AppProps> {
 // This gives the component access to the store (state)
 const mapStateToProps = (state: MainState) => {
     return {
-        ...state.app
+        app: state.app
     };
 };
 
 // This gives the component access to dispatch / the actions
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
     return bindActionCreators({
-        initializeApplication: Actions.initializeApplication
+        initializeApplication: Actions.initializeApplication,
+        setUser: Actions.setUser
     }, dispatch);
 };
 

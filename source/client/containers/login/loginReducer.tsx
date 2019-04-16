@@ -4,13 +4,13 @@ import * as Types from './loginTypes';
 export interface LoginStateInterface {
     loginError: string;
     notify: string;
-    currentUsername: string;
+    attemptedUser: string;
 }
 
 export const initialLoginState: LoginStateInterface = {
     loginError: '',
     notify: '',
-    currentUsername: '',
+    attemptedUser: '',
 };
 
 /********** Login Reducer **********/
@@ -30,7 +30,7 @@ export const loginReducer = (state = initialLoginState, action: Types.LoginActio
             return Object.assign({}, state, {
                 loginError: '',
                 notify: 'Successfully logged in. Redirecting to profile page.',
-                currentUsername: action.username,
+                attemptedUser: action.username
             });
         case Types.PERFORM_LOGIN:
             // Note that we can put logic here, so maybe use actions for asynchronous middleware

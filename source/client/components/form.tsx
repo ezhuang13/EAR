@@ -1,9 +1,13 @@
 import * as React from 'react';
-import { Label, Input } from './entry';
+import { MaterialUILabel, MaterialUIInput } from './entry';
 import { Error } from './error';
 import { MainState } from '../reducers';
 import { connect } from 'react-redux';
 import * as Fields from './constants';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+
+// Material UI components
+import { firstTheme, StyledButton } from '../utility/shared';
 
 // Props interface definition for the Form Props
 interface FormProps {
@@ -39,7 +43,6 @@ class Form extends React.Component<FormProps, FormState> {
         this.createForm = this.createForm.bind(this);
         this.submitForm = this.submitForm.bind(this);
         this.obtainError = this.obtainError.bind(this);
-
         this.createFields();
     }
 
@@ -49,9 +52,9 @@ class Form extends React.Component<FormProps, FormState> {
         const formOutline = this.state.fields_list.map((name, index) => {
             const type = name === 'password' ? 'password' : 'text';
             return (
-                <React.Fragment key={index}>
-                    <Label labelText={this.state.fields_keys[index]}/>
-                    <Input
+                <form key={index} onSubmit={this.submitForm} style={{width: '254px'}}>
+                    <MaterialUILabel labelText={this.state.fields_keys[index]}/>
+                    <MaterialUIInput
                         name={name}
                         type={type}
                         value={this.state[name]}
@@ -59,9 +62,10 @@ class Form extends React.Component<FormProps, FormState> {
                         id={index + this.props.type}
                     />
                     <br/>
-                </React.Fragment>
+                </form>
             );
         });
+
         return formOutline;
     }
 
@@ -130,13 +134,14 @@ class Form extends React.Component<FormProps, FormState> {
     // Render method!
     render() {
         const ourError = this.obtainError();
+        const ourForm = this.createForm();
         return (
             <React.Fragment>
-                <form onSubmit={this.submitForm}>
+                <MuiThemeProvider theme={firstTheme}>
                     <Error errorText={ourError}/>
-                    {this.createForm()}
-                    <button>{this.props.type}</button>
-                </form>
+                        {ourForm}
+                    <StyledButton color='primary' onClick={this.submitForm}>{this.props.type}</StyledButton>
+                </MuiThemeProvider>
             </React.Fragment>
         );
     }

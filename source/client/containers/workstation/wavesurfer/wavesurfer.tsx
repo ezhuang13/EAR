@@ -19,6 +19,7 @@ const StyledDiv = styled.div`
     position: relative;
     user-select: none;
     height: 128px;
+    border: 5px solid;
     overflow: auto hidden;
 `;
 
@@ -132,7 +133,8 @@ WorkActions.DispatchProps => {
         removePlugin: WaveActions.removePlugin,
         clipAudio: WaveActions.clipAudio,
         playRegion: WaveActions.playRegion,
-        togglePlay: WorkActions.togglePlay
+        togglePlay: WorkActions.togglePlay,
+        addRegionOptions: WaveActions.addRegionOptions
     }, dispatch);
 };
 

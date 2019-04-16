@@ -1,9 +1,8 @@
 import styled from 'styled-components';
 import * as React from 'react';
 
-// Probably will end up in another file, to ensure global styling!
-const FormLabel = styled.label``;
-const FormInput = styled.input``;
+// import material ui components
+import { StyledInputLabel, StyledInput } from '../utility/shared';
 
 // Props interface definition for the Label Component
 interface LabelProps {
@@ -25,9 +24,9 @@ interface InputProps {
  * @param props Receives labelText (the text presented in the label)
  * @returns JSX for the Label Component
  */
-export const Label: React.SFC<LabelProps> = (props: LabelProps) => {
+export const MaterialUILabel: React.SFC<LabelProps> = (props: LabelProps) => {
   return (
-    <FormLabel>{props.labelText ? props.labelText : ''}</FormLabel>
+    <StyledInputLabel>{props.labelText ? props.labelText : ''}</StyledInputLabel>
   );
 };
 
@@ -37,9 +36,9 @@ export const Label: React.SFC<LabelProps> = (props: LabelProps) => {
  * type (optional), name (optional), value (optional)
  * @returns JSX for the Input Component
  */
-export const Input: React.SFC<InputProps> = (props: InputProps) => {
+export const MaterialUIInput: React.SFC<InputProps> = (props: InputProps) => {
   return (
-    <FormInput
+    <StyledInput
       onChange={props.onChange}
       type={props.type}
       name={props.name}

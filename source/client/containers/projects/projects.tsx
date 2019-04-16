@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
-import { Link } from 'react-router-dom';
 import { bindActionCreators } from 'redux';
 
 // Imports for Actions and Types
@@ -13,87 +12,14 @@ import { RouteComponentProps } from 'react-router';
 import { ProjectsState } from './projectsReducer';
 
 // Import custom components and 3rd party libs
-import styled from 'styled-components';
-import {
-    InfoBlock,
-    InfoData,
-    InfoLabels,
-    ShortP
-  } from './../../utility/shared';
-import { ProjectList } from './projectsList';
-import md5 from 'md5';
-
-// create grav hash profile image
-const GravHash = (email: string, size: number) => {
-  let hash = email && email.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
-  hash = hash && hash.toLowerCase();
-  hash = hash && md5(hash);
-  return `https://www.gravatar.com/avatar/${hash}?size=${size}`;
-};
+import * as Shared from '../../utility/shared';
+import { AppState } from '../app/appReducer';
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
 
-/*************************************************************************/
-
-const ProfileBlockBase = styled.div`
-  display: grid;
-  grid-template-columns: auto;
-  grid-template-rows: auto;
-  grid-template-areas: "pic" "profile";
-  padding: 1em;
-
-  @media (min-width: 500px) {
-    grid-template-columns: auto 1fr;
-    grid-template-areas: "pic profile";
-    padding: 2em;
-  }
-`;
-
-const ProfileImage = styled.img`
-  grid-area: pic;
-  max-width: 150px;
-  padding: 1em;
-  @media (min-width: 500px) {
-    padding: 0.5em;
-    max-width: 200px;
-  }
-`;
-
-const ProfileBlock = (props) => {
-  return (
-    <ProfileBlockBase>
-        <ProfileImage
-            src={GravHash(props.emailAddress, 150)}
-        />
-      <InfoBlock>
-        <InfoLabels>
-          <p>Username:</p>
-          <p>First Name:</p>
-          <p>Last Name:</p>
-          <p>Email Address:</p>
-        </InfoLabels>
-        <InfoData>
-          <ShortP>{props.username}</ShortP>
-          <ShortP>{props.firstName}</ShortP>
-          <ShortP>{props.lastName}</ShortP>
-          <ShortP>{props.emailAddress}</ShortP>
-        </InfoData>
-      </InfoBlock>
-    </ProfileBlockBase>
-  );
-};
-
-/*************************************************************************/
-
-const ProfileBase = styled.div`
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-`;
-
 // Combined Props Type for Projects Component (Dispatch and State)
-export type ProjectsProps = Actions.DispatchProps & ParentProps & ProjectsState;
+export type ProjectsProps = Actions.DispatchProps & ParentProps & ProjectsState & AppState;
 
 class Projects extends React.Component<ProjectsProps, any> {
   constructor(props: ProjectsProps) {
@@ -101,50 +27,85 @@ class Projects extends React.Component<ProjectsProps, any> {
 
     this.setCurrentProject = this.setCurrentProject.bind(this);
     this.deleteProject = this.deleteProject.bind(this);
-    this.logout = this.logout.bind(this);
+    this.logThis = this.logThis.bind(this);
+    this.shapeUserInfo = this.shapeUserInfo.bind(this);
+    this.createProject = this.createProject.bind(this);
   }
 
-  componentWillMount(){
-    if (localStorage.getItem('user') === null) {
-      this.props.history.push('/login');
-    }
-    else {
-      const currentUser = localStorage.getItem('user');
-      this.props.obtainUser(currentUser);
-      this.props.obtainProjectData(currentUser);
+  componentDidMount() {
+    if (this.props.currentUser !== '') {
+      this.props.obtainUser(this.props.currentUser);
+      this.props.obtainProjectData(this.props.currentUser);
+    } else {
+      const userFromURL = this.props.location.pathname.split('/')[2];
+      if (userFromURL) {
+        this.props.obtainUser(userFromURL);
+        this.props.obtainProjectData(userFromURL);
+      }
     }
   }
 
-  logout(){
-    localStorage.removeItem('user');
+  componentDidUpdate(prevProps: any) {
+    if (prevProps.currentUser === '' && this.props.currentUser !== '') {
+      this.props.obtainUser(this.props.currentUser);
+      this.props.obtainProjectData(this.props.currentUser);
+    }
+  }
+
+  createProject() {
+    this.props.history.push('/create_project');
+  }
+
+  logThis() {
+    console.log(this);
   }
 
   setCurrentProject(name: string){
     this.props.setProjectName(name);
-    localStorage.setItem('project', name);
     this.props.history.push('/workstation/' + name);
   }
 
   deleteProject(name: string) {
-    this.props.deleteProject(name);
+    this.props.deleteProject(name, this.props.currentUser);
+  }
+
+  shapeUserInfo(currentUserInfo) {
+    let returnInfo = {};
+    if (currentUserInfo !== null) {
+          returnInfo = {
+              username: currentUserInfo.username,
+              firstName: currentUserInfo.firstName,
+              lastName: currentUserInfo.lastName,
+              emailAddress: currentUserInfo.emailAddress
+          };
+    }
+    return returnInfo;
   }
 
   render() {
-      // TODO: make this dynamic
-      const isUser = true;
+      // Shapes the currentUserInfo from props into the profile block information!
+      const userInfoShaped = this.shapeUserInfo(this.props.currentUserInfo);
+
+      // Generate the different parts of the Profile page.
+      const ProfileBlock = Shared.generateProfileInfo(userInfoShaped);
+      const TableHead = Shared.generateProfileHead();
+      const TableBody = Shared.genereateProfileBody({projects: this.props.projects,
+        deleteProject: this.props.currentUser ? this.props.deleteProject : () => '',
+        setProject: this.props.currentUser ? this.setCurrentProject : () => ''});
+      const CreateButton = this.props.currentUser ?
+      <Shared.StyledButton onClick={this.createProject}>New Project!</Shared.StyledButton> :
+      '';
+
+      // Wrap everything in a Table tag.
+      const MyTable = Shared.composeTable(TableHead, TableBody);
       return (
       <React.Fragment>
-      <Link to={`/login/`} onClick={this.logout}>Logout!</Link>
-      <ProfileBase style={{ gridArea: 'main' }}>
-        <ProfileBlock {...this.props.currentUser} />
-        <ProjectList
-          toCreateProj={isUser}
-          projects={this.props.projects}
-          setProject={this.setCurrentProject}
-          deleteProject={this.deleteProject}
-        />
-      </ProfileBase>
-    </React.Fragment>);
+        <Shared.StyledPaper style={{width: '40em', height: '100%', margin: '5em auto'}}>
+          {ProfileBlock}
+          {CreateButton}
+          {MyTable}
+        </Shared.StyledPaper>
+      </React.Fragment>);
   }
 }
 
@@ -152,7 +113,8 @@ class Projects extends React.Component<ProjectsProps, any> {
 const mapStateToProps = (state: MainState) => {
     return {
       projects: state.projects.projects,
-      currentUser: state.projects.currentUser,
+      currentUser: state.app.currentUser,
+      currentUserInfo: state.projects.currentUserInfo
     };
 };
 
@@ -160,7 +122,7 @@ const mapStateToProps = (state: MainState) => {
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
   return bindActionCreators({
     setProject: Actions.setProject,
-    setUser: Actions.setUser,
+    setUser: Actions.setUserz,
     deleteProject: Actions.deleteProject,
     setProjects: Actions.setProjects,
     setProjectName: Actions.setProjectName,

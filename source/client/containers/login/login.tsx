@@ -6,25 +6,30 @@ import { Link } from 'react-router-dom';
 // Import custom components
 import Form from '../../components/form';
 import * as Schemas from '../../utility/schemas';
-import { ErrorMessage, ModalNotify } from '../../utility/shared';
 
 // Imports for Actions and Types
 import * as Actions from './loginActions';
+import * as AppActions from '../app/appActions';
 import * as Types from './loginTypes';
 
 // Imports for Application State (based on the reducer)
 import { MainState } from '../../reducers';
 import { LoginState } from './loginReducer';
+import { AppState } from '../app/appReducer';
 
 // Import constants for Login
 import { RouteComponentProps } from 'react-router';
 import { bindActionCreators } from 'redux';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+
+// Import styling-related components
+import { StyledPaper, firstTheme, ModalNotify } from '../../utility/shared';
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
 
 // Combined Props Type for Register Compoinent (Dispatch and State)
-export type LoginProps = Actions.DispatchProps & ParentProps & LoginState;
+export type LoginProps = Actions.DispatchProps & AppActions.DispatchProps & ParentProps & LoginState & AppState;
 
 class Login extends React.Component<LoginProps> {
     constructor(props: LoginProps) {
@@ -35,17 +40,12 @@ class Login extends React.Component<LoginProps> {
     }
 
     componentDidMount() {
-        if (localStorage.getItem('user') !== null) {
-            this.props.history.push(`/projects/${localStorage.getItem('user')}`);
-        }
-        else {
-            this.props.initializeLogin();
-        }
+        this.props.initializeLogin();
     }
 
     onAcceptLogin() {
-        localStorage.setItem('user', this.props.currentUsername);
-        this.props.history.push(`/projects/${this.props.currentUsername}`);
+        this.props.setUser(this.props.attemptedUser);
+        this.props.history.push(`/projects/${this.props.attemptedUser}`);
     }
 
     submitLogin(loginInformation: Types.LoginInformation) {
@@ -66,18 +66,20 @@ class Login extends React.Component<LoginProps> {
     render() {
         return (
             <React.Fragment>
-                <h1>Login Header!</h1>
-                <Link to={'/register'}>Register</Link>
-                <Form
-                    type='Login'
-                    submitMethod={this.submitLogin}
-                />
-                {this.props.notify ? (
-                <ModalNotify
-                    msg={this.props.notify}
-                    onAccept={this.onAcceptLogin}
-                />
-                ) : null}
+                <MuiThemeProvider theme={firstTheme}>
+                    <StyledPaper>
+                        <Form
+                            type='Login'
+                            submitMethod={this.submitLogin}
+                        />
+                        {this.props.notify ? (
+                        <ModalNotify
+                            msg={this.props.notify}
+                            onAccept={this.onAcceptLogin}
+                        />
+                        ) : null}
+                    </StyledPaper>
+                </MuiThemeProvider>
             </React.Fragment>
         );
     }
@@ -88,16 +90,17 @@ const mapStateToProps = (state: MainState) => {
     return {
         loginError: state.login.loginError,
         notify: state.login.notify,
-        currentUsername: state.login.currentUsername,
+        attemptedUser: state.login.attemptedUser,
     };
 };
 
 // This gives the component access to dispatch / the actions
-const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps & AppActions.DispatchProps => {
     return bindActionCreators({
         initializeLogin: Actions.initializeLogin,
         performLogin: Actions.performLogin,
         loginFail: Actions.loginFail,
+        setUser: AppActions.setUser
     }, dispatch);
 };
 

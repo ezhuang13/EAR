@@ -36,29 +36,31 @@ class EffectVisualizer extends React.Component<any> {
     createEffects() {
         const effectVisualizer = [];
         Constants.EffectList.forEach((effectName, index) => {
-            const effectText = this.props.checkedEffects[this.props.currentKey][effectName] ? '(checked)' : '';
-            const checkedEffect = <div style={{display: 'inline-block', marginLeft: '1em'}}>{effectText}</div>;
-            const currentEffect = (
-                <React.Fragment key={index}>
-                    <button
-                        style={{display: 'inline-block'}}
-                        onClick={this.removeEffect}
-                        value={effectName}
-                    >
-                    -X-
-                    </button>
-                    <div
-                        id={effectName + '-remove'}
-                        title={effectName}
-                        style={{display: 'inline-block', marginLeft: '1em'}}
-                    >
-                    {effectName.toLocaleLowerCase()}
-                    </div>
-                    {checkedEffect}
-                    <br/>
-                </React.Fragment>
-            );
-            effectVisualizer.push(currentEffect);
+            if (this.props.currentKey) {
+                const effectText = this.props.checkedEffects[this.props.currentKey][effectName] ? '(checked)' : '';
+                const checkedEffect = <div style={{display: 'inline-block', marginLeft: '1em'}}>{effectText}</div>;
+                const currentEffect = (
+                    <React.Fragment key={index}>
+                        <button
+                            style={{display: 'inline-block'}}
+                            onClick={this.removeEffect}
+                            value={effectName}
+                        >
+                        -X-
+                        </button>
+                        <div
+                            id={effectName + '-remove'}
+                            title={effectName}
+                            style={{display: 'inline-block', marginLeft: '1em'}}
+                        >
+                        {effectName.toLocaleLowerCase()}
+                        </div>
+                        {checkedEffect}
+                        <br/>
+                    </React.Fragment>
+                );
+                effectVisualizer.push(currentEffect);
+            }
         });
         return effectVisualizer;
     }

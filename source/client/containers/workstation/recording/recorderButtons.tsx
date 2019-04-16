@@ -10,6 +10,7 @@ import { WorkstationState } from '../workstationReducer';
 import { ProjectsState } from '../../projects/projectsReducer';
 import * as Actions from '../workstationActions';
 import * as ProjectsActions from '../../projects/projectsActions';
+import { AppState } from '../../app/appReducer';
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
@@ -20,7 +21,7 @@ interface PassedProps {
 
 // Combined Props Type for RecorderButtons Component (Dispatch and State)
 export type RecorderButtonsProps = ParentProps & Actions.DispatchProps &
-ProjectsActions.DispatchProps & ProjectsState & WorkstationState & PassedProps;
+ProjectsActions.DispatchProps & ProjectsState & WorkstationState & PassedProps & AppState;
 
 // TODO: why can't I pass in the proper props, can't use history.push
 class RecorderButtons extends React.Component<RecorderButtonsProps> {
@@ -40,7 +41,7 @@ class RecorderButtons extends React.Component<RecorderButtonsProps> {
             filetype: 'WAV',
             id: null,
         };
-        await this.props.createProject(newProject);
+        await this.props.createProject(newProject, this.props.currentUser);
         this.props.history.push('/projects');
     }
 
@@ -61,7 +62,7 @@ class RecorderButtons extends React.Component<RecorderButtonsProps> {
             filetype: newFiletype,
             id: null,
         };
-        this.props.deleteProject(this.props.currentProjectName);
+        this.props.deleteProject(this.props.currentProjectName, this.props.currentUser);
         this.props.replaceAudio(newProject);
     }
 
@@ -95,6 +96,7 @@ const mapStateToProps = (state: MainState) => {
         audio: state.workstation.audio,
         downloadBlob: state.workstation.downloadBlob,
         currentProjectName: state.projects.currentProjectName,
+        currentUser: state.app.currentUser
     };
 };
 

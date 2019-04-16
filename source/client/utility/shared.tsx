@@ -2,11 +2,79 @@
 'use strict';
 
 import * as React from 'react';
-import * as PropTypes from 'prop-types';
+import md5 from 'md5';
 import styled from 'styled-components';
+import Paper from '@material-ui/core/Paper';
+import InputLabel from '@material-ui/core/InputLabel';
+import Input from '@material-ui/core/Input';
+import Button from '@material-ui/core/Button';
+import withStyles from '@material-ui/core/styles/withStyles';
+import Table from '@material-ui/core/Table';
+import TableBody from '@material-ui/core/TableBody';
+import TableCell from '@material-ui/core/TableCell';
+import TableHead from '@material-ui/core/TableHead';
+import TableRow from '@material-ui/core/TableRow';
+
+import { createMuiTheme } from '@material-ui/core/styles';
 
 /*************************************************************************/
+/** Material UI Components (with Styles) */
+/*************************************************************************/
+export const StyledPaper = withStyles({
+  root: {
+      marginTop: '2em',
+      marginBottom: '2em',
+      alignItems: 'center',
+      padding: '2em',
+      background: '#3f51b5',
+  },
 
+})(Paper);
+
+export const StyledInput = withStyles({
+  root: {
+    color: '#fff',
+    marginLeft: '0.5em'
+  }
+})(Input);
+
+export const StyledInputLabel = withStyles({
+  root : {
+    color: '#fff',
+    fontFamily: 'Didot, serif'
+  }
+})(InputLabel);
+
+export const StyledButton = withStyles({
+  root: {
+    textTransform: 'none',
+    margin: '0.5em'
+  }
+})(Button);
+
+export const StyledTable = withStyles({
+  root: {}
+})(Table);
+
+export const StyledTableBody = withStyles({
+  root: {}
+})(TableBody);
+
+export const StyledTableCell = withStyles({
+  root: {}
+})(TableCell);
+
+export const StyledTableHead = withStyles({
+  root: {}
+})(TableHead);
+
+export const StyledTableRow = withStyles({
+  root: {}
+})(TableRow);
+
+/*************************************************************************/
+/** Error Message */
+/*************************************************************************/
 const ErrorBase = styled.div`
   grid-column: 1 / 3;
   color: red;
@@ -22,11 +90,8 @@ export const ErrorMessage = ({ msg = '', hide = false }) => {
   );
 };
 
-ErrorMessage.propTypes = {
-  msg: PropTypes.string,
-  hide: PropTypes.bool
-};
-
+/*************************************************************************/
+/** Modal Notifier for Logging In and Registering */
 /*************************************************************************/
 
 const NotifyBase = styled.div`
@@ -52,6 +117,17 @@ const NotifyBox = styled.div`
   background: #fff;
 `;
 
+export const FormButton = styled.button`
+  max-width: 200px;
+  min-width: 150px;
+  max-height: 2em;
+  background: #6495ed;
+  border: none;
+  border-radius: 5px;
+  line-height: 2em;
+  font-size: 0.8em;
+`;
+
 export const ModalNotify = ({ msg = '', onAccept }) => {
   return (
     <NotifyBase>
@@ -64,48 +140,8 @@ export const ModalNotify = ({ msg = '', onAccept }) => {
 };
 
 /*************************************************************************/
-
-export const FormBase = styled.form`
-  display: grid;
-  grid-template-columns: 30% 70%;
-  grid-auto-rows: minmax(10px, auto);
-  padding: 0.1em;
-
-  @media (min-width: 500px) {
-    padding: 1em;
-  }
-`;
-
-export const FormLabel = styled.label`
-  padding: 0.5em 0.5em;
-  text-align: right;
-  font-weight: bold;
-`;
-
-export const FormInput = styled.input`
-  margin: 0.5em 0;
-  width: 75%;
-  padding-left: 5px;
-`;
-
-export const FormButton = styled.button`
-  max-width: 200px;
-  min-width: 150px;
-  max-height: 2em;
-  background: #6495ed;
-  border: none;
-  border-radius: 5px;
-  line-height: 2em;
-  font-size: 0.8em;
-`;
-
-export const FormSelect = styled.select`
-  font-size: 1em;
-`;
-
-export const FormHeader = styled.h2`
-  grid-column: 1 / 3;
-`;
+/** Styled Components for the Profile Table! */
+/*************************************************************************/
 
 export const InfoBlock = styled.div`
   display: grid;
@@ -144,6 +180,129 @@ export const ShortP = styled.p`
   text-overflow: ellipsis;
 `;
 
+const ProfileBlockBase = styled.div`
+  display: grid;
+  grid-template-columns: auto;
+  grid-template-rows: auto;
+  grid-template-areas: "pic" "profile";
+  padding: 1em;
+
+  @media (min-width: 500px) {
+    grid-template-columns: auto 1fr;
+    grid-template-areas: "pic profile";
+    padding: 2em;
+  }
+`;
+
+const ProfileImage = styled.img`
+  grid-area: pic;
+  max-width: 150px;
+  padding: 1em;
+  @media (min-width: 500px) {
+    padding: 0.5em;
+    max-width: 200px;
+  }
+`;
+
+const GravHash = (email: string, size: number) => {
+  let hash = email && email.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
+  hash = hash && hash.toLowerCase();
+  hash = hash && md5(hash);
+  return `https://www.gravatar.com/avatar/${hash}?size=${size}`;
+};
+
+/*************************************************************************/
+/** Methods to Generate the Different Parts of the Profile Page */
+/*************************************************************************/
+export const generateProfileInfo = (props) => {
+  return (
+    <ProfileBlockBase>
+        <ProfileImage
+            src={GravHash(props.emailAddress, 150)}
+        />
+      <InfoBlock>
+        <InfoLabels>
+          <p>Username:</p>
+          <p>First Name:</p>
+          <p>Last Name:</p>
+          <p>Email Address:</p>
+        </InfoLabels>
+        <InfoData>
+          <ShortP>{props.username}</ShortP>
+          <ShortP>{props.firstName}</ShortP>
+          <ShortP>{props.lastName}</ShortP>
+          <ShortP>{props.emailAddress}</ShortP>
+        </InfoData>
+      </InfoBlock>
+    </ProfileBlockBase>
+  );
+};
+
+export const generateProfileHead = () => {
+    const returnHead = (
+      <StyledTableHead>
+        <StyledTableRow key={'head'}>
+          <StyledTableCell>Name</StyledTableCell>
+          <StyledTableCell>File Type</StyledTableCell>
+          <StyledTableCell>Date Created</StyledTableCell>
+          <StyledTableCell>Delete?</StyledTableCell>
+        </StyledTableRow>
+      </StyledTableHead>
+    );
+    return returnHead;
+};
+export const genereateProfileBody = (propsArray) => {
+  const returnBody = [];
+  propsArray.projects.forEach((value, index) => {
+    const shapedDelete =  () => propsArray.deleteProject(value.name, value.username);
+    const shapedLink = () => propsArray.setProject(value.name);
+    returnBody.push(
+      <StyledTableRow key={index}>
+        <StyledTableCell>
+            <StyledButton onClick={shapedLink}>
+              {value.name}
+            </StyledButton>
+          </StyledTableCell>
+        <StyledTableCell>{value.filetype}</StyledTableCell>
+        <StyledTableCell>{value.dateCreated}</StyledTableCell>
+        <StyledTableCell>
+          <StyledButton
+            onClick={shapedDelete}
+          >-X-
+          </StyledButton>
+        </StyledTableCell>
+      </StyledTableRow>
+    );
+  });
+  return <StyledTableBody>{returnBody}</StyledTableBody>;
+};
+
+export const composeTable =  (tableHead, tableBody) =>  {
+  return (
+    <StyledTable>
+      {tableHead}
+      {tableBody}
+    </StyledTable>
+  );
+};
+
+/*************************************************************************/
+/** Creates the overall Material UI Theme */
+/*************************************************************************/
+export const firstTheme = createMuiTheme({
+    palette: {
+      primary: {
+        main: '#fff'
+      },
+      secondary: {
+        main: '#fff',
+      },
+    },
+});
+
+/*************************************************************************/
+/** Method for Interact.js mouse dragging. */
+/*************************************************************************/
 export const dragMoveListener = (event: any) => {
   // Obtain the event target.
   const target = event.target;

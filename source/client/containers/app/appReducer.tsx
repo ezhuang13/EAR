@@ -3,7 +3,7 @@ import * as Types from './appTypes';
 /********** Local State Interface and Initial State Constant **********/
 interface AppStateLocal {
     loggedIn: boolean;
-    pastUsername: string;
+    currentUser: string;
     status: string;
     appInitialized: boolean;
 }
@@ -11,7 +11,7 @@ interface AppStateLocal {
 export const initialAppState: AppStateLocal = {
     appInitialized: false,
     status: '',
-    pastUsername: '',
+    currentUser: '',
     loggedIn: false
 };
 
@@ -21,6 +21,16 @@ export const appReducer = (state = initialAppState, action: Types.AppActionTypes
         case Types.APPLICATION_INITIALIZED:
             return Object.assign({}, state, {
                 appInitialized: action.payload.appInitialized
+            });
+        case Types.SET_USER:
+            return Object.assign({}, state, {
+                currentUser: action.payload.username,
+                loggedIn: true
+            });
+        case Types.PERFORM_LOGOUT:
+            return Object.assign({}, state, {
+                loggedIn: false,
+                currentUser: ''
             });
         default:
             return state;

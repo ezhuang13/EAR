@@ -2,7 +2,7 @@
 export const CREATE_PROJECT = 'CREATE_PROJECT';
 export const SET_PROJECT = 'SET_PROJECT';
 export const DELETE_PROJECT = 'DELETE_PROJECT';
-export const SET_USER = 'SET_USER';
+export const SET_USERZ = 'SET_USERZ';
 export const CREATE_PROJ_STATUS = 'CREATE_PROJ_STATUS';
 export const SET_PROJECTS = 'SET_PROJECTS';
 export const SET_PROJECT_NAME = 'SET_PROJECT_NAME';
@@ -24,10 +24,11 @@ interface SetProject {
 interface DeleteProject {
     type: typeof DELETE_PROJECT;
     projectName: string;
+    currentUser: string;
 }
 
-interface SetUser {
-    type: typeof SET_USER;
+interface SetUserz {
+    type: typeof SET_USERZ;
     user: UserInfo;
 }
 
@@ -72,14 +73,15 @@ export interface ProjectInfo {
 }
 
 export interface UserInfo {
-    createdAt: string;
-    emailAddress: string;
-    firstName: string;
-    lastName: string;
-    id: number;
-    username: string;
+    createdAt?: string;
+    emailAddress?: string;
+    firstName?: string;
+    lastName?: string;
+    id?: number;
+    username?: string;
+    currentUser?: string;
 }
 
 /********** Combination of all Redux Actions **********/
-export type ProjectsActionTypes = CreateProject | SetProject | DeleteProject | SetUser | CreateProjStatus
+export type ProjectsActionTypes = CreateProject | SetProject | DeleteProject | SetUserz | CreateProjStatus
                                     | SetProjects | SetProjectName | ObtainProjectData | ObtainUser | GetProjectBlob;

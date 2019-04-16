@@ -11,6 +11,7 @@ export const ADD_CHECKED_EFFECTS = 'ADD_CHECKED_EFFECTS';
 export const RESET_EFFECTS = 'RESET_EFFECTS';
 export const SELECT_EFFECT = 'SELECT_EFFECT';
 export const MODIFY_EFFECT = 'MODIFY_EFFECT';
+export const DELETE_REGION = 'DELETE_REGION';
 
 /********** Interfaces for the Actions Creators **********/
 interface VolumeChange {
@@ -63,6 +64,11 @@ interface ResetEffects {
     type: typeof RESET_EFFECTS;
 }
 
+interface DeleteRegion {
+    type: typeof DELETE_REGION;
+    currentKey: string;
+}
+
 interface SelectEffect {
     type: typeof SELECT_EFFECT;
     selectedEffect: string;
@@ -78,4 +84,4 @@ interface ModifyEffect {
 /********** Combination of all Redux Actions **********/
 export type WorkstationActionTypes = VolumeChange | ToggleEffect | CreateSound | ModifyEffect |
                                     RemoveEffects | SetPlay | SetRecording | SetDownload |
-                                    TogglePlay | AddCheckedEffects | ResetEffects | SelectEffect;
+                                    TogglePlay | AddCheckedEffects | ResetEffects | SelectEffect | DeleteRegion;

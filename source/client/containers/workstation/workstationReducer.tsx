@@ -289,6 +289,10 @@ export const workstationReducer = (state = initialWorkstationState, action: Type
             return Object.assign({}, state, {
                 [action.effectName]: optionsCopy,
             });
+        case Types.DELETE_REGION:
+            delete state.checkedEffects[action.currentKey];
+            delete state.effects[action.currentKey];
+            return Object.assign({}, state, {});
         default:
             return state;
     }

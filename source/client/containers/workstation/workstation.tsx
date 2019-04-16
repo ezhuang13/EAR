@@ -16,7 +16,6 @@ import * as ProjectsActions from '../projects/projectsActions';
 import * as ProjectsTypes from '../projects/projectsTypes';
 
 // Import custom components and 3rd party libs
-import MusicSlider from '../../components/slider';
 import RecordButton from './recording/recordButton';
 import Wave from './wavesurfer/wavesurfer';
 import RecorderButtons from './recording/recorderButtons';
@@ -25,13 +24,15 @@ import EffectVisualizer from './better_effects/effectVisualizer';
 import EffectCustomizer from './better_effects/effectCustomizer';
 import interact from 'interactjs';
 import * as Utility from '../../utility/shared';
+import { AppState } from '../app/appReducer';
+import Selector from '../../components/selector';
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
 
 // Combined Props Type for Workstation Component (Dispatch and State)
 export type WorkstationProps = WorkstationActions.DispatchProps & ProjectsActions.DispatchProps &
-WaveActions.DispatchProps & WorkstationState & ProjectsState & WaveState & ParentProps;
+WaveActions.DispatchProps & WorkstationState & ProjectsState & WaveState & ParentProps & AppState;
 
 // TODO(all): css libraries (basecss, boostrap) for design and layout
 class Workstation extends React.Component<WorkstationProps, any> {
@@ -41,31 +42,30 @@ class Workstation extends React.Component<WorkstationProps, any> {
 
         this.state = {
             regionsInfo: {},
-            effectControllers: [],
             highlightedRegion: '',
+            selectorOptions: [],
+            selectedRegion: ''
         };
 
         this.replaceAudio = this.replaceAudio.bind(this);
         this.changeVolume = this.changeVolume.bind(this);
         this.stopAudio = this.stopAudio.bind(this);
         this.togglePlay = this.togglePlay.bind(this);
-        this.playRegion = this.playRegion.bind(this);
         this.deleteRegion = this.deleteRegion.bind(this);
         this.addRegion = this.addRegion.bind(this);
+        this.changeSelectorType = this.changeSelectorType.bind(this);
+        this.generateController = this.generateController.bind(this);
     }
 
-    async componentDidMount() {
-        // Project exists, we can now create audio for it.
-        if (localStorage.getItem('user') === null) {
-            this.props.history.push('/login/');
-        }
-        else if (localStorage.getItem('project') === null) {
-            this.props.history.push('/project/');
-        }
-        else {
-            await this.props.getProjectBlob(localStorage.getItem('user'), localStorage.getItem('project'));
-            const url = URL.createObjectURL(this.props.currentProject);
-            this.props.createSound(url);
+    componentDidMount() {
+        if (this.props.currentUser && this.props.currentProjectName) {
+            this.props.getProjectBlob(this.props.currentUser, this.props.currentProjectName).then(() => {
+                const url = URL.createObjectURL(this.props.currentProject);
+                this.props.createSound(url);
+            });
+        } else {
+            // We need to fetch and set the project here.
+            this.props.history.push('/projects/' + this.props.currentUser);
         }
     }
 
@@ -98,8 +98,6 @@ class Workstation extends React.Component<WorkstationProps, any> {
     }
 
     componentWillUnmount() {
-        localStorage.removeItem('project');
-
         // Disable the dropzone interact.js thingy!
         interact('.wavesurfer-region').unset();
 
@@ -113,8 +111,12 @@ class Workstation extends React.Component<WorkstationProps, any> {
         this.props.resetEffects();
     }
 
+    changeSelectorType(newType) {
+        this.setState({selectedRegion: newType});
+    }
+
     replaceAudio(project: ProjectsTypes.ProjectInfo) {
-        this.props.createProject(project);
+        this.props.createProject(project, this.props.currentUser);
         const url = URL.createObjectURL(this.props.downloadBlob);
         this.props.createSound(url);
         this.props.removeEffects();
@@ -149,14 +151,29 @@ class Workstation extends React.Component<WorkstationProps, any> {
         this.props.togglePlay();
     }
 
-    playRegion() {
-        this.props.playRegion(this.props.audio, this.props.wave, this.props.isPlaying);
-    }
-
     deleteRegion() {
-        this.props.removePlugin('regions', this.props.wave);
-        this.props.resetEffects();
-        this.setState({effectControllers: [], regionsInfo: {}});
+        // If we've selected a region, delete it!
+        if (this.state.selectedRegion !== '') {
+
+            // Delete the regionsInfo stuffs.
+            delete this.state.regionsInfo[this.state.selectedRegion];
+
+            // Iterate through the selectorOptions and delete the respective selector option.
+            this.state.selectorOptions.forEach((currentRegion, index) => {
+                if (currentRegion.value === this.state.selectedRegion) {
+                    this.state.selectorOptions.splice(index, 1);
+                }
+            });
+
+            // Remove the Wave's Region
+            this.props.wave.regions.list[this.state.selectedRegion].remove();
+
+            // Call the deleteRegion props method to remove the Region from effects and checkedEffects
+            this.props.deleteRegion(this.state.selectedRegion);
+
+            // Change the selector type to nothing!
+            this.changeSelectorType('');
+        }
     }
 
     addRegion() {
@@ -169,7 +186,7 @@ class Workstation extends React.Component<WorkstationProps, any> {
             const returnObject = {};
 
             // Iterate through each region and assign the appropriate effects to that region.
-            const listLength = this.state.effectControllers.length;
+            const listLength = regionKeys.length - 1;
             const ourKey = regionKeys[listLength];
             this.props.wave.regions.list[ourKey].on('in', () => {
                 for (const key in this.props.checkedEffects[ourKey]) {
@@ -202,51 +219,120 @@ class Workstation extends React.Component<WorkstationProps, any> {
 
             returnObject[ourKey] = listLength;
 
-            // Create the new effects controller.
-            const newVisual = (
-                    <EffectVisualizer
-                        key={regionKeys[this.state.effectControllers.length]}
-                        currentKey={regionKeys[this.state.effectControllers.length]}
-                        regionNumber={this.state.effectControllers.length}
-                    />);
+            // Add another option for the Selector!
+            const newSelectorOption = {
+                 value: ourKey,
+                 label: 'Region ' + listLength
+            };
 
             // Create the new checkedEffects
-            this.props.addCheckedEffects(regionKeys[this.state.effectControllers.length]);
+            this.props.addCheckedEffects(regionKeys[listLength]);
             this.setState({regionsInfo: {...this.state.regionsInfo, ...returnObject},
-                effectControllers: [...this.state.effectControllers, newVisual]});
+                selectorOptions: [...this.state.selectorOptions, newSelectorOption]});
         });
     }
 
+    generateController() {
+        if (this.state.selectedRegion === '')
+            return '';
+        else {
+            return (
+                <React.Fragment>
+                    <EffectVisualizer
+                        key={'visualizer'}
+                        currentKey={this.state.selectedRegion}
+                        regionNumber={this.state.selectedRegion ? this.state.regionsInfo[this.state.selectedRegion] : 0}
+                    />
+                </React.Fragment>
+            );
+        }
+    }
+
     render() {
-        const playButton = this.props.isPlaying ? 'Pause' : 'Play';
+        const firstButtons = [
+            {
+                method: () => console.log(this),
+                text: 'Log Workstation'
+            },
+            {
+                method: this.togglePlay,
+                text: this.props.isPlaying ? 'Pause Button.' : 'Play Button.'
+            },
+        ];
+
+        const secondButtons = [
+            {
+                method: this.addRegion,
+                text: 'Add Region!'
+            },
+            {
+                method: this.deleteRegion,
+                text: 'Delete Region.'
+            },
+            {
+                method: this.stopAudio,
+                text: 'Reset Audio.'
+            }
+        ];
+
+        const OurSelector = this.state.selectorOptions.length !== 0 ?
+                            <Selector
+                                key='selector'
+                                changeType={this.changeSelectorType}
+                                textOptions={this.state.selectorOptions}
+                                labelText='Choose Region Type!'
+                                defaultValue='0'
+                            /> : '';
+
+        const firstRow = [];
+        const secondRow = [];
+        firstButtons.forEach((value, index) => {
+            firstRow.push(
+                <Utility.StyledButton
+                    key={index}
+                    onClick={value.method}
+                    variant='contained'
+                >{value.text}
+                </Utility.StyledButton>
+            );
+        });
+        secondButtons.forEach((value, index) => {
+            secondRow.push(
+                <Utility.StyledButton
+                    key={index}
+                    onClick={value.method}
+                    variant='contained'
+                >{value.text}
+                </Utility.StyledButton>
+            );
+        });
+        secondRow.push(OurSelector);
+        const ourController = this.generateController();
+
         return (
             <React.Fragment>
                 <h1>Workshop your Audio!!</h1>
-                <Link to='/help'>Help</Link>
-                <button onClick={() => console.log(this)}>Log Workstation!</button>
-                <button onClick={this.togglePlay}>{playButton}</button>
-                <button onClick={this.addRegion}>Add Region!</button>
-                <button onClick={this.playRegion}>Play Region!</button>
-                <button onClick={this.deleteRegion}>Delete Region!</button>
-                <button onClick={this.stopAudio}>Reset</button>
-                <RecordButton/>
-                <MusicSlider
-                    min={0}
-                    max={100}
-                    step={1}
-                    defaultValue={50}
-                    label={'Volume: ' + Math.round(this.props.volume * 100)}
-                    onAfterChange={this.changeVolume}
-                />
+                <Utility.StyledPaper style={{margin: '0.5em'}}>
+                    <div>
+                        {firstRow}
+                        <RecordButton/>
+                    </div>
+                    <div>
+                        {secondRow}
+                    </div>
+
+                </Utility.StyledPaper>
                 <Wave/>
+                <Utility.StyledPaper style={{margin: '0.5em', display: 'inline-block'}}>
+                        <EffectSource/>
+                        {ourController}
+                </Utility.StyledPaper>
+                <Utility.StyledPaper style={{margin: '0.5em', display: 'inline-block'}}>
+                    <EffectCustomizer/>
+                </Utility.StyledPaper>
                 <br/>
                 <RecorderButtons replaceAudio={this.replaceAudio} {...this.props}/>
                 <br/>
-                <Link to={`/projects/`}>My Projects</Link>
-                <br/>
-                <EffectSource/>
-                {this.state.effectControllers}
-                <EffectCustomizer/>
             </React.Fragment>
         );
     }
@@ -263,9 +349,12 @@ const mapStateToProps = (state: MainState) => {
         isPlaying: state.workstation.isPlaying,
 
         currentProject: state.projects.currentProject,
+        currentProjectName: state.projects.currentProjectName,
 
         wave: state.wave.wave,
-        songData: state.wave.songData
+        songData: state.wave.songData,
+
+        currentUser: state.app.currentUser
     };
 };
 
@@ -281,6 +370,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>):
         removeEffects: WorkstationActions.removeEffects,
         addCheckedEffects: WorkstationActions.addCheckedEffects,
         resetEffects: WorkstationActions.resetEffects,
+        deleteRegion: WorkstationActions.deleteRegion,
 
         createProject: ProjectsActions.createProject,
         obtainProjectData: ProjectsActions.obtainProjectData,
@@ -289,7 +379,6 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>):
         addPlugin: WaveActions.addPlugin,
         removePlugin: WaveActions.removePlugin,
         clipAudio: WaveActions.clipAudio,
-        playRegion: WaveActions.playRegion,
         addRegionOptions: WaveActions.addRegionOptions
     }, dispatch);
 };

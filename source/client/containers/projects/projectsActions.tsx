@@ -8,7 +8,7 @@ export interface DispatchProps {
     createProject?: typeof createProject;
     setProject?: typeof setProject;
     deleteProject?: typeof deleteProject;
-    setUser?: typeof setUser;
+    setUserz?: typeof setUserz;
     createProjStatus?: typeof createProjStatus;
     setProjects?: typeof setProjects;
     setProjectName?: typeof setProjectName;
@@ -25,9 +25,9 @@ export const setProject = (project: Blob) => {
     });
 };
 
-export const setUser = (user: Types.UserInfo) => {
+export const setUserz = (user: Types.UserInfo) => {
     return ({
-        type: Types.SET_USER,
+        type: Types.SET_USERZ,
         user,
     });
 };
@@ -57,11 +57,11 @@ export const setProjectName = (name: any) => {
 type ThunkActionType = ThunkAction<Promise<void>, {}, {}, AnyAction>;
 
 // Performs the AJAX request to the server for POSTing the login information.
-export const createProject = (newProject: Types.ProjectInfo): ThunkActionType => {
+export const createProject = (newProject: Types.ProjectInfo, currentUser: string): ThunkActionType => {
     return (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
             return new Promise<void>((resolve: any) => {
                 const info = {
-                    username: localStorage.getItem('user'),
+                    username: currentUser,
                     name: newProject.name,
                     dateCreated: newProject.dateCreated,
                     filetype: newProject.filetype,
@@ -99,10 +99,10 @@ export const createProject = (newProject: Types.ProjectInfo): ThunkActionType =>
         };
 };
 
-export const deleteProject = (projectName: string): ThunkActionType => {
+export const deleteProject = (projectName: string, currentUser: string): ThunkActionType => {
     return (dispatch: ThunkDispatch<{}, {}, AnyAction>): Promise<void> => {
             return new Promise<void>((resolve: any) => {
-                fetch(clientIP + `/project/${localStorage.getItem('user')}/${projectName}`, {
+                fetch(clientIP + '/project/' + currentUser + '/' + projectName, {
                     headers: {
                         'content-type': 'application/json'
                     },
@@ -110,7 +110,7 @@ export const deleteProject = (projectName: string): ThunkActionType => {
                     method: 'DELETE'
                 })
                 .then(() => {
-                    fetch(`${clientIP}/project/${localStorage.getItem('user')}`, {
+                    fetch(clientIP + '/project/' + currentUser, {
                         mode: 'cors',
                         headers: {
                             'content-type': 'application/json'
@@ -165,8 +165,8 @@ export const obtainUser = (user: string): ThunkActionType => {
               })
               .then((response: any) => response.json()
               .then((userResponseData: any) => {
-                dispatch(setUser(userResponseData));
-                return resolve();
+                    dispatch(setUserz(userResponseData));
+                    return resolve();
               }))
               .catch((error) => {
                 console.log(error);

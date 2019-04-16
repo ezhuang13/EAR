@@ -15,6 +15,7 @@ import { MainState } from '../../reducers';
 import { RouteComponentProps } from 'react-router';
 import { ProjectsState } from './projectsReducer';
 import { ErrorMessage } from '../../utility/shared';
+import { AppState } from '../app/appReducer';
 
 const NewDiv = styled.div`
 border-style: solid;
@@ -31,7 +32,7 @@ height: 50px;
 interface ParentProps extends RouteComponentProps<{}> {}
 
 // Combined Props Type for CreateProject Component (Dispatch and State)
-export type CreateProjectProps = Actions.DispatchProps & ParentProps & ProjectsState;
+export type CreateProjectProps = Actions.DispatchProps & ParentProps & ProjectsState & AppState;
 
 class CreateProject extends React.Component<CreateProjectProps, any> {
     constructor(props: CreateProjectProps) {
@@ -73,16 +74,16 @@ class CreateProject extends React.Component<CreateProjectProps, any> {
 
     componentDidUpdate() {
         if (this.props.createSuccess) {
-            this.props.history.push(`/projects/${localStorage.getItem('user')}`);
+            this.props.history.push('/projects/' + this.props.currentUser);
         }
     }
 
     componentWillMount() {
-        if (localStorage.getItem('user') === null) {
+        if (this.props.currentUser === null) {
             this.props.history.push('/login');
         }
         this.props.createProjStatus(false);
-        fetch(`${clientIP}/project/${localStorage.getItem('user')}`, {
+        fetch(clientIP + '/project/' + this.props.currentUser, {
             mode: 'cors',
             headers: {
                 'content-type': 'application/json'
@@ -135,7 +136,7 @@ class CreateProject extends React.Component<CreateProjectProps, any> {
             filetype: this.state.filetype,
             id: null,
         };
-        this.props.createProject(newProject);
+        this.props.createProject(newProject, this.props.currentUser);
     }
 
     render() {
@@ -143,7 +144,7 @@ class CreateProject extends React.Component<CreateProjectProps, any> {
         return (
             <React.Fragment>
                 <h1>Create a Project!</h1>
-                <Link to={`/projects/${localStorage.getItem('user')}`}>Back to Projects</Link>
+                <Link to={'/projects/' + this.props.currentUser}>Back to Projects</Link>
                 <div>Name your project:</div>
                 <input
                     type='text'
@@ -176,6 +177,7 @@ const mapStateToProps = (state: MainState) => {
     return {
         projects: state.projects.projects,
         createSuccess: state.projects.createSuccess,
+        currentUser: state.app.currentUser
     };
 };
 

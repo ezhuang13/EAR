@@ -75,8 +75,6 @@ const clientConfig = {
                 test: /\.mp3$/,
                 loader: 'file-loader'
             },
-
-            { test: /\.js$/, loader: 'babel-loader', exclude: [/node_modules/, /joi-browser/] }
         ]
     },
     resolve: {
