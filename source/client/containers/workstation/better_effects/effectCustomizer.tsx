@@ -37,7 +37,8 @@ class EffectCustomizer extends React.Component<EffectCustomizerProps> {
         this.props.modifyEffect(this.props.selectedEffect,
             Constants.optionLabelToParam[effectOption],
             value);
-
+    }
+    
     render() {
         let effectName = '';
         const sliders = [];
