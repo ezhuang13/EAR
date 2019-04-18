@@ -20,8 +20,6 @@ services:
     # Forwards exposed port 5000 on container to port 5000 on host machine
     ports:
       - 5000:5000
-    volumes:
-      - .:/app
     environment:
       DATABASE_URL: postgresql://postgres:postgres@db:5432/database
       FLASK_ENV: docker
