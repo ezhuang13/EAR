@@ -137,11 +137,9 @@ class Form extends React.Component<FormProps, FormState> {
         const ourForm = this.createForm();
         return (
             <React.Fragment>
-                <Shared.StyledMuiThemeProvider theme={Shared.firstTheme}>
                     <Error errorText={ourError}/>
                         {ourForm}
                     <Shared.StyledButton variant = "contained" onClick={this.submitForm}>{this.props.type}</Shared.StyledButton>
-                </Shared.StyledMuiThemeProvider>
             </React.Fragment>
         );
     }

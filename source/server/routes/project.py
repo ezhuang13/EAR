@@ -3,9 +3,9 @@ from flask import request, Response, json, Blueprint, g, send_file
 from models.project import ProjectModel, ProjectSchema
 from models.user import UserModel, UserSchema
 from minio import Minio
+from . import custom_response
 import os
 
-# TODO: generalize to clientIP for minio
 minioClient = Minio(os.environ['BRIDGE_IP'] + ':' + os.environ['MINIO_PORT'],
                   access_key='minio',
                   secret_key='minio123',
@@ -16,16 +16,6 @@ project_api = Blueprint('project_api',__name__)
 
 # Instantiate a local project schema
 project_schema = ProjectSchema()
-
-# Custom Response Function
-	# Param -- res: Response to be sent (i.e. a JSON Object)
-	# Param -- status_code: The status code to be sent in the response
-def custom_response(res, status_code):
-  return Response(
-    mimetype="application/json",
-    response=json.dumps(res),
-    status=status_code
-  )
 
 #################### Project API Routes ####################
 
@@ -95,8 +85,7 @@ def get_user_projects(username):
 	# Method: GET	
 @project_api.route('/<username>/<name>', methods=['GET'])
 def get_user_project(username, name):
-	# Perhaps want to do something with this later?
-	projectInfo = minioClient.fget_object(username, name, '/tmp/' + username + '/' + name)
+	minioClient.fget_object(username, name, '/tmp/' + username + '/' + name)
 	return send_file('/tmp/' + username + '/' + name)
 
 
@@ -105,7 +94,6 @@ def get_user_project(username, name):
 	# Method: GET	
 @project_api.route('/<username>/<name>', methods=['DELETE'])
 def delete_user_project(username, name):
-	# TODO: filter this better
 	UserModel.query.filter_by(username=username).first().projects.filter_by(name=name).delete()
 	ProjectModel.commit()
 	minioClient.remove_object(username, name)

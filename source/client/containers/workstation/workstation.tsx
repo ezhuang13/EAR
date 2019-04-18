@@ -25,11 +25,7 @@ import interact from 'interactjs';
 import * as Utility from '../../utility/shared';
 import { AppState } from '../app/appReducer';
 import Selector from '../../components/selector';
-
 import withStyles from '@material-ui/core/styles/withStyles';
-
-
-
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
@@ -252,11 +248,8 @@ class Workstation extends React.Component<WorkstationProps, any> {
     }
 
     render() {
-
         const {classes} = this.props; 
-        // TODO(eric): get rid of log workstation
-        // Also move reset audio next to play
-        const firstButtons = [
+        const buttons = [
             {
                 method: this.togglePlay,
                 text: this.props.isPlaying ? 'Pause' : 'Play'
@@ -265,9 +258,6 @@ class Workstation extends React.Component<WorkstationProps, any> {
                 method: this.stopAudio,
                 text: 'Reset Audio'
             },
-        ];
-
-        const secondButtons = [
             {
                 method: this.addRegion,
                 text: 'Add Region'
@@ -287,10 +277,9 @@ class Workstation extends React.Component<WorkstationProps, any> {
                                 defaultValue='0'
                             /> : '';
 
-        const firstRow = [];
-        const secondRow = [];
-        firstButtons.forEach((value, index) => {
-            firstRow.push(
+        const buttonRow = [];
+        buttons.forEach((value, index) => {
+            buttonRow.push(
                 <Utility.StyledButton
                     key={index}
                     onClick={value.method}
@@ -299,26 +288,19 @@ class Workstation extends React.Component<WorkstationProps, any> {
                 </Utility.StyledButton>
             );
         });
-        secondButtons.forEach((value, index) => {
-            secondRow.push(
-                <Utility.StyledButton
-                    key={index}
-                    onClick={value.method}
-                    variant='contained'
-                >{value.text}
-                </Utility.StyledButton>
-            );
-        });
-        secondRow.push(OurSelector);
+        buttonRow.push(OurSelector);
         const ourController = this.generateController();
 
         return (
             <React.Fragment>
                 <Utility.StyledPlainPaper className = {this.props.classes.root} style={{margin: '0.5em', display: 'inline-block'}} >
-                    {firstRow}
-                    {secondRow}
-                    <RecordButton/>
-                    <RecorderButtons replaceAudio={this.replaceAudio} {...this.props}/>
+                    <div>
+                        {buttonRow}
+                    </div>
+                    <div>
+                        <RecordButton/>
+                        <RecorderButtons replaceAudio={this.replaceAudio} {...this.props}/>
+                    </div>
                 </Utility.StyledPlainPaper>
                 <Wave/>
                 <Utility.StyledPlainPaper className = {this.props.classes.root} style = {{margin: '0.5em', display: 'inline-grid'}}>

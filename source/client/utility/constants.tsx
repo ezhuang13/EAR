@@ -1,4 +1,4 @@
-export const clientIP = 'http://localhost:5000';
+export const clientIP = 'http://192.168.99.101:5000';
 
 export const navBarDisplay = {
     projects: 'Your Projects',

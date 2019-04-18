@@ -2,8 +2,8 @@ import * as React from 'react';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as Utility from '../../../utility/shared';
-import * as Constants from './effectConstants';
+import { dragMoveListener, EffectBox, UnderlineText } from '../../../utility/shared';
+import { EffectList, toDisplayString } from './effectConstants';
 
 // Imports for Application State
 import { MainState } from '../../../reducers';
@@ -11,18 +11,6 @@ import * as WorkstationActions from './../workstationActions';
 import { WorkstationState } from './../workstationReducer';
 
 import interact from 'interactjs';
-import styled from 'styled-components';
-
-const EffectBox = styled.div`
-    grid-column-start: 1;
-    grid-column-end: 3;
-    border: 2px black solid;
-    padding: 5px;
-`;
-
-const UnderlineText = styled.div`
-    text-decoration: underline;
-`;
 
 export type EffectSourceProps = WorkstationActions.DispatchProps & WorkstationState;
 
@@ -40,11 +28,11 @@ class EffectSource extends React.Component<EffectSourceProps> {
     }
 
     componentDidMount() {
-        Constants.EffectList.forEach((effectName, index)  => {
+        EffectList.forEach((effectName, index)  => {
             interact('#' + effectName).draggable({
                 inertia: true,
                 autoScroll: true,
-                onmove: Utility.dragMoveListener,
+                onmove: dragMoveListener,
                 onend: (event) => {
                     // Obtain the event target.
                     const target = event.target;
@@ -65,17 +53,17 @@ class EffectSource extends React.Component<EffectSourceProps> {
     componentWillUnmount() {
         // Need to remove all interact.js objects before unmounting (resets positions
         // if we navigate back to the page).
-        Constants.EffectList.forEach((effectName) => {
+        EffectList.forEach((effectName) => {
             interact('#' + effectName).unset();
         });
     }
 
     createEffects() {
         const effectSource = [];
-        Constants.EffectList.forEach((effectName, index) => {
+        EffectList.forEach((effectName, index) => {
             const selectFnx = () => this.selectEffect(effectName);
             const selected = effectName === this.props.selectedEffect ? ' (selected)' : '';
-            const displayName = Constants.toDisplayString(effectName) + selected;
+            const displayName = toDisplayString(effectName) + selected;
             const currentEffect = (
             <div
                 id={effectName}
@@ -93,7 +81,10 @@ class EffectSource extends React.Component<EffectSourceProps> {
     render() {
         const ourEffects = this.createEffects();
         return (
-            <EffectBox>
+            <EffectBox
+                colStart={1}
+                colEnd={3}
+            >
                 <UnderlineText>Drag and Drop Effects</UnderlineText>
                 {ourEffects}
             </EffectBox>

@@ -1,31 +1,20 @@
 # Import the necessary stuff.
-from flask import request, Response, json, Blueprint, g
+from flask import request, Blueprint, g
 from models.user import UserModel, UserSchema
-from . import bcrypt
+from . import bcrypt, custom_response
 from minio import Minio
 import os
 
-# TODO: generalize to clientIP for minio
 minioClient = Minio(os.environ['BRIDGE_IP'] + ':' + os.environ['MINIO_PORT'],
                   access_key='minio',
                   secret_key='minio123',
 				  secure=False)
 
-# Save the User Restful API as a blueprint (named "user_api")
+# Save the User Restful API as a blueprint
 user_api = Blueprint('user_api',__name__)
 
-# Instantiate a local User Schema (user_schema)
+# Instantiate a local User Schema
 user_schema = UserSchema()
-
-# Custom Response Function
-	# Param -- res: Response to be sent (i.e. a JSON Object)
-	# Param -- status_code: The status code to be sent in the response
-def custom_response(res, status_code):
-  return Response(
-    mimetype="application/json",
-    response=json.dumps(res),
-    status=status_code
-  )
 
 #################### User API Routes ####################
 
@@ -51,7 +40,8 @@ def create():
 		return custom_response(message, 400)
 	
 	# Create minio bucket
-	minioClient.make_bucket(data['username'])
+	if not minioClient.bucket_exists(data['username']):
+		minioClient.make_bucket(data['username'])
 	
 	# Turn the data into a UserModel, and save it!
 	user = UserModel(data)
@@ -91,19 +81,6 @@ def get_a_user(username):
 	# Return a custom response with the user and status code (200).
 	return custom_response(ser_user, 200)
 
-
-# Deletes a User in UserModel based on a particular ID.
-	# Param -- user_id: The ID to be queried for.
-@user_api.route('/<user_id>', methods=['DELETE'])
-def delete(user_id):
-	# Obtain the User based on the User ID (user_id).
-	user = UserModel.query.get(user_id)
-	# Delete the particular user from the UserModel.
-	user.delete()
-
-	# Successful deletion, return message with status code (204).
-	return custom_response({'message':'deleted'}, 204)
-
 # Attempts to login a user!
 @user_api.route('/login',methods=['POST'])
 def login():
@@ -131,5 +108,5 @@ def login():
 		return custom_response({'error':'invalid credentials'}, 400)
 
 	# Login was successful, return serialized JSON with status code (201).
-	ser_data = user_schema.dump(user).data
+	user_schema.dump(user).data
 	return custom_response({'message':'successfully logged in'}, 201)

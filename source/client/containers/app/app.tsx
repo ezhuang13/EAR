@@ -19,12 +19,11 @@ import CreateProject from '../projects/createProject';
 import Projects from '../projects/projects';
 import Homepage from '../homepage/homepage';
 import { bindActionCreators } from 'redux';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 
 // Material UI
 import AppBar from '../../components/appBar';
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import { firstTheme } from './../../utility/shared';
-import Info from '../info/info';
 
 interface ParentProps extends RouteComponentProps<{}> {}
 
@@ -52,7 +51,7 @@ class Application extends React.Component<AppProps> {
         return (
             <BrowserRouter>
                 <div>
-                    <MuiThemeProvider theme = {firstTheme}>
+                    <MuiThemeProvider theme={firstTheme}>
                         <Route
                             exact={false}
                             path='/'

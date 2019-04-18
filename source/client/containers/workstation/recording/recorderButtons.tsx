@@ -11,7 +11,7 @@ import { ProjectsState } from '../../projects/projectsReducer';
 import * as Actions from '../workstationActions';
 import * as ProjectsActions from '../../projects/projectsActions';
 import { AppState } from '../../app/appReducer';
-import * as Utility from '../../../utility/shared';
+import { StyledButton } from '../../../utility/shared';
 import styled from 'styled-components';
 
 const PlainLink = styled.a`
@@ -80,17 +80,17 @@ class RecorderButtons extends React.Component<RecorderButtonsProps> {
         if (this.props.downloadBlob) {
             const downloadUrl = URL.createObjectURL(this.props.downloadBlob);
             downloadButton =
-            <Utility.StyledButton variant='contained'>
+            <StyledButton variant='contained'>
                 <PlainLink href={downloadUrl} download={this.props.currentProjectName}>Download Recording</PlainLink>
-            </Utility.StyledButton>;
+            </StyledButton>;
             replaceButton =
-            <Utility.StyledButton onClick={this.replaceAudio} variant='contained'>
+            <StyledButton onClick={this.replaceAudio} variant='contained'>
                 Replace Audio w/Rec
-            </Utility.StyledButton>;
+            </StyledButton>;
             newProjectButton =
-            <Utility.StyledButton onClick={this.makeNewProject} variant='contained'>
+            <StyledButton onClick={this.makeNewProject} variant='contained'>
                 Create New Project w/Rec
-            </Utility.StyledButton>;
+            </StyledButton>;
         }
 
         return (

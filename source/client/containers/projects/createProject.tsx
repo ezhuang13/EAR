@@ -8,26 +8,20 @@ import { clientIP } from '../../utility/constants';
 // Imports for Actions and Types
 import * as Actions from './projectsActions';
 import * as Types from './projectsTypes';
-import { Link } from 'react-router-dom';
 
 // Imports for Application State (based on the reducer)
 import { MainState } from '../../reducers';
 import { RouteComponentProps } from 'react-router';
 import { ProjectsState } from './projectsReducer';
-import { ErrorMessage, firstTheme } from '../../utility/shared';
+import { ErrorMessage, createProjectStyles } from '../../utility/shared';
 import { AppState } from '../app/appReducer';
 
 // Material UI imports
 import { withStyles } from '@material-ui/core/styles';
-import Typography from '@material-ui/core/Typography';
 import Input from '@material-ui/core/Input';
 import Grid from '@material-ui/core/Grid';
 import InputLabel from '@material-ui/core/InputLabel';
 import Button from '@material-ui/core/Button';
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
-
-
-import { createProjectStyles } from '../../utility/shared';
 
 const NewDiv = styled.div`
 border-style: solid;
@@ -156,7 +150,6 @@ class CreateProject extends React.Component<CreateProjectProps, any> {
         const allowCreation = this.state.errorMsg === '' && this.state.name !== '' && this.state.audio !== '';
         return (
             <React.Fragment>
-                <MuiThemeProvider theme = {firstTheme}>
                     <Grid container spacing = {16}>
                         <Grid item md = {12}>
                         </Grid>
@@ -221,7 +214,6 @@ class CreateProject extends React.Component<CreateProjectProps, any> {
                             msg={this.state.errorMsg}
                         />
                     </div>
-                </MuiThemeProvider>
             </React.Fragment>
         );
     }

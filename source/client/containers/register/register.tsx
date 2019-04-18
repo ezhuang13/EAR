@@ -1,7 +1,6 @@
 import * as React from 'react';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
-import { Link } from 'react-router-dom';
 
 // Import shared components
 import Form from '../../components/form';
@@ -19,10 +18,8 @@ import { AppState } from '../app/appReducer';
 // Import constants for Register
 import { RouteComponentProps } from 'react-router';
 import { bindActionCreators } from 'redux';
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
-import { firstTheme, ModalNotify} from '../../utility/shared';
+import { ModalNotify, formStyles} from '../../utility/shared';
 import Paper from '@material-ui/core/Paper';
-import { formStyles } from '../../utility/shared';
 import withStyles from '@material-ui/core/styles/withStyles';
 
 // Interface for what we want to pass as props from the parent component
@@ -45,6 +42,10 @@ class Register extends React.Component<RegisterProps> {
         }
     }
 
+    componentWillUpdate(prevProps) {
+        console.log(prevProps, this.props);
+    }
+
     onAcceptRegister() {
         this.props.history.push('/login');
     }
@@ -62,11 +63,9 @@ class Register extends React.Component<RegisterProps> {
     }
 
     render() {
-        const {classes} = this.props;
         return (
             <React.Fragment>
-                <MuiThemeProvider theme={firstTheme}>
-                    <Paper className = {classes.paper}>
+                    <Paper className = {this.props.classes.paper}>
                         <Form
                             type='Register'
                             submitMethod={this.submitRegistration}
@@ -78,7 +77,6 @@ class Register extends React.Component<RegisterProps> {
                         />
                         ) : null}
                     </Paper>
-                    </MuiThemeProvider>
             </React.Fragment>
         );
     }
@@ -102,5 +100,5 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.Dispa
 };
 
 // This method wraps the component with the store and dispatch!!!
-export default connect<any, Actions.DispatchProps, any, MainState>(mapStateToProps, mapDispatchToProps)(withStyles(
-    formStyles)(Register));
+export default connect<any, Actions.DispatchProps, any, MainState>(mapStateToProps,
+    mapDispatchToProps)(withStyles(formStyles)(Register));

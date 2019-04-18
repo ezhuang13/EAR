@@ -6,19 +6,19 @@ import { bindActionCreators } from 'redux';
 // Imports for Application State
 import { MainState } from '../../../reducers';
 import { WorkstationState } from '../workstationReducer';
+import { WaveState } from '../wavesurfer/wavesurferReducer';
 import * as Actions from '../workstationActions';
 
 // Import custom components and 3rd party libs
-import Recorder from '../../../utility/Recorder';
+import Recorder from '../../../utility/Recorder.min';
 import Pizzicato from 'pizzicato';
 import { StyledButton } from '../../../utility/shared';
 
 // Combined Props Type for RecordButton Component (Dispatch and State)
-export type RecordButtonProps = Actions.DispatchProps & WorkstationState;
+export type RecordButtonProps = Actions.DispatchProps & WorkstationState & WaveState;
 
 class RecordButton extends React.Component<RecordButtonProps> {
 
-    // TODO: Discuss with Aaron comment on this w/regards to Typescript
     recorderNode: MediaStreamAudioDestinationNode;
     rec: Recorder;
 
@@ -43,7 +43,6 @@ class RecordButton extends React.Component<RecordButtonProps> {
         this.props.setDownload(null);
     }
 
-    // TODO: Use events to trigger setRecording() and setPlay()
     startRecording() {
         this.props.audio.play();
         this.props.setPlay(true);
@@ -53,7 +52,6 @@ class RecordButton extends React.Component<RecordButtonProps> {
         this.props.setRecording(true);
     }
 
-    // TODO: Use lamejs to offer option to encode as mp3 or other formats
     stopRecording() {
         this.props.audio.pause();
         this.props.setPlay(false);
@@ -82,9 +80,10 @@ class RecordButton extends React.Component<RecordButtonProps> {
 const mapStateToProps = (state: MainState) => {
     return {
         audio: state.workstation.audio,
-        wave: state.wave.wave,
         isPlaying: state.workstation.isPlaying,
-        isRecording: state.workstation.isRecording
+        isRecording: state.workstation.isRecording,
+
+        wave: state.wave.wave,
     };
 };
 

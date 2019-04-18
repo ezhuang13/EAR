@@ -1,9 +1,9 @@
-# Defines the different schemas for PostgreSQL
-# Each "class" represents a different schema (to be exported to routes)
 from marshmallow import fields, Schema
 from . import db, bcrypt
 import datetime
 
+# Defines the different schemas for PostgreSQL
+# Each "class" represents a different schema (to be exported to routes)
 class UserModel(db.Model):
 	# Define the name of the table.
 	__tablename__ = 'users'
@@ -30,11 +30,6 @@ class UserModel(db.Model):
 	# Saves a user to the database.
 	def save(self):
 		db.session.add(self)
-		db.session.commit()
-
-	# Deletes a user from the database.
-	def delete(self):
-		db.session.delete(self)
 		db.session.commit()
 	
 	@staticmethod

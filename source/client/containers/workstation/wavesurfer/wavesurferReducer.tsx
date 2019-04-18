@@ -4,10 +4,10 @@ import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
 
 /********** Local State Interface and Initial State Constant **********/
 interface WaveStateLocal {
-    waveInitialized: boolean;
-    wave: any;
-    waveColor: string;
-    progressColor: string;
+    waveInitialized?: boolean;
+    wave?: any;
+    waveColor?: string;
+    progressColor?: string;
     songData?: Types.Options;
 }
 

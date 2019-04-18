@@ -2,8 +2,7 @@ import * as React from 'react';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import * as Utility from '../../../utility/shared';
-import * as Constants from './effectConstants';
+import { optionLabelToParam, sliderOptions, toDisplayString } from './effectConstants';
 
 // Imports for Application State
 import { MainState } from '../../../reducers';
@@ -11,16 +10,7 @@ import * as WorkstationActions from './../workstationActions';
 import { WorkstationState } from './../workstationReducer';
 
 import MusicSlider from '../../../components/slider';
-import styled from 'styled-components';
-import { SliderGrids } from '../../../utility/shared';
-
-const EffectBox = styled.div`
-    grid-column-start: 5;
-    grid-column-end: 11;
-    padding: 5px;
-    margin-left: 1em;
-    border: 2px black solid;
-`;
+import { SliderGrids, EffectBox, UnderlineText } from '../../../utility/shared';
 
 export type EffectCustomizerProps = WorkstationActions.DispatchProps & WorkstationState;
 
@@ -34,17 +24,17 @@ class EffectCustomizer extends React.Component<EffectCustomizerProps> {
 
     onSliderChange(value: number, effectOption: string) {
         this.props.modifyEffect(this.props.selectedEffect,
-            Constants.optionLabelToParam[effectOption],
+            optionLabelToParam[effectOption],
             value);
     }
-    
+
     render() {
         let effectName = '';
         const sliders = [];
         if (this.props.selectedEffect) {
-            effectName = Constants.toDisplayString(this.props.selectedEffect);
-            const sliderOptions = Constants.sliderOptions[this.props.selectedEffect];
-            sliderOptions.forEach((options: any, index: number) => {
+            effectName = toDisplayString(this.props.selectedEffect);
+            const sliderOption = sliderOptions[this.props.selectedEffect];
+            sliderOption.forEach((options: any, index: number) => {
                 const currentSlider = (
                     <MusicSlider
                         {...options}
@@ -58,8 +48,11 @@ class EffectCustomizer extends React.Component<EffectCustomizerProps> {
         const col1Sliders = sliders.slice(0, 3);
         const col2Sliders = sliders.slice(3);
         return (
-            <EffectBox>
-                <div>Customize the {effectName} effect</div>
+            <EffectBox
+                colStart={5}
+                colEnd={11}
+            >
+                <UnderlineText>Customize the {effectName} effect</UnderlineText>
                 <SliderGrids
                     col1={col1Sliders}
                     col2={col2Sliders}

@@ -16,11 +16,8 @@ import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
 import Typography from '@material-ui/core/Typography';
 import FormControl from '@material-ui/core/FormControl';
-import AppBar from '@material-ui/core/AppBar';
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import Grid from '@material-ui/core/Grid';
 import { createMuiTheme } from '@material-ui/core/styles';
-
 
 /*************************************************************************/
 /** Material UI Components (with Styles) */
@@ -48,10 +45,6 @@ export const StyledPlainPaper = withStyles({
   root: {}
 })(Paper);
 
-export const StyledMuiThemeProvider = withStyles({
-  root:{}
-})(MuiThemeProvider);
-
 export const StyledTypography = withStyles({
   root: {}
 })(Typography);
@@ -62,8 +55,6 @@ export const StyledButton = withStyles({
     margin: '0.5em'
   }
 })(Button);
-
-
 
 export const StyledTable = withStyles({
   root: {}
@@ -329,8 +320,24 @@ const ProfileImage = styled.img`
   }
 `;
 
-const EndSliders = styled.div`
+/*************************************************************************/
+/** Effects Styled Components! */
+/*************************************************************************/
+
+export const EndSliders = styled.div`
     margin-left: 1.5em;
+`;
+
+export const EffectBox = styled.div`
+    grid-column-start: ${props => props.colStart};
+    grid-column-end: ${props => props.colEnd};
+    padding: 5px;
+    margin-left: 1em;
+    border: 2px black solid;
+`;
+
+export const UnderlineText = styled.div`
+    text-decoration: underline;
 `;
 
 const GravHash = (email: string, size: number) => {

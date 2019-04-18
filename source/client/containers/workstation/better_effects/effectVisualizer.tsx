@@ -1,24 +1,11 @@
 import * as React from 'react';
-import * as Utility from '../../../utility/shared';
-import * as Constants from './effectConstants';
+import { UnderlineText, EffectBox } from '../../../utility/shared';
+import { EffectList } from './effectConstants';
 import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { MainState } from '../../../reducers';
 import * as WorkstationActions from '../workstationActions';
-import styled from 'styled-components';
-
-const EffectBox = styled.div`
-    grid-column-start: 3;
-    grid-column-end: 5;
-    padding: 5px;
-    margin-left: 1em;
-    border: 2px black solid;
-`;
-
-const UnderlineText = styled.div`
-    text-decoration: underline;
-`;
 
 class EffectVisualizer extends React.Component<any> {
     constructor(props: any) {
@@ -36,7 +23,7 @@ class EffectVisualizer extends React.Component<any> {
 
     createEffects() {
         const effectVisualizer = [];
-        Constants.EffectList.forEach((effectName, index) => {
+        EffectList.forEach((effectName, index) => {
             if (this.props.currentKey) {
                 const effectText = this.props.checkedEffects[this.props.currentKey][effectName] ? '(checked)' : '';
                 const checkedEffect = <div style={{display: 'inline-block', marginLeft: '1em'}}>{effectText}</div>;
@@ -69,7 +56,10 @@ class EffectVisualizer extends React.Component<any> {
     render() {
         const ourEffects = this.createEffects();
         return (
-            <EffectBox>
+            <EffectBox
+                colStart = {3}
+                colEnd = {5}
+            >
                 <UnderlineText>Remove Effects {this.props.regionNumber}</UnderlineText>
                 {ourEffects}
             </EffectBox>

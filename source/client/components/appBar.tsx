@@ -58,7 +58,11 @@ class StyledAppBar extends React.Component<any> {
     }
 
     generateButtons() {
+
+        // Create a return array for the buttons to be generated.
         const returnButton = [];
+
+        // Generate styles for the buttons on the homepage.
         const buttonStylez = {
             height: '1.5em',
             float: 'right',
@@ -66,6 +70,18 @@ class StyledAppBar extends React.Component<any> {
             display: 'inline',
             textTransform: 'none'
         };
+
+        // Ensure Homepage Button is always on the left.
+        returnButton.push(
+                <StyledButton
+                    key={'homepage'}
+                    variant={'contained'}
+                    style={{...buttonStylez, float: 'left'}}
+                    onClick={this.homepageLink}
+                >Home
+                </StyledButton>
+        );
+
         if (this.props.loggedIn) {
             // push profile and logout
             const profileButton = (
@@ -89,15 +105,6 @@ class StyledAppBar extends React.Component<any> {
             );
             returnButton.push(profileButton, logoutButton);
         } else {
-            const homepageButton = (
-                <StyledButton
-                    key={'homepage'}
-                    variant={'contained'}
-                    style={{...buttonStylez, float: 'left'}}
-                    onClick={this.homepageLink}
-                >Home
-                </StyledButton>
-            );
             const registerButton = (
                 <StyledButton
                     key={'reg'}
@@ -116,7 +123,7 @@ class StyledAppBar extends React.Component<any> {
                 >Login
                 </StyledButton>
             );
-            returnButton.push(homepageButton, registerButton, loginButton);
+            returnButton.push(registerButton, loginButton);
         }
         return returnButton;
     }

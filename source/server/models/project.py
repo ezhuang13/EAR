@@ -3,6 +3,8 @@ from . import db
 import datetime
 from .user import UserModel
 
+# Defines the different schemas for PostgreSQL
+# Each "class" represents a different schema (to be exported to routes)
 class ProjectModel(db.Model):
     # Define the name of the table
     __tablename__ = 'project'
@@ -15,7 +17,6 @@ class ProjectModel(db.Model):
     username = db.Column(db.String(128),nullable=False)
 
     def __init__(self, data):
-        # user_id may not be needed, may be accessible through .user attribute?
         self.user_id = UserModel.query.filter_by(username=data.get('username')).first().id
         self.name = data.get('name')
         self.dateCreated = data.get('dateCreated')
@@ -34,9 +35,6 @@ class ProjectModel(db.Model):
         return 'id {}>'.format(self.id)
     
 class ProjectSchema(Schema):
-    """
-    Project Schema
-    """
     id = fields.Int(dump_only=True)
     user_id = fields.Int(dump_only=True)
     name = fields.Str(required=True)

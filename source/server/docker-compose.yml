@@ -23,13 +23,11 @@ services:
     volumes:
       - .:/app
     environment:
-      # Not sure if the Bridge IP is configured differently for Mac and Windows, can
-      # discuss this later? For me I use the IP of my docker machine/daemon
       DATABASE_URL: postgresql://postgres:postgres@db:5432/database
       FLASK_ENV: docker
       PYTHONUNBUFFERED: 0
       MINIO_PORT: 9001
-      BRIDGE_IP: 172.18.0.1
+      BRIDGE_IP: 192.168.99.101
     depends_on:
       - db
       - minio1

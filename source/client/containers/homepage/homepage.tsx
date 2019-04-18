@@ -1,14 +1,23 @@
-import * as React from 'react';
-import { Link } from 'react-router-dom';
-import AppBar from '../../components/appBar';
-import PropTypes from 'prop-types';
+// @ts-ignore
+import React, { Fragment } from 'react';
 import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 import Grid from '@material-ui/core/Grid';
 import Typography from '@material-ui/core/Typography';
 
-// define styles for the homepage
-const styles = theme => ({
+// @ts-ignore
+import EARlogo from '../../../../images/EARlogo.png';
+
+// @ts-ignore
+import AaronPic from '../../../../images/AaronPic.png';
+
+// @ts-ignore
+import EricPic from '../../../../images/EricPic.png';
+
+// @ts-ignore
+import RajPic from '../../../../images/RajPic.png';
+
+// Define styles for the homepage!
+const styles = (theme: any) => ({
   root: {
     flexGrow: 1,
     paddingTop: '20px'
@@ -21,98 +30,91 @@ const styles = theme => ({
     fontSize: 20
   },
   typography: {
-      textAlign:'center',
-      padding:'5px',
+      textAlign: 'center',
+      padding: '5px',
       color: theme.palette.text.secondary,
       fontSize: 14
   },
   logo: {
-      textAlign:'center',
-      paddingTop:'10px'
+      textAlign: 'center',
+      paddingTop: '10px'
   }
 });
 
 // stateless homepage component
-function Homepage(props) {
-  const { classes } = props;
-
+const Homepage = (props: any) => {
   return (
-    <React.Fragment>
-        <div className = {classes.logo}>
-          <img src = {require('../../../../images/EAR-logo.png')} width = "300" height = "250"></img>
+    <Fragment>
+        <div className={props.classes.logo}>
+          <img src={EARlogo} width='300' height='250'/>
         </div>
-        <div className={classes.root}>
-        <Grid container spacing={16}>
-            <Grid item md={12}>
-            <Typography className = {classes.typographyHeading} gutterBottom>
-                The Problem
-            </Typography>
+        <div className={props.classes.root}>
+        <Grid container={true} spacing={16}>
+            <Grid item={true} md={12}>
+              <Typography className={props.classes.typographyHeading} gutterBottom={true}>
+                  The Problem
+              </Typography>
             </Grid>
-            <Grid item md = {1}>
-            </Grid>
-            <Grid item md={10}>
-            <Typography className={classes.typography}>
-                Using digital audio workstations (DAWs) can be difficult: sometimes you just want to add effects to audio
-                and see what it sounds like before you go out of your way to actually sample the track. There isn't a simple,
+            <Grid item={true} md = {1}/>
+            <Grid item={true} md={10}>
+            <Typography className={props.classes.typography}>
+                Using digital audio workstations (DAWs) can be difficult:
+                sometimes you just want to add effects to audio
+                and see what it sounds like before you go out
+                of your way to actually sample the track. There isn't a simple,
                 efficient way to add effects to parts of a song within the browser.
             </Typography>
             </Grid>
-            <Grid item md = {1}>
-            </Grid>
-            <Grid item md = {12}>
-              <Typography className = {classes.typographyHeading} gutterBottom>
+            <Grid item={true} md={1}/>
+            <Grid item={true} md={12}>
+              <Typography className={props.classes.typographyHeading} gutterBottom={true}>
                 The Solution
               </Typography>
             </Grid>
-            <Grid item md = {1}>
-            </Grid>
-            <Grid item md = {10}>
-              <Typography className = {classes.typography}>
+            <Grid item={true} md={1}/>
+            <Grid item={true} md={10}>
+              <Typography className={props.classes.typography}>
                 Our application provides an easy-to-use interface where users are given a waveform representation
                 of a song of their choosing. They can drag and drop effects to portions of the song to see how they
-                sound. Like with any DAW, users can save their projects so that they can save and experiment with them later.
+                sound. Like with any DAW, users can save their projects so that they can save and experiment
+                with them later.
               </Typography>
             </Grid>
-            <Grid item md = {1}>
-            </Grid>
-            <Grid item md = {12}>
-              <Typography className = {classes.typographyHeading} gutterBottom>
+            <Grid item={true} md={1}/>
+            <Grid item={true} md={12}>
+              <Typography className={props.classes.typographyHeading} gutterBottom={true}>
                 The Team
               </Typography>
             </Grid>
-            <Grid item md = {4}>
-              <Typography className = {classes.typographyHeading} gutterBottom>
+            <Grid item={true} md={4}>
+              <Typography className={props.classes.typographyHeading} gutterBottom={true}>
                 Eric Zhuang
               </Typography>
             </Grid>
-            <Grid item md = {4}>
-              <Typography className = {classes.typographyHeading} gutterBottom>
+            <Grid item={true} md={4}>
+              <Typography className={props.classes.typographyHeading} gutterBottom={true}>
                 Aaron Molotsky
               </Typography>
             </Grid>
-            <Grid item md = {4}>
-              <Typography className = {classes.typographyHeading} gutterBottom>
+            <Grid item={true} md={4}>
+              <Typography className={props.classes.typographyHeading} gutterBottom={true}>
                 Raj Singh
               </Typography>
             </Grid>
-            <Grid item md = {4} className = {classes.logo}>
-              <img src = {require('../../../../images/EricPic.png')} width = '250' height = '250'></img>
+            <Grid item={true} md={4} className={props.classes.logo}>
+              <img src={EricPic} width='250' height='250'/>
             </Grid>
-            <Grid item md = {4} className = {classes.logo}>
-              <img src = {require('../../../../images/AaronPic.png')} width = '250' height = '250'></img>
+            <Grid item={true} md={4} className={props.classes.logo}>
+              <img src={AaronPic} width='250' height='250'/>
             </Grid>
-            <Grid item md = {4} className = {classes.logo}>
-              <img src = {require('../../../../images/RajPic.png')} width = '250' height = '250'></img>
+            <Grid item={true} md={4} className={props.classes.logo}>
+              <img src={RajPic} width='250' height='250'/>
             </Grid>
         </Grid>
         </div>
-    </React.Fragment>
+    </Fragment>
   );
 }
 
 // @ts-ignore
-Homepage.propTypes = {
-  classes: PropTypes.object.isRequired,
-};
-
 export default withStyles(styles)(Homepage);
