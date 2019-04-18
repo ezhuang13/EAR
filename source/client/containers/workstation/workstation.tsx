@@ -1,5 +1,4 @@
 import * as React from 'react';
-import { Link } from 'react-router-dom';
 import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';

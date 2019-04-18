@@ -12,7 +12,7 @@ import { WorkstationState } from './../workstationReducer';
 
 import MusicSlider from '../../../components/slider';
 import styled from 'styled-components';
-import Grid from '@material-ui/core/Grid';
+import { SliderGrids } from '../../../utility/shared';
 
 const EffectBox = styled.div`
     grid-column-start: 5;
@@ -20,10 +20,6 @@ const EffectBox = styled.div`
     padding: 5px;
     margin-left: 1em;
     border: 2px black solid;
-`;
-
-const EndSliders = styled.div`
-    margin-left: 1.5em;
 `;
 
 export type EffectCustomizerProps = WorkstationActions.DispatchProps & WorkstationState;
@@ -41,24 +37,6 @@ class EffectCustomizer extends React.Component<EffectCustomizerProps> {
         this.props.modifyEffect(this.props.selectedEffect,
             Constants.optionLabelToParam[effectOption],
             value);
-            // this.props.checkedEffects[this.props.region][this.props.selectedEffect],
-            // this.props.region);
-    }
-
-    makeRow(sliders: list) {
-        return (<React.Fragment>
-                    <Grid item xs={4}>
-                        {sliders[0]}
-                    </Grid>
-                    <Grid item xs={4}>
-                        {sliders[1]}
-                    </Grid>
-                    <Grid item xs={4}>
-                        {sliders[2]}
-                    </Grid>
-                </React.Fragment>
-          )
-    }
 
     render() {
         let effectName = '';
@@ -77,21 +55,15 @@ class EffectCustomizer extends React.Component<EffectCustomizerProps> {
                 sliders.push(currentSlider);
             });
         }
-        const row1Sliders = sliders.slice(0, 3);
-        const row2Sliders = sliders.slice(3);
+        const col1Sliders = sliders.slice(0, 3);
+        const col2Sliders = sliders.slice(3);
         return (
             <EffectBox>
                 <div>Customize the {effectName} effect</div>
-                <Grid container spacing = {32}>
-                    <Grid item md={4}>
-                        {row1Sliders}
-                    </Grid>
-                    <Grid item md={4}>
-                        <EndSliders>
-                            {row2Sliders}
-                        </EndSliders>
-                    </Grid>
-                </Grid>
+                <SliderGrids
+                    col1={col1Sliders}
+                    col2={col2Sliders}
+                />
             </EffectBox>
         );
     }

@@ -14,6 +14,7 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Grid from '@material-ui/core/Grid';
 
 import { createMuiTheme } from '@material-ui/core/styles';
 
@@ -204,6 +205,10 @@ const ProfileImage = styled.img`
   }
 `;
 
+const EndSliders = styled.div`
+    margin-left: 1.5em;
+`;
+
 const GravHash = (email: string, size: number) => {
   let hash = email && email.replace(/^\s\s*/, '').replace(/\s\s*$/, '');
   hash = hash && hash.toLowerCase();
@@ -285,6 +290,21 @@ export const composeTable =  (tableHead, tableBody) =>  {
     </StyledTable>
   );
 };
+
+export const SliderGrids = (props) => {
+  return (
+    <Grid container spacing = {32}>
+      <Grid item md={4}>
+          {props.col1}
+      </Grid>
+      <Grid item md={4}>
+          <EndSliders>
+            {props.col2}
+          </EndSliders>
+      </Grid>
+    </Grid>
+  )
+}
 
 /*************************************************************************/
 /** Creates the overall Material UI Theme */
