@@ -110,6 +110,7 @@ function Homepage(props) {
   );
 }
 
+// @ts-ignore
 Homepage.propTypes = {
   classes: PropTypes.object.isRequired,
 };

@@ -23,7 +23,10 @@ import { bindActionCreators } from 'redux';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 
 // Import styling-related components
-import { StyledPaper, firstTheme, ModalNotify } from '../../utility/shared';
+import { firstTheme, ModalNotify } from '../../utility/shared';
+import Paper from '@material-ui/core/Paper';
+import { formStyles } from '../../utility/shared';
+import withStyles from '@material-ui/core/styles/withStyles';
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
@@ -64,10 +67,11 @@ class Login extends React.Component<LoginProps> {
     }
 
     render() {
+        const { classes } = this.props;
         return (
             <React.Fragment>
                 <MuiThemeProvider theme={firstTheme}>
-                    <StyledPaper>
+                    <Paper className = {classes.paper}>
                         <Form
                             type='Login'
                             submitMethod={this.submitLogin}
@@ -78,7 +82,7 @@ class Login extends React.Component<LoginProps> {
                             onAccept={this.onAcceptLogin}
                         />
                         ) : null}
-                    </StyledPaper>
+                    </Paper>
                 </MuiThemeProvider>
             </React.Fragment>
         );
@@ -105,4 +109,5 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.Dispa
 };
 
 // This method wraps the component with the store and dispatch!!!
-export default connect<any, Actions.DispatchProps, any, MainState>(mapStateToProps, mapDispatchToProps)(Login);
+export default connect<any, Actions.DispatchProps, any, MainState>(mapStateToProps, mapDispatchToProps)(withStyles(
+    formStyles)(Login));

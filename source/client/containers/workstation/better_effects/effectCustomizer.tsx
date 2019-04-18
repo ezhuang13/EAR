@@ -30,7 +30,6 @@ class EffectCustomizer extends React.Component<EffectCustomizerProps> {
         super(props);
 
         this.onSliderChange = this.onSliderChange.bind(this);
-        this.makeRow = this.makeRow.bind(this);
     }
 
     onSliderChange(value: number, effectOption: string) {

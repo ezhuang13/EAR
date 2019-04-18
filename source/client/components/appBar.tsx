@@ -13,7 +13,10 @@ import { bindActionCreators } from 'redux';
 import { StyledPaper, StyledButton, firstTheme } from '../utility/shared';
 import * as AppActions from '../containers/app/appActions';
 import Typography from '@material-ui/core/Typography';
+import Homepage from '../containers/homepage/homepage';
+
 import { navBarDisplay } from '../utility/constants';
+
 
 class StyledAppBar extends React.Component<any> {
     constructor(props) {

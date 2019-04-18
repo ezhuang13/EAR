@@ -4,10 +4,9 @@ import { Error } from './error';
 import { MainState } from '../reducers';
 import { connect } from 'react-redux';
 import * as Fields from './constants';
-import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
+// import from shared folder
+import * as Shared from '../utility/shared';
 
-// Material UI components
-import { firstTheme, StyledButton } from '../utility/shared';
 
 // Props interface definition for the Form Props
 interface FormProps {
@@ -53,15 +52,16 @@ class Form extends React.Component<FormProps, FormState> {
             const type = name === 'password' ? 'password' : 'text';
             return (
                 <form key={index} onSubmit={this.submitForm} style={{width: '254px'}}>
-                    <MaterialUILabel labelText={this.state.fields_keys[index]}/>
-                    <MaterialUIInput
-                        name={name}
-                        type={type}
-                        value={this.state[name]}
-                        onChange={this.handleChange}
-                        id={index + this.props.type}
-                    />
-                    <br/>
+                    <Shared.StyledFormControl margin = "normal">
+                        <MaterialUILabel labelText={this.state.fields_keys[index]}/>
+                        <MaterialUIInput
+                            name={name}
+                            type={type}
+                            value={this.state[name]}
+                            onChange={this.handleChange}
+                            id={index + this.props.type}
+                        />
+                    </Shared.StyledFormControl>
                 </form>
             );
         });
@@ -137,11 +137,11 @@ class Form extends React.Component<FormProps, FormState> {
         const ourForm = this.createForm();
         return (
             <React.Fragment>
-                <MuiThemeProvider theme={firstTheme}>
+                <Shared.StyledMuiThemeProvider theme={Shared.firstTheme}>
                     <Error errorText={ourError}/>
                         {ourForm}
-                    <StyledButton color='primary' onClick={this.submitForm}>{this.props.type}</StyledButton>
-                </MuiThemeProvider>
+                    <Shared.StyledButton variant = "contained" onClick={this.submitForm}>{this.props.type}</Shared.StyledButton>
+                </Shared.StyledMuiThemeProvider>
             </React.Fragment>
         );
     }

@@ -14,9 +14,13 @@ import TableBody from '@material-ui/core/TableBody';
 import TableCell from '@material-ui/core/TableCell';
 import TableHead from '@material-ui/core/TableHead';
 import TableRow from '@material-ui/core/TableRow';
+import Typography from '@material-ui/core/Typography';
+import FormControl from '@material-ui/core/FormControl';
+import AppBar from '@material-ui/core/AppBar';
+import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 import Grid from '@material-ui/core/Grid';
-
 import { createMuiTheme } from '@material-ui/core/styles';
+
 
 /*************************************************************************/
 /** Material UI Components (with Styles) */
@@ -32,19 +36,25 @@ export const StyledPaper = withStyles({
 
 })(Paper);
 
-export const StyledInput = withStyles({
-  root: {
-    color: '#fff',
-    marginLeft: '0.5em'
-  }
-})(Input);
+export const StyledFormControl = withStyles({
+  root: {}
+})(FormControl);
 
-export const StyledInputLabel = withStyles({
-  root : {
-    color: '#fff',
-    fontFamily: 'Didot, serif'
-  }
-})(InputLabel);
+export const StyledGrid = withStyles({
+  root: {}
+})(Grid);
+
+export const StyledPlainPaper = withStyles({
+  root: {}
+})(Paper);
+
+export const StyledMuiThemeProvider = withStyles({
+  root:{}
+})(MuiThemeProvider);
+
+export const StyledTypography = withStyles({
+  root: {}
+})(Typography);
 
 export const StyledButton = withStyles({
   root: {
@@ -52,6 +62,8 @@ export const StyledButton = withStyles({
     margin: '0.5em'
   }
 })(Button);
+
+
 
 export const StyledTable = withStyles({
   root: {}
@@ -65,6 +77,24 @@ export const StyledTableCell = withStyles({
   root: {}
 })(TableCell);
 
+
+export const StyledInput = withStyles({
+  root: {
+    color: '#e0e0e0',
+    marginLeft: '0.5em',
+    fontFamily:'Didot, serif',
+    marginRight:'0.5em'
+  }
+})(Input);
+
+export const StyledInputLabel = withStyles({
+  root : {
+    color: '#e0e0e0',
+    fontFamily: 'Didot, serif',
+    marginRight :'0.5em'
+  }
+})(InputLabel);
+
 export const StyledTableHead = withStyles({
   root: {}
 })(TableHead);
@@ -72,6 +102,100 @@ export const StyledTableHead = withStyles({
 export const StyledTableRow = withStyles({
   root: {}
 })(TableRow);
+
+/*************************************************************************/
+/* Styles that are imported through a React component, and that passed to a
+ * Material UI component and exported 'withStyles' (allows us to use themes)
+ */
+/*************************************************************************/
+
+export const projectPaperStyles = theme => ({
+  root: {
+      marginTop: '2em',
+      marginLeft: '20%',
+      marginRight: '20%',
+      marginBottom: '2em',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      padding: '2em',
+      background: theme.palette.primary.main,
+      width: '40em',
+      height: '100%',
+      margin: '5em auto'
+  },
+});
+
+export const otherPaperStyles = theme => ({
+  root: {
+      marginTop: '2em',
+      marginLeft: '20%',
+      marginRight: '20%',
+      marginBottom: '2em',
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      padding: '2em',
+      background: theme.palette.primary.main,
+  },
+  typographyHeading: {
+    padding: '5px',
+    textAlign: 'center',
+    useNextVariants: true,
+    color: theme.palette.primary.main,
+    fontSize: 20,
+    paddingTop:'10px'
+}
+});
+
+export const createProjectStyles = theme => ({
+  typographyHeading: {
+      padding: '5px',
+      textAlign: 'center',
+      useNextVariants: true,
+      color: theme.palette.primary.main,
+      fontSize: 20,
+      paddingTop:'10px'
+  },
+  link: {
+      textAlign:'center'
+  },
+  headingAndLink: {
+      paddingBottom:'20px'
+  },
+  dragDrop : {
+      marginLeft: 'auto',
+      marginRight: 'auto',
+      textAlign: 'center',
+      borderStyle: 'solid',
+      height: '200px',
+      width: '400px'
+  },
+  button: {
+      marginLeft:'auto',
+      marginRight:'auto',
+      textAlign:'center'
+  },
+  error: {
+      marginLeft:'auto',
+      marginRight:'auto',
+      textAlign:'center'
+  }
+});
+
+export const formStyles = theme => ({
+  paper: {
+    marginTop: '2em',
+    marginLeft: '20%',
+    marginRight: '20%',
+    marginBottom: '2em',
+    display: 'flex',
+    flexDirection: 'column',
+    alignItems: 'center',
+    padding: '2em',
+    background: theme.palette.primary.main,
+  },
+});
 
 /*************************************************************************/
 /** Error Message */
@@ -87,7 +211,7 @@ const ErrorBase = styled.div`
 
 export const ErrorMessage = ({ msg = '', hide = false }) => {
   return (
-    <ErrorBase style={{ display: hide ? 'none' : 'inherit' }}>{msg}</ErrorBase>
+    <ErrorBase style={{ display: hide ? 'none' : 'inherit'}}>{msg}</ErrorBase>
   );
 };
 
@@ -227,21 +351,21 @@ export const generateProfileInfo = (props) => {
         />
       <InfoBlock>
         <InfoLabels>
-          <p>Username:</p>
-          <p>First Name:</p>
-          <p>Last Name:</p>
-          <p>Email Address:</p>
+          <Typography>Username:</Typography>
+          <Typography>First Name:</Typography>
+          <Typography>Last Name:</Typography>
+          <Typography>Email Address:</Typography>
         </InfoLabels>
-        <InfoData>
-          <ShortP>{props.username}</ShortP>
-          <ShortP>{props.firstName}</ShortP>
-          <ShortP>{props.lastName}</ShortP>
-          <ShortP>{props.emailAddress}</ShortP>
-        </InfoData>
-      </InfoBlock>
-    </ProfileBlockBase>
-  );
-};
+        <InfoLabels>
+          <Typography>{props.username}</Typography>
+          <Typography>{props.firstName}</Typography>
+          <Typography>{props.lastName}</Typography>
+          <Typography>{props.emailAddress}</Typography>
+        </InfoLabels>
+        </InfoBlock>
+        </ProfileBlockBase>
+    );
+  }
 
 export const generateProfileHead = () => {
     const returnHead = (
@@ -256,6 +380,7 @@ export const generateProfileHead = () => {
     );
     return returnHead;
 };
+
 export const genereateProfileBody = (propsArray) => {
   const returnBody = [];
   propsArray.projects.forEach((value, index) => {
@@ -264,7 +389,7 @@ export const genereateProfileBody = (propsArray) => {
     returnBody.push(
       <StyledTableRow key={index}>
         <StyledTableCell>
-            <StyledButton onClick={shapedLink}>
+            <StyledButton variant = "contained" onClick={shapedLink}>
               {value.name}
             </StyledButton>
           </StyledTableCell>
@@ -272,6 +397,7 @@ export const genereateProfileBody = (propsArray) => {
         <StyledTableCell>{value.dateCreated}</StyledTableCell>
         <StyledTableCell>
           <StyledButton
+          variant = "contained"
             onClick={shapedDelete}
           >-X-
           </StyledButton>
@@ -312,10 +438,10 @@ export const SliderGrids = (props) => {
 export const firstTheme = createMuiTheme({
     palette: {
       primary: {
-        main: '#fff'
+        main: '#0091ea'
       },
       secondary: {
-        main: '#fff',
+        main: '#0091ea',
       },
     },
 });

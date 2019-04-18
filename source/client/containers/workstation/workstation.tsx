@@ -25,7 +25,11 @@ import interact from 'interactjs';
 import * as Utility from '../../utility/shared';
 import { AppState } from '../app/appReducer';
 import Selector from '../../components/selector';
-import Grid from '@material-ui/core/Grid';
+
+import withStyles from '@material-ui/core/styles/withStyles';
+
+
+
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
@@ -248,6 +252,8 @@ class Workstation extends React.Component<WorkstationProps, any> {
     }
 
     render() {
+
+        const {classes} = this.props; 
         // TODO(eric): get rid of log workstation
         // Also move reset audio next to play
         const firstButtons = [
@@ -264,11 +270,11 @@ class Workstation extends React.Component<WorkstationProps, any> {
         const secondButtons = [
             {
                 method: this.addRegion,
-                text: 'Add a Region'
+                text: 'Add Region'
             },
             {
                 method: this.deleteRegion,
-                text: 'Delete Selected Region'
+                text: 'Delete Region'
             },
         ];
 
@@ -308,20 +314,18 @@ class Workstation extends React.Component<WorkstationProps, any> {
 
         return (
             <React.Fragment>
-                <Utility.StyledPaper style={{margin: '0.5em'}}>
-                    <RecordButton/>
-                    <RecorderButtons replaceAudio={this.replaceAudio} {...this.props}/>
-                </Utility.StyledPaper>
-                <Utility.StyledPaper style={{margin: '0.5em'}}>
+                <Utility.StyledPlainPaper className = {this.props.classes.root} style={{margin: '0.5em', display: 'inline-block'}} >
                     {firstRow}
                     {secondRow}
-                </Utility.StyledPaper>
+                    <RecordButton/>
+                    <RecorderButtons replaceAudio={this.replaceAudio} {...this.props}/>
+                </Utility.StyledPlainPaper>
                 <Wave/>
-                <Utility.StyledPaper style={{margin: '0.5em', display: 'inline-grid'}}>
+                <Utility.StyledPlainPaper className = {this.props.classes.root} style = {{margin: '0.5em', display: 'inline-grid'}}>
                     <EffectSource/>
                     {this.props.selectedRegion && ourController}
                     {this.props.selectedEffect && <EffectCustomizer/>}
-                </Utility.StyledPaper>
+                </Utility.StyledPlainPaper>
             </React.Fragment>
         );
     }
@@ -376,4 +380,4 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>):
 };
 
 // This method wraps the component with the store and dispatch!!!
-export default connect(mapStateToProps, mapDispatchToProps)(Workstation);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(Utility.otherPaperStyles)(Workstation));

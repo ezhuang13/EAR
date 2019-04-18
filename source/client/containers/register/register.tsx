@@ -20,7 +20,10 @@ import { AppState } from '../app/appReducer';
 import { RouteComponentProps } from 'react-router';
 import { bindActionCreators } from 'redux';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
-import { StyledPaper, firstTheme, linkStyle, ModalNotify } from '../../utility/shared';
+import { firstTheme, ModalNotify} from '../../utility/shared';
+import Paper from '@material-ui/core/Paper';
+import { formStyles } from '../../utility/shared';
+import withStyles from '@material-ui/core/styles/withStyles';
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
@@ -39,9 +42,6 @@ class Register extends React.Component<RegisterProps> {
     componentWillMount() {
         if (this.props.currentUser !== '') {
             this.props.history.push('/projects/' + this.props.currentUser);
-        }
-        else {
-            this.props.initializeRegister();
         }
     }
 
@@ -62,10 +62,11 @@ class Register extends React.Component<RegisterProps> {
     }
 
     render() {
+        const {classes} = this.props;
         return (
             <React.Fragment>
                 <MuiThemeProvider theme={firstTheme}>
-                    <StyledPaper>
+                    <Paper className = {classes.paper}>
                         <Form
                             type='Register'
                             submitMethod={this.submitRegistration}
@@ -76,7 +77,7 @@ class Register extends React.Component<RegisterProps> {
                             onAccept={this.onAcceptRegister}
                         />
                         ) : null}
-                    </StyledPaper>
+                    </Paper>
                     </MuiThemeProvider>
             </React.Fragment>
         );
@@ -97,9 +98,9 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.Dispa
     return bindActionCreators({
         performRegister: Actions.performRegister,
         registerFail: Actions.registerFail,
-        initializeRegister: Actions.initializeRegister,
     }, dispatch);
 };
 
 // This method wraps the component with the store and dispatch!!!
-export default connect<any, Actions.DispatchProps, any, MainState>(mapStateToProps, mapDispatchToProps)(Register);
+export default connect<any, Actions.DispatchProps, any, MainState>(mapStateToProps, mapDispatchToProps)(withStyles(
+    formStyles)(Register));

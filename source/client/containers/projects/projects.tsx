@@ -15,6 +15,10 @@ import { ProjectsState } from './projectsReducer';
 import * as Shared from '../../utility/shared';
 import { AppState } from '../app/appReducer';
 
+// Necessary for getting proper Material UI styles
+import { withStyles } from '@material-ui/core/styles';
+import Paper from '@material-ui/core/Paper';
+
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
 
@@ -36,6 +40,7 @@ class Projects extends React.Component<ProjectsProps, any> {
     if (this.props.currentUser !== '') {
       this.props.obtainUser(this.props.currentUser);
       this.props.obtainProjectData(this.props.currentUser);
+
     } else {
       const userFromURL = this.props.location.pathname.split('/')[2];
       if (userFromURL) {
@@ -100,12 +105,13 @@ class Projects extends React.Component<ProjectsProps, any> {
       const MyTable = Shared.composeTable(TableHead, TableBody);
       return (
       <React.Fragment>
-        <Shared.StyledPaper style={{width: '40em', height: '100%', margin: '5em auto'}}>
+        <Shared.StyledPlainPaper className={this.props.classes.root}>
           {ProfileBlock}
-          {CreateButton}
+          <Shared.StyledButton variant = "contained" onClick={this.createProject}>Create new Project!</Shared.StyledButton>
           {MyTable}
-        </Shared.StyledPaper>
-      </React.Fragment>);
+        </Shared.StyledPlainPaper>
+        </React.Fragment>
+      );
   }
 }
 
@@ -132,4 +138,4 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.Dispa
 };
 
 // This method wraps the component with the store and dispatch!!!
-export default connect(mapStateToProps, mapDispatchToProps)(Projects);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(Shared.projectPaperStyles)(Projects));

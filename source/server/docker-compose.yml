@@ -29,7 +29,7 @@ services:
       FLASK_ENV: docker
       PYTHONUNBUFFERED: 0
       MINIO_PORT: 9001
-      BRIDGE_IP: 192.168.99.101
+      BRIDGE_IP: 172.18.0.1
     depends_on:
       - db
       - minio1

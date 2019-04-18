@@ -85,11 +85,11 @@ class RecorderButtons extends React.Component<RecorderButtonsProps> {
             </Utility.StyledButton>;
             replaceButton =
             <Utility.StyledButton onClick={this.replaceAudio} variant='contained'>
-                Replace Audio w/Recording
+                Replace Audio w/Rec
             </Utility.StyledButton>;
             newProjectButton =
             <Utility.StyledButton onClick={this.makeNewProject} variant='contained'>
-                Create New Project w/Recording
+                Create New Project w/Rec
             </Utility.StyledButton>;
         }
 
