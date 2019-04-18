@@ -11,6 +11,13 @@ import { ProjectsState } from '../../projects/projectsReducer';
 import * as Actions from '../workstationActions';
 import * as ProjectsActions from '../../projects/projectsActions';
 import { AppState } from '../../app/appReducer';
+import * as Utility from '../../../utility/shared';
+import styled from 'styled-components';
+
+const PlainLink = styled.a`
+    color: black;
+    text-decoration: none;
+`;
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
@@ -71,11 +78,19 @@ class RecorderButtons extends React.Component<RecorderButtonsProps> {
         let replaceButton = <div/>;
         let newProjectButton = <div/>;
         if (this.props.downloadBlob) {
-            // TODO: make this in componentWillReceiveProps or something
             const downloadUrl = URL.createObjectURL(this.props.downloadBlob);
-            downloadButton = <a href={downloadUrl} download={this.props.currentProject}> Download </a>;
-            replaceButton = <button onClick={this.replaceAudio}>Replace current audio with download</button>;
-            newProjectButton = <button onClick={this.makeNewProject}>Create new project with download</button>;
+            downloadButton =
+            <Utility.StyledButton variant='contained'>
+                <PlainLink href={downloadUrl} download={this.props.currentProjectName}>Download Recording</PlainLink>
+            </Utility.StyledButton>;
+            replaceButton =
+            <Utility.StyledButton onClick={this.replaceAudio} variant='contained'>
+                Replace Audio w/Recording
+            </Utility.StyledButton>;
+            newProjectButton =
+            <Utility.StyledButton onClick={this.makeNewProject} variant='contained'>
+                Create New Project w/Recording
+            </Utility.StyledButton>;
         }
 
         return (

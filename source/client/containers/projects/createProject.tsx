@@ -4,11 +4,11 @@ import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { bindActionCreators } from 'redux';
 import { clientIP } from '../../utility/constants';
-import { Link } from 'react-router-dom';
 
 // Imports for Actions and Types
 import * as Actions from './projectsActions';
 import * as Types from './projectsTypes';
+import { Link } from 'react-router-dom';
 
 // Imports for Application State (based on the reducer)
 import { MainState } from '../../reducers';
@@ -17,16 +17,56 @@ import { ProjectsState } from './projectsReducer';
 import { ErrorMessage } from '../../utility/shared';
 import { AppState } from '../app/appReducer';
 
+// Material UI imports
+import { withStyles } from '@material-ui/core/styles';
+import Typography from '@material-ui/core/Typography';
+import Input from '@material-ui/core/Input';
+import Grid from '@material-ui/core/Grid';
+import InputLabel from '@material-ui/core/InputLabel';
+import Button from '@material-ui/core/Button';
+
+
+
+
 const NewDiv = styled.div`
 border-style: solid;
 height: 200px;
 width: 600px;
-text-align: center;
 `;
 
 const HeightDiv = styled.div`
 height: 50px;
 `;
+// material UI styles
+const styles = theme => ({
+    typographyHeading: {
+        padding: '5px',
+        textAlign: 'center',
+        useNextVariants: true,
+        color: theme.palette.text.secondary,
+        fontSize: 20,
+        paddingTop:'10px'
+    },
+    link: {
+        textAlign:'center'
+    },
+    headingAndLink: {
+        paddingBottom:'20px'
+    },
+    dragDrop : {
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        textAlign: 'center',
+        borderStyle: 'solid',
+        height: '200px',
+        width: '400px'
+    },
+    button: {
+        marginLeft:'auto',
+        marginRight:'auto',
+        textAlign:'center'
+    }
+});
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
@@ -140,30 +180,77 @@ class CreateProject extends React.Component<CreateProjectProps, any> {
     }
 
     render() {
+        const  { classes } = this.props;
         const allowCreation = this.state.errorMsg === '' && this.state.name !== '' && this.state.audio !== '';
         return (
             <React.Fragment>
-                <h1>Create a Project!</h1>
-                <Link to={'/projects/' + this.props.currentUser}>Back to Projects</Link>
-                <div>Name your project:</div>
-                <input
-                    type='text'
-                    name='name'
-                    value={this.state.name}
-                    onChange={this.changeName}
-                />
-                <br/>
-                <div>Select some audio:</div>
-                <input
-                    type='file'
-                    id='upload'
-                    name='audio'
-                    onChange={this.uploadAudio}
-                />
-                <HeightDiv/>
-                <NewDiv onDrop={this.uploadAudio} onDragOver={this.allowDrop}>Drag and Drop Audio!</NewDiv>
-                <br/>
-                <button disabled={!allowCreation} onClick={this.createProject}>CREATE</button>
+                <div className = {classes.headingAndLink}>
+                    <Typography className = {classes.typographyHeading}>
+                        Create a Project!
+                    </Typography>
+                    <div className = {classes.link}>
+                        <Link component to={'/projects/' + this.props.currentUser}>Back to Projects</Link>
+                    </div>
+                </div>
+                <Grid container spacing = {16}>
+                    <Grid item md = {12}>
+                    </Grid>
+                    <Grid item md = {5}>
+                    </Grid>
+                    <Grid item md = {1}>
+                        <InputLabel>
+                            Name your project:
+                        </InputLabel>
+                    </Grid>
+                    <Grid item md = {1}>
+                        <Input
+                            type='text'
+                            name='name'
+                            value={this.state.name}
+                            onChange={this.changeName}
+                        />
+                    </Grid>
+                    <Grid item md = {5}>
+                    </Grid>
+                    <Grid item md = {12}>
+                    </Grid>
+                    <Grid item md = {5}>
+                    </Grid>
+                    <Grid item md = {1}>
+                        <InputLabel>
+                            Select some audio:
+                        </InputLabel>
+                    </Grid>
+                    <Grid item md = {1}>
+                        <input
+                            type='file'
+                            id='upload'
+                            name='audio'
+                            onChange={this.uploadAudio}
+                        />
+                    </Grid>
+                    <Grid item md = {12}>
+                    </Grid>
+                    <Grid item md = {4}>
+                    </Grid>
+                    <Grid item md = {4}>
+                    <HeightDiv/>
+                        <div className = {classes.dragDrop} onDrop = {this.uploadAudio} onDragOver = {this.allowDrop}>
+                            Drag and drop audio
+                        </div>
+                    </Grid>
+                    <Grid item md = {4}>
+                    </Grid>
+                    <Grid item md = {4}>
+                    </Grid>
+                    <Grid item md = {4}>
+                        <div className = {classes.button}>
+                            <Button disabled={!allowCreation} onClick={this.createProject}>
+                                CREATE
+                            </Button>
+                        </div>
+                    </Grid>
+                </Grid>
                 <ErrorMessage
                     msg={this.state.errorMsg}
                 />
@@ -191,4 +278,4 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.Dispa
 };
 
 // This method wraps the component with the store and dispatch!!!
-export default connect(mapStateToProps, mapDispatchToProps)(CreateProject);
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(styles)(CreateProject));

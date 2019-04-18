@@ -13,6 +13,7 @@ import { bindActionCreators } from 'redux';
 import { StyledPaper, StyledButton, firstTheme } from '../utility/shared';
 import * as AppActions from '../containers/app/appActions';
 import Typography from '@material-ui/core/Typography';
+import { navBarDisplay } from '../utility/constants';
 
 class StyledAppBar extends React.Component<any> {
     constructor(props) {
@@ -129,10 +130,20 @@ class StyledAppBar extends React.Component<any> {
 
     render() {
         const finalButtons = this.generateButtons();
+        let page = this.props.location.pathname.split('/')[1];
+        page = page === '' ? 'Welcome to EAR' : navBarDisplay[page];
         return (
             <React.Fragment>
                     <AppBar position='static'>
-                        <div>
+                        <div style={{display: 'inline'}}>
+                            <Typography
+                                align='center'
+                                variant='title'
+                                inline='true'
+                                color='textPrimary'
+                            >
+                                {page}
+                            </Typography>
                             {finalButtons}
                         </div>
                     </AppBar>

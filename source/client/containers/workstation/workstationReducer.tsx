@@ -15,6 +15,7 @@ interface WorkstationStateInterface {
     isRecording?: boolean,
     downloadBlob?: Blob,
     selectedEffect?: string,
+    selectedRegion?: string,
     // Effect options
     [Constants.COMPRESSOR]?: any,
     [Constants.DELAY]?: any,
@@ -71,6 +72,7 @@ export const initialWorkstationState: WorkstationStateInterface = {
     isRecording: false,
     downloadBlob: null,
     selectedEffect: null,
+    selectedRegion: null,
     [Constants.COMPRESSOR]: {
         threshold: -24,
         knee: 30,
@@ -282,12 +284,30 @@ export const workstationReducer = (state = initialWorkstationState, action: Type
             return Object.assign({}, state, {
                 selectedEffect: action.selectedEffect,
             });
+        case Types.SELECT_REGION:
+            return Object.assign({}, state, {
+                selectedRegion: action.waveKey,
+            });
         case Types.MODIFY_EFFECT:
             const optionsCopy = Object.assign({}, state[action.effectName], {
                 [action.effectOption]: action.value,
             });
+            const replaceEffect = state.selectedRegion && state.checkedEffects[state.selectedRegion][action.effectName];
+            let replacedEffect = null;
+            if (replaceEffect) {
+                replacedEffect = effectsReducer(action.effectName, optionsCopy);
+                state.audio.removeEffect(state.effects[state.selectedRegion][action.effectName]);
+                state.audio.addEffect(replacedEffect);
+            }
             return Object.assign({}, state, {
                 [action.effectName]: optionsCopy,
+                effects: {
+                    ...state.effects,
+                    [state.selectedRegion]: {
+                        ...state.effects[state.selectedRegion],
+                        [action.effectName]: replacedEffect,
+                    }
+                }
             });
         case Types.DELETE_REGION:
             delete state.checkedEffects[action.currentKey];

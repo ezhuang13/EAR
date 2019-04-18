@@ -26,6 +26,7 @@ import interact from 'interactjs';
 import * as Utility from '../../utility/shared';
 import { AppState } from '../app/appReducer';
 import Selector from '../../components/selector';
+import Grid from '@material-ui/core/Grid';
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
@@ -44,7 +45,6 @@ class Workstation extends React.Component<WorkstationProps, any> {
             regionsInfo: {},
             highlightedRegion: '',
             selectorOptions: [],
-            selectedRegion: ''
         };
 
         this.replaceAudio = this.replaceAudio.bind(this);
@@ -111,8 +111,8 @@ class Workstation extends React.Component<WorkstationProps, any> {
         this.props.resetEffects();
     }
 
-    changeSelectorType(newType) {
-        this.setState({selectedRegion: newType});
+    changeSelectorType(newType: string) {
+        this.props.selectRegion(newType);
     }
 
     replaceAudio(project: ProjectsTypes.ProjectInfo) {
@@ -153,23 +153,23 @@ class Workstation extends React.Component<WorkstationProps, any> {
 
     deleteRegion() {
         // If we've selected a region, delete it!
-        if (this.state.selectedRegion !== '') {
+        if (this.props.selectedRegion !== '') {
 
             // Delete the regionsInfo stuffs.
-            delete this.state.regionsInfo[this.state.selectedRegion];
+            delete this.state.regionsInfo[this.props.selectedRegion];
 
             // Iterate through the selectorOptions and delete the respective selector option.
             this.state.selectorOptions.forEach((currentRegion, index) => {
-                if (currentRegion.value === this.state.selectedRegion) {
+                if (currentRegion.value === this.props.selectedRegion) {
                     this.state.selectorOptions.splice(index, 1);
                 }
             });
 
             // Remove the Wave's Region
-            this.props.wave.regions.list[this.state.selectedRegion].remove();
+            this.props.wave.regions.list[this.props.selectedRegion].remove();
 
             // Call the deleteRegion props method to remove the Region from effects and checkedEffects
-            this.props.deleteRegion(this.state.selectedRegion);
+            this.props.deleteRegion(this.props.selectedRegion);
 
             // Change the selector type to nothing!
             this.changeSelectorType('');
@@ -233,15 +233,15 @@ class Workstation extends React.Component<WorkstationProps, any> {
     }
 
     generateController() {
-        if (this.state.selectedRegion === '')
+        if (this.props.selectedRegion === '')
             return '';
         else {
             return (
                 <React.Fragment>
                     <EffectVisualizer
                         key={'visualizer'}
-                        currentKey={this.state.selectedRegion}
-                        regionNumber={this.state.selectedRegion ? this.state.regionsInfo[this.state.selectedRegion] : 0}
+                        currentKey={this.props.selectedRegion}
+                        regionNumber={this.props.selectedRegion ? this.state.regionsInfo[this.props.selectedRegion] : 0}
                     />
                 </React.Fragment>
             );
@@ -249,30 +249,28 @@ class Workstation extends React.Component<WorkstationProps, any> {
     }
 
     render() {
+        // TODO(eric): get rid of log workstation
+        // Also move reset audio next to play
         const firstButtons = [
             {
-                method: () => console.log(this),
-                text: 'Log Workstation'
+                method: this.togglePlay,
+                text: this.props.isPlaying ? 'Pause' : 'Play'
             },
             {
-                method: this.togglePlay,
-                text: this.props.isPlaying ? 'Pause Button.' : 'Play Button.'
+                method: this.stopAudio,
+                text: 'Reset Audio'
             },
         ];
 
         const secondButtons = [
             {
                 method: this.addRegion,
-                text: 'Add Region!'
+                text: 'Add a Region'
             },
             {
                 method: this.deleteRegion,
-                text: 'Delete Region.'
+                text: 'Delete Selected Region'
             },
-            {
-                method: this.stopAudio,
-                text: 'Reset Audio.'
-            }
         ];
 
         const OurSelector = this.state.selectorOptions.length !== 0 ?
@@ -280,7 +278,7 @@ class Workstation extends React.Component<WorkstationProps, any> {
                                 key='selector'
                                 changeType={this.changeSelectorType}
                                 textOptions={this.state.selectorOptions}
-                                labelText='Choose Region Type!'
+                                labelText='Select a Region'
                                 defaultValue='0'
                             /> : '';
 
@@ -311,28 +309,20 @@ class Workstation extends React.Component<WorkstationProps, any> {
 
         return (
             <React.Fragment>
-                <h1>Workshop your Audio!!</h1>
                 <Utility.StyledPaper style={{margin: '0.5em'}}>
-                    <div>
-                        {firstRow}
-                        <RecordButton/>
-                    </div>
-                    <div>
-                        {secondRow}
-                    </div>
-
+                    <RecordButton/>
+                    <RecorderButtons replaceAudio={this.replaceAudio} {...this.props}/>
+                </Utility.StyledPaper>
+                <Utility.StyledPaper style={{margin: '0.5em'}}>
+                    {firstRow}
+                    {secondRow}
                 </Utility.StyledPaper>
                 <Wave/>
-                <Utility.StyledPaper style={{margin: '0.5em', display: 'inline-block'}}>
-                        <EffectSource/>
-                        {ourController}
+                <Utility.StyledPaper style={{margin: '0.5em', display: 'inline-grid'}}>
+                    <EffectSource/>
+                    {this.props.selectedRegion && ourController}
+                    {this.props.selectedEffect && <EffectCustomizer/>}
                 </Utility.StyledPaper>
-                <Utility.StyledPaper style={{margin: '0.5em', display: 'inline-block'}}>
-                    <EffectCustomizer/>
-                </Utility.StyledPaper>
-                <br/>
-                <RecorderButtons replaceAudio={this.replaceAudio} {...this.props}/>
-                <br/>
             </React.Fragment>
         );
     }
@@ -347,6 +337,8 @@ const mapStateToProps = (state: MainState) => {
         downloadBlob: state.workstation.downloadBlob,
         audio: state.workstation.audio,
         isPlaying: state.workstation.isPlaying,
+        selectedEffect: state.workstation.selectedEffect,
+        selectedRegion: state.workstation.selectedRegion,
 
         currentProject: state.projects.currentProject,
         currentProjectName: state.projects.currentProjectName,
@@ -371,6 +363,7 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>):
         addCheckedEffects: WorkstationActions.addCheckedEffects,
         resetEffects: WorkstationActions.resetEffects,
         deleteRegion: WorkstationActions.deleteRegion,
+        selectRegion: WorkstationActions.selectRegion,
 
         createProject: ProjectsActions.createProject,
         obtainProjectData: ProjectsActions.obtainProjectData,

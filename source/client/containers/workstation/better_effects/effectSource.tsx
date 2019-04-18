@@ -14,7 +14,8 @@ import interact from 'interactjs';
 import styled from 'styled-components';
 
 const EffectBox = styled.div`
-    display: inline-block;
+    grid-column-start: 1;
+    grid-column-end: 3;
     border: 2px black solid;
     padding: 5px;
 `;
@@ -73,7 +74,7 @@ class EffectSource extends React.Component<EffectSourceProps> {
         const effectSource = [];
         Constants.EffectList.forEach((effectName, index) => {
             const selectFnx = () => this.selectEffect(effectName);
-            const selected = effectName === this.props.selectedEffect ? '(selected)' : '';
+            const selected = effectName === this.props.selectedEffect ? ' (selected)' : '';
             const displayName = Constants.toDisplayString(effectName) + selected;
             const currentEffect = (
             <div

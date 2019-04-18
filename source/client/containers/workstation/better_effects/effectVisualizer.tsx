@@ -9,7 +9,8 @@ import * as WorkstationActions from '../workstationActions';
 import styled from 'styled-components';
 
 const EffectBox = styled.div`
-    display: inline-block;
+    grid-column-start: 3;
+    grid-column-end: 5;
     padding: 5px;
     margin-left: 1em;
     border: 2px black solid;

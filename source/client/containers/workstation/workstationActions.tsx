@@ -15,6 +15,7 @@ export interface DispatchProps {
     selectEffect?: typeof selectEffect;
     modifyEffect?: typeof modifyEffect;
     deleteRegion?: typeof deleteRegion;
+    selectRegion?: typeof selectRegion;
 }
 
 /********** Action Creators for the Synchronous Typed Actions **********/
@@ -108,5 +109,12 @@ export const modifyEffect = (effectName: string, effectOption: string, value: nu
         effectName,
         effectOption,
         value,
+    });
+};
+
+export const selectRegion = (waveKey: string) => {
+    return ({
+        type: Types.SELECT_REGION,
+        waveKey,
     });
 };
