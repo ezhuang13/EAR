@@ -22,10 +22,11 @@ import EffectSource from './better_effects/effectSource';
 import EffectVisualizer from './better_effects/effectVisualizer';
 import EffectCustomizer from './better_effects/effectCustomizer';
 import interact from 'interactjs';
-import * as Utility from '../../utility/shared';
 import { AppState } from '../app/appReducer';
 import Selector from '../../components/selector';
-import withStyles from '@material-ui/core/styles/withStyles';
+
+// shared parts
+import { isEmpty, StyledPlainPaper, StyledButton, SharedWithStyles, otherPaperStyles } from '../../utility/shared';
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
@@ -75,7 +76,7 @@ class Workstation extends React.Component<WorkstationProps, any> {
             // Audio is now initialized in here.
         }
 
-        if (Utility.isEmpty(this.props.wave)) {
+        if (isEmpty(this.props.wave)) {
             // Wave has not been initialized.
         } else {
             // Wave is now initialized in here.
@@ -280,12 +281,12 @@ class Workstation extends React.Component<WorkstationProps, any> {
         const buttonRow = [];
         buttons.forEach((value, index) => {
             buttonRow.push(
-                <Utility.StyledButton
+                <StyledButton
                     key={index}
                     onClick={value.method}
                     variant='contained'
                 >{value.text}
-                </Utility.StyledButton>
+                </StyledButton>
             );
         });
         buttonRow.push(OurSelector);
@@ -293,7 +294,7 @@ class Workstation extends React.Component<WorkstationProps, any> {
 
         return (
             <React.Fragment>
-                <Utility.StyledPlainPaper className = {this.props.classes.root} style={{margin: '0.5em', display: 'inline-block'}} >
+                <StyledPlainPaper className = {this.props.classes.root} style={{margin: '0.5em', display: 'inline-block'}} >
                     <div>
                         {buttonRow}
                     </div>
@@ -301,13 +302,13 @@ class Workstation extends React.Component<WorkstationProps, any> {
                         <RecordButton/>
                         <RecorderButtons replaceAudio={this.replaceAudio} {...this.props}/>
                     </div>
-                </Utility.StyledPlainPaper>
+                </StyledPlainPaper>
                 <Wave/>
-                <Utility.StyledPlainPaper className = {this.props.classes.root} style = {{margin: '0.5em', display: 'inline-grid'}}>
+                <StyledPlainPaper className = {this.props.classes.root} style = {{margin: '0.5em', display: 'inline-grid'}}>
                     <EffectSource/>
                     {this.props.selectedRegion && ourController}
                     {this.props.selectedEffect && <EffectCustomizer/>}
-                </Utility.StyledPlainPaper>
+                </StyledPlainPaper>
             </React.Fragment>
         );
     }
@@ -362,4 +363,4 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>):
 };
 
 // This method wraps the component with the store and dispatch!!!
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(Utility.otherPaperStyles)(Workstation));
+export default connect(mapStateToProps, mapDispatchToProps)(SharedWithStyles(otherPaperStyles)(Workstation));

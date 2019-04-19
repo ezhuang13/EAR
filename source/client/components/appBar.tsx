@@ -1,6 +1,4 @@
 import * as React from 'react';
-import { withStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { Link } from 'react-router-dom';
@@ -10,9 +8,9 @@ import { MainState } from '../reducers';
 
 // Import constants for Register
 import { bindActionCreators } from 'redux';
-import { StyledPaper, StyledButton, firstTheme } from '../utility/shared';
+
+import { StyledButton, MUIAppBar, StyledTypography } from '../utility/shared';
 import * as AppActions from '../containers/app/appActions';
-import Typography from '@material-ui/core/Typography';
 import Homepage from '../containers/homepage/homepage';
 
 import { navBarDisplay } from '../utility/constants';
@@ -144,19 +142,19 @@ class StyledAppBar extends React.Component<any> {
         page = page === '' ? 'Welcome to EAR' : navBarDisplay[page];
         return (
             <React.Fragment>
-                    <AppBar position='static'>
+                    <MUIAppBar position='static'>
                         <div style={{display: 'inline'}}>
-                            <Typography
+                            <StyledTypography
                                 align='center'
                                 variant='title'
                                 inline='true'
                                 color='textPrimary'
                             >
                                 {page}
-                            </Typography>
+                            </StyledTypography>
                             {finalButtons}
                         </div>
-                    </AppBar>
+                    </MUIAppBar>
             </React.Fragment>
         );
     }

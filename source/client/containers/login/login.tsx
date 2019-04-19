@@ -21,10 +21,9 @@ import { AppState } from '../app/appReducer';
 import { RouteComponentProps } from 'react-router';
 import { bindActionCreators } from 'redux';
 
-// Import styling-related components
-import { ModalNotify, formStyles } from '../../utility/shared';
-import Paper from '@material-ui/core/Paper';
-import withStyles from '@material-ui/core/styles/withStyles';
+// shared parts
+import { StyledPlainPaper, ModalNotify, SharedWithStyles, formStyles } from '../../utility/shared';
+
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
@@ -67,7 +66,7 @@ class Login extends React.Component<LoginProps> {
     render() {
         return (
             <React.Fragment>
-                    <Paper className={this.props.classes.paper}>
+                    <StyledPlainPaper className={this.props.classes.paper}>
                         <Form
                             type='Login'
                             submitMethod={this.submitLogin}
@@ -78,7 +77,7 @@ class Login extends React.Component<LoginProps> {
                             onAccept={this.onAcceptLogin}
                         />
                         ) : null}
-                    </Paper>
+                    </StyledPlainPaper>
             </React.Fragment>
         );
     }
@@ -105,4 +104,4 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.Dispa
 
 // This method wraps the component with the store and dispatch!!!
 export default connect<any, Actions.DispatchProps, any, MainState>(mapStateToProps,
-    mapDispatchToProps)(withStyles(formStyles)(Login));
+    mapDispatchToProps)(SharedWithStyles()(formStyles)(Login));

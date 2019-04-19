@@ -4,6 +4,7 @@
 import * as React from 'react';
 import md5 from 'md5';
 import styled from 'styled-components';
+import AppBar from '@material-ui/core/AppBar';
 import Paper from '@material-ui/core/Paper';
 import InputLabel from '@material-ui/core/InputLabel';
 import Input from '@material-ui/core/Input';
@@ -22,6 +23,10 @@ import { createMuiTheme } from '@material-ui/core/styles';
 /*************************************************************************/
 /** Material UI Components (with Styles) */
 /*************************************************************************/
+export const SharedWithStyles = () => {
+  return withStyles;
+};
+
 export const StyledPaper = withStyles({
   root: {
       marginTop: '2em',
@@ -56,6 +61,12 @@ export const StyledButton = withStyles({
   }
 })(Button);
 
+// can't use 'Styled' because we already have that component
+export const MUIAppBar = withStyles({
+  root: {}
+})(AppBar);
+
+
 export const StyledTable = withStyles({
   root: {}
 })(Table);
@@ -85,6 +96,16 @@ export const StyledInputLabel = withStyles({
     marginRight :'0.5em'
   }
 })(InputLabel);
+
+export const StyledPlainInput = withStyles({
+  root:{}
+})(Input);
+
+export const StyledPlainInputLabel = withStyles({
+  root:{}
+})(InputLabel);
+
+
 
 export const StyledTableHead = withStyles({
   root: {}
@@ -388,7 +409,7 @@ export const generateProfileHead = () => {
     return returnHead;
 };
 
-export const genereateProfileBody = (propsArray) => {
+export const generateProfileBody = (propsArray) => {
   const returnBody = [];
   propsArray.projects.forEach((value, index) => {
     const shapedDelete =  () => propsArray.deleteProject(value.name, value.username);

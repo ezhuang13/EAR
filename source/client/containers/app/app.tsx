@@ -21,9 +21,11 @@ import Homepage from '../homepage/homepage';
 import { bindActionCreators } from 'redux';
 import MuiThemeProvider from '@material-ui/core/styles/MuiThemeProvider';
 
+// Import Shared parts
+import { firstTheme } from './../../utility/shared';
+
 // Material UI
 import AppBar from '../../components/appBar';
-import { firstTheme } from './../../utility/shared';
 
 interface ParentProps extends RouteComponentProps<{}> {}
 
