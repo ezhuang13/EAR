@@ -4,9 +4,9 @@ import { Error } from './error';
 import { MainState } from '../reducers';
 import { connect } from 'react-redux';
 import * as Fields from './constants';
-// import from shared folder
-import * as Shared from '../utility/shared';
 
+
+import { StyledFormControl, StyledButton } from '../utility/shared';
 
 // Props interface definition for the Form Props
 interface FormProps {
@@ -52,7 +52,7 @@ class Form extends React.Component<FormProps, FormState> {
             const type = name === 'password' ? 'password' : 'text';
             return (
                 <form key={index} onSubmit={this.submitForm} style={{width: '254px'}}>
-                    <Shared.StyledFormControl margin = "normal">
+                    <StyledFormControl margin = "normal">
                         <MaterialUILabel labelText={this.state.fields_keys[index]}/>
                         <MaterialUIInput
                             name={name}
@@ -61,7 +61,7 @@ class Form extends React.Component<FormProps, FormState> {
                             onChange={this.handleChange}
                             id={index + this.props.type}
                         />
-                    </Shared.StyledFormControl>
+                    </StyledFormControl>
                 </form>
             );
         });
@@ -139,7 +139,7 @@ class Form extends React.Component<FormProps, FormState> {
             <React.Fragment>
                     <Error errorText={ourError}/>
                         {ourForm}
-                    <Shared.StyledButton variant = "contained" onClick={this.submitForm}>{this.props.type}</Shared.StyledButton>
+                    <StyledButton variant = "contained" onClick={this.submitForm}>{this.props.type}</StyledButton>
             </React.Fragment>
         );
     }

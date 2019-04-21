@@ -12,13 +12,12 @@ import { RouteComponentProps } from 'react-router';
 import { ProjectsState } from './projectsReducer';
 
 // Import custom components and 3rd party libs
-import * as Shared from '../../utility/shared';
 import { AppState } from '../app/appReducer';
 
-// Necessary for getting proper Material UI styles
-import { withStyles } from '@material-ui/core/styles';
-import Paper from '@material-ui/core/Paper';
 
+// shared parts
+import { generateProfileHead, generateProfileBody, generateProfileInfo, composeTable,
+   StyledButton, StyledPlainPaper, SharedWithStyles, projectPaperStyles } from '../../utility/shared';
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
 
@@ -92,24 +91,24 @@ class Projects extends React.Component<ProjectsProps, any> {
       const userInfoShaped = this.shapeUserInfo(this.props.currentUserInfo);
 
       // Generate the different parts of the Profile page.
-      const ProfileBlock = Shared.generateProfileInfo(userInfoShaped);
-      const TableHead = Shared.generateProfileHead();
-      const TableBody = Shared.genereateProfileBody({projects: this.props.projects,
+      const ProfileBlock = generateProfileInfo(userInfoShaped);
+      const TableHead = generateProfileHead();
+      const TableBody = generateProfileBody({projects: this.props.projects,
         deleteProject: this.props.currentUser ? this.props.deleteProject : () => '',
         setProject: this.props.currentUser ? this.setCurrentProject : () => ''});
       const CreateButton = this.props.currentUser ?
-      <Shared.StyledButton onClick={this.createProject}>New Project!</Shared.StyledButton> :
+      <StyledButton onClick={this.createProject}>New Project!</StyledButton> :
       '';
 
       // Wrap everything in a Table tag.
-      const MyTable = Shared.composeTable(TableHead, TableBody);
+      const MyTable = composeTable(TableHead, TableBody);
       return (
       <React.Fragment>
-        <Shared.StyledPlainPaper className={this.props.classes.root}>
+        <StyledPlainPaper className={this.props.classes.root}>
           {ProfileBlock}
-          <Shared.StyledButton variant = "contained" onClick={this.createProject}>Create new Project!</Shared.StyledButton>
+          <StyledButton variant = "contained" onClick={this.createProject}>Create new Project!</StyledButton>
           {MyTable}
-        </Shared.StyledPlainPaper>
+        </StyledPlainPaper>
         </React.Fragment>
       );
   }
@@ -138,4 +137,4 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.Dispa
 };
 
 // This method wraps the component with the store and dispatch!!!
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(Shared.projectPaperStyles)(Projects));
+export default connect(mapStateToProps, mapDispatchToProps)(SharedWithStyles()(projectPaperStyles)(Projects));

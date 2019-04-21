@@ -18,9 +18,9 @@ import { AppState } from '../app/appReducer';
 // Import constants for Register
 import { RouteComponentProps } from 'react-router';
 import { bindActionCreators } from 'redux';
-import { ModalNotify, formStyles} from '../../utility/shared';
-import Paper from '@material-ui/core/Paper';
-import withStyles from '@material-ui/core/styles/withStyles';
+
+// shared parts 
+import { StyledPlainPaper, ModalNotify, SharedWithStyles, formStyles } from '../../utility/shared';
 
 // Interface for what we want to pass as props from the parent component
 interface ParentProps extends RouteComponentProps<{}> {}
@@ -65,7 +65,7 @@ class Register extends React.Component<RegisterProps> {
     render() {
         return (
             <React.Fragment>
-                    <Paper className = {this.props.classes.paper}>
+                    <StyledPlainPaper className = {this.props.classes.paper}>
                         <Form
                             type='Register'
                             submitMethod={this.submitRegistration}
@@ -76,7 +76,7 @@ class Register extends React.Component<RegisterProps> {
                             onAccept={this.onAcceptRegister}
                         />
                         ) : null}
-                    </Paper>
+                    </StyledPlainPaper>
             </React.Fragment>
         );
     }
@@ -101,4 +101,4 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.Dispa
 
 // This method wraps the component with the store and dispatch!!!
 export default connect<any, Actions.DispatchProps, any, MainState>(mapStateToProps,
-    mapDispatchToProps)(withStyles(formStyles)(Register));
+    mapDispatchToProps)(SharedWithStyles()(formStyles)(Register));

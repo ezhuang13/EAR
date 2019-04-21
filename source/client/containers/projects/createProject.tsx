@@ -13,15 +13,13 @@ import * as Types from './projectsTypes';
 import { MainState } from '../../reducers';
 import { RouteComponentProps } from 'react-router';
 import { ProjectsState } from './projectsReducer';
-import { ErrorMessage, createProjectStyles } from '../../utility/shared';
+//import { ErrorMessage, createProjectStyles } from '../../utility/shared';
 import { AppState } from '../app/appReducer';
 
-// Material UI imports
-import { withStyles } from '@material-ui/core/styles';
-import Input from '@material-ui/core/Input';
-import Grid from '@material-ui/core/Grid';
-import InputLabel from '@material-ui/core/InputLabel';
-import Button from '@material-ui/core/Button';
+import { StyledGrid, StyledPlainInput, StyledPlainInputLabel, StyledButton, ErrorMessage, SharedWithStyles, 
+    createProjectStyles } from '../../utility/shared';
+
+
 
 const NewDiv = styled.div`
 border-style: solid;
@@ -150,65 +148,65 @@ class CreateProject extends React.Component<CreateProjectProps, any> {
         const allowCreation = this.state.errorMsg === '' && this.state.name !== '' && this.state.audio !== '';
         return (
             <React.Fragment>
-                    <Grid container spacing = {16}>
-                        <Grid item md = {12}>
-                        </Grid>
-                        <Grid item md = {5}>
-                        </Grid>
-                        <Grid item md = {1}>
-                            <InputLabel>
+                    <StyledGrid container spacing = {16}>
+                        <StyledGrid item md = {12}>
+                        </StyledGrid>
+                        <StyledGrid item md = {5}>
+                        </StyledGrid>
+                        <StyledGrid item md = {1}>
+                            <StyledPlainInputLabel>
                                 Name your project:
-                            </InputLabel>
-                        </Grid>
-                        <Grid item md = {1}>
-                            <Input
+                            </StyledPlainInputLabel>
+                        </StyledGrid>
+                        <StyledGrid item md = {1}>
+                            <StyledPlainInput
                                 type='text'
                                 name='name'
                                 value={this.state.name}
                                 onChange={this.changeName}
                             />
-                        </Grid>
-                        <Grid item md = {5}>
-                        </Grid>
-                        <Grid item md = {12}>
-                        </Grid>
-                        <Grid item md = {5}>
-                        </Grid>
-                        <Grid item md = {1}>
-                            <InputLabel>
+                        </StyledGrid>
+                        <StyledGrid item md = {5}>
+                        </StyledGrid>
+                        <StyledGrid item md = {12}>
+                        </StyledGrid>
+                        <StyledGrid item md = {5}>
+                        </StyledGrid>
+                        <StyledGrid item md = {1}>
+                            <StyledPlainInputLabel>
                                 Select some audio:
-                            </InputLabel>
-                        </Grid>
-                        <Grid item md = {1}>
+                            </StyledPlainInputLabel>
+                        </StyledGrid>
+                        <StyledGrid item md = {1}>
                             <input
                                 type='file'
                                 id='upload'
                                 name='audio'
                                 onChange={this.uploadAudio}
                             />
-                        </Grid>
-                        <Grid item md = {12}>
-                        </Grid>
-                        <Grid item md = {4}>
-                        </Grid>
-                        <Grid item md = {4}>
+                        </StyledGrid>
+                        <StyledGrid item md = {12}>
+                        </StyledGrid>
+                        <StyledGrid item md = {4}>
+                        </StyledGrid>
+                        <StyledGrid item md = {4}>
                         <HeightDiv/>
                             <div className = {classes.dragDrop} onDrop = {this.uploadAudio} onDragOver = {this.allowDrop}>
                                 Drag and drop audio
                             </div>
-                        </Grid>
-                        <Grid item md = {4}>
-                        </Grid>
-                        <Grid item md = {4}>
-                        </Grid>
-                        <Grid item md = {4}>
+                        </StyledGrid>
+                        <StyledGrid item md = {4}>
+                        </StyledGrid>
+                        <StyledGrid item md = {4}>
+                        </StyledGrid>
+                        <StyledGrid item md = {4}>
                             <div className = {classes.button}>
-                                <Button variant = "contained" color = "primary" disabled={!allowCreation} onClick={this.createProject}>
+                                <StyledButton variant = "contained" color = "primary" disabled={!allowCreation} onClick={this.createProject}>
                                     CREATE
-                                </Button>
+                                </StyledButton>
                             </div>
-                        </Grid>
-                    </Grid>
+                        </StyledGrid>
+                    </StyledGrid>
                     <div className={classes.error}>
                         <ErrorMessage
                             msg={this.state.errorMsg}
@@ -238,4 +236,4 @@ const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.Dispa
 };
 
 // This method wraps the component with the store and dispatch!!!
-export default connect(mapStateToProps, mapDispatchToProps)(withStyles(createProjectStyles)(CreateProject));
+export default connect(mapStateToProps, mapDispatchToProps)(SharedWithStyles()(createProjectStyles)(CreateProject));
