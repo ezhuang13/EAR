@@ -4,15 +4,24 @@ import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
 // Imports for Actions and Types
-import * as Actions from './projectsActions';
+import {
+    setProject,
+    setUserz,
+    deleteProject,
+    setProjects,
+    setProjectName,
+    obtainProjectData,
+    obtainUser,
+    DispatchProps as ProjectsDispatchProps
+} from './projectsActions';
 
 // Imports for Application State
 import { MainState } from '../../reducers';
 import { RouteComponentProps } from 'react-router';
-import { ProjectsState } from './projectsReducer';
+import { ProjectsProps } from './projectsReducer';
 
 // Import custom components and 3rd party libs
-import { AppState } from '../app/appReducer';
+import { AppProps } from '../app/appReducer';
 
 
 // shared parts
@@ -22,10 +31,10 @@ import { generateProfileHead, generateProfileBody, generateProfileInfo, composeT
 interface ParentProps extends RouteComponentProps<{}> {}
 
 // Combined Props Type for Projects Component (Dispatch and State)
-export type ProjectsProps = Actions.DispatchProps & ParentProps & ProjectsState & AppState;
+export type ComboProps = ProjectsDispatchProps & ParentProps & ProjectsProps & AppProps;
 
-class Projects extends React.Component<ProjectsProps, any> {
-  constructor(props: ProjectsProps) {
+class Projects extends React.Component<ComboProps, any> {
+  constructor(props: ComboProps) {
     super(props);
 
     this.setCurrentProject = this.setCurrentProject.bind(this);
@@ -124,15 +133,15 @@ const mapStateToProps = (state: MainState) => {
 };
 
 // This gives the component access to dispatch / the actions
-const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): ProjectsDispatchProps => {
   return bindActionCreators({
-    setProject: Actions.setProject,
-    setUser: Actions.setUserz,
-    deleteProject: Actions.deleteProject,
-    setProjects: Actions.setProjects,
-    setProjectName: Actions.setProjectName,
-    obtainProjectData: Actions.obtainProjectData,
-    obtainUser: Actions.obtainUser
+    setProject,
+    setUserz,
+    deleteProject,
+    setProjects,
+    setProjectName,
+    obtainProjectData,
+    obtainUser
   }, dispatch);
 };
 

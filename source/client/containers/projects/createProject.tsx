@@ -6,29 +6,30 @@ import { bindActionCreators } from 'redux';
 import { clientIP } from '../../utility/constants';
 
 // Imports for Actions and Types
-import * as Actions from './projectsActions';
+import {
+    createProject,
+    createProjStatus,
+    setProjects,
+    DispatchProps as ProjectsDispatchProps
+} from './projectsActions';
 import * as Types from './projectsTypes';
 
 // Imports for Application State (based on the reducer)
 import { MainState } from '../../reducers';
 import { RouteComponentProps } from 'react-router';
-import { ProjectsState } from './projectsReducer';
-//import { ErrorMessage, createProjectStyles } from '../../utility/shared';
-import { AppState } from '../app/appReducer';
-
+import { ProjectsProps } from './projectsReducer';
+import { AppProps } from '../app/appReducer';
 import { StyledGrid, StyledPlainInput, StyledPlainInputLabel, StyledButton, ErrorMessage, SharedWithStyles, 
     createProjectStyles } from '../../utility/shared';
 
-
-
 const NewDiv = styled.div`
-border-style: solid;
-height: 200px;
-width: 600px;
+    border-style: solid;
+    height: 200px;
+    width: 600px;
 `;
 
 const HeightDiv = styled.div`
-height: 50px;
+    height: 50px;
 `;
 
 
@@ -36,7 +37,7 @@ height: 50px;
 interface ParentProps extends RouteComponentProps<{}> {}
 
 // Combined Props Type for CreateProject Component (Dispatch and State)
-export type CreateProjectProps = Actions.DispatchProps & ParentProps & ProjectsState & AppState;
+export type CreateProjectProps = ProjectsDispatchProps & ParentProps & ProjectsProps & AppProps;
 
 class CreateProject extends React.Component<CreateProjectProps, any> {
     constructor(props: CreateProjectProps) {
@@ -229,9 +230,9 @@ const mapStateToProps = (state: MainState) => {
 // This gives the component access to dispatch / the actions
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
     return bindActionCreators({
-        createProject: Actions.createProject,
-        createProjStatus: Actions.createProjStatus,
-        setProjects: Actions.setProjects,
+        createProject,
+        createProjStatus,
+        setProjects,
     }, dispatch);
 };
 

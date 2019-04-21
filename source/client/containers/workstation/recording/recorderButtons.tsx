@@ -6,11 +6,17 @@ import { bindActionCreators } from 'redux';
 // Imports for Application State
 import { MainState } from '../../../reducers';
 import { RouteComponentProps } from 'react-router';
-import { WorkstationState } from '../workstationReducer';
-import { ProjectsState } from '../../projects/projectsReducer';
-import * as Actions from '../workstationActions';
-import * as ProjectsActions from '../../projects/projectsActions';
-import { AppState } from '../../app/appReducer';
+import { WorkstationProps } from '../workstationReducer';
+import { ProjectsProps } from '../../projects/projectsReducer';
+import {
+    createSound,
+    DispatchProps as WorkDispatchProps
+} from '../workstationActions';
+import {
+    deleteProject,
+    DispatchProps as ProjectsDispatchProps
+} from '../../projects/projectsActions';
+import { AppProps } from '../../app/appReducer';
 import { StyledButton } from '../../../utility/shared';
 import styled from 'styled-components';
 
@@ -27,8 +33,8 @@ interface PassedProps {
 }
 
 // Combined Props Type for RecorderButtons Component (Dispatch and State)
-export type RecorderButtonsProps = ParentProps & Actions.DispatchProps &
-ProjectsActions.DispatchProps & ProjectsState & WorkstationState & PassedProps & AppState;
+export type RecorderButtonsProps = ParentProps & WorkDispatchProps &
+    ProjectsDispatchProps & ProjectsProps & WorkstationProps & PassedProps & AppProps;
 
 // TODO: why can't I pass in the proper props, can't use history.push
 class RecorderButtons extends React.Component<RecorderButtonsProps> {
@@ -117,10 +123,10 @@ const mapStateToProps = (state: MainState) => {
 
 // This gives the component access to dispatch / the actions
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>):
-    Actions.DispatchProps & ProjectsActions.DispatchProps => {
+    WorkDispatchProps & ProjectsDispatchProps => {
     return bindActionCreators({
-        createSound: Actions.createSound,
-        deleteProject: ProjectsActions.deleteProject,
+        createSound,
+        deleteProject,
     }, dispatch);
 };
 

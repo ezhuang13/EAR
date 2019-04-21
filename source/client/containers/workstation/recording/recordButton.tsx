@@ -5,9 +5,14 @@ import { bindActionCreators } from 'redux';
 
 // Imports for Application State
 import { MainState } from '../../../reducers';
-import { WorkstationState } from '../workstationReducer';
-import { WaveState } from '../wavesurfer/wavesurferReducer';
-import * as Actions from '../workstationActions';
+import { WorkstationProps } from '../workstationReducer';
+import { WaveProps } from '../wavesurfer/wavesurferReducer';
+import {
+    setRecording,
+    setPlay,
+    setDownload,
+    DispatchProps as WorkDispatchProps
+} from '../workstationActions';
 
 // Import custom components and 3rd party libs
 import Recorder from '../../../utility/Recorder.min';
@@ -15,7 +20,7 @@ import Pizzicato from 'pizzicato';
 import { StyledButton } from '../../../utility/shared';
 
 // Combined Props Type for RecordButton Component (Dispatch and State)
-export type RecordButtonProps = Actions.DispatchProps & WorkstationState & WaveState;
+export type RecordButtonProps = WorkDispatchProps & WorkstationProps & WaveProps;
 
 class RecordButton extends React.Component<RecordButtonProps> {
 
@@ -88,11 +93,11 @@ const mapStateToProps = (state: MainState) => {
 };
 
 // This gives the component access to dispatch / the actions
-const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): WorkDispatchProps => {
     return bindActionCreators({
-        setRecording: Actions.setRecording,
-        setPlay: Actions.setPlay,
-        setDownload: Actions.setDownload,
+        setRecording,
+        setPlay,
+        setDownload
     }, dispatch);
 };
 

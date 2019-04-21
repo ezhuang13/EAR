@@ -1,7 +1,7 @@
 import * as Types from './projectsTypes';
 
 /********** Local State Interface and Initial State Constant **********/
-interface ProjectsStateInterface {
+interface ProjectsPropsInterface {
     projects?: any,
     currentProject?: Blob,
     currentUserInfo?: Types.UserInfo,
@@ -9,7 +9,7 @@ interface ProjectsStateInterface {
     currentProjectName?: string,
 }
 
-export const initialProjectsState: ProjectsStateInterface = {
+export const initialProjectsProps: ProjectsPropsInterface = {
     projects: [],
     currentProject: null,
     currentUserInfo: null,
@@ -18,7 +18,7 @@ export const initialProjectsState: ProjectsStateInterface = {
 };
 
 /********** Projects Reducer **********/
-export const projectsReducer = (state = initialProjectsState, action: Types.ProjectsActionTypes) => {
+export const projectsReducer = (state = initialProjectsProps, action: Types.ProjectsActionTypes) => {
     switch (action.type) {
         case Types.SET_USERZ:
             return Object.assign({}, state, {
@@ -48,4 +48,4 @@ export const projectsReducer = (state = initialProjectsState, action: Types.Proj
 };
 
 // Exports the Projects Reducer as the Projects's State
-export type ProjectsState = ReturnType<typeof projectsReducer>;
+export type ProjectsProps = ReturnType<typeof projectsReducer>;

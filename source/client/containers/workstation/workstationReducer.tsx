@@ -1,14 +1,43 @@
 import * as Types from './workstationTypes';
-import * as Constants from './better_effects/effectConstants';
+import {
+    COMPRESSOR,
+    DELAY,
+    DISTORTION,
+    DUB,
+    FLANGER,
+    PING_PONG,
+    QUADRAFUZZ,
+    REVERB,
+    RING_MOD,
+    STEREO_PANNER,
+    TREMOLO
+} from './better_effects/effectConstants';
 
 import Pizzicato from 'pizzicato';
 
-/********** Local State Interface and Initial State Constant **********/
-// TODO: create an interface for effects and audio
-interface WorkstationStateInterface {
+/********** Interfaces for the Workstation **********/
+interface EffectsInterface {
+    [COMPRESSOR]?: any,
+    [DELAY]?: any,
+    [DISTORTION]?: any,
+    [DUB]?: any,
+    [FLANGER]?: any,
+    [PING_PONG]?: any,
+    [QUADRAFUZZ]?: any,
+    [REVERB]?: any,
+    [RING_MOD]?: any,
+    [STEREO_PANNER]?: any,
+    [TREMOLO]?: any
+}
+export interface WorkstationState {
+    regionsInfo?: object,
+    highlightedRegion?: string,
+    selectorOptions?: any[]
+}
+interface WorkstationPropsInterface extends EffectsInterface {
     volume?: number,
-    checkedEffects?: any,
-    effects?: any,
+    checkedEffects?: object,
+    effects?: object,
     audio?: Pizzicato.Sound,
     audioUrl?: string,
     isPlaying?: boolean,
@@ -16,53 +45,42 @@ interface WorkstationStateInterface {
     downloadBlob?: Blob,
     selectedEffect?: string,
     selectedRegion?: string,
-    // Effect options
-    [Constants.COMPRESSOR]?: any,
-    [Constants.DELAY]?: any,
-    [Constants.DISTORTION]?: any,
-    [Constants.DUB]?: any,
-    [Constants.FLANGER]?: any,
-    [Constants.PING_PONG]?: any,
-    [Constants.QUADRAFUZZ]?: any,
-    [Constants.REVERB]?: any,
-    [Constants.RING_MOD]?: any,
-    [Constants.STEREO_PANNER]?: any,
-    [Constants.TREMOLO]?: any
+    classes?: any
 }
 
-export const generateCheckedEffects = () => {
+const generateCheckedEffects = () => {
     return {
-        [Constants.COMPRESSOR]: false,
-        [Constants.DELAY]: false,
-        [Constants.DISTORTION]: false,
-        [Constants.DUB]: false,
-        [Constants.FLANGER]: false,
-        [Constants.PING_PONG]: false,
-        [Constants.QUADRAFUZZ]: false,
-        [Constants.REVERB]: false,
-        [Constants.RING_MOD]: false,
-        [Constants.STEREO_PANNER]: false,
-        [Constants.TREMOLO]: false
+        [COMPRESSOR]: false,
+        [DELAY]: false,
+        [DISTORTION]: false,
+        [DUB]: false,
+        [FLANGER]: false,
+        [PING_PONG]: false,
+        [QUADRAFUZZ]: false,
+        [REVERB]: false,
+        [RING_MOD]: false,
+        [STEREO_PANNER]: false,
+        [TREMOLO]: false
     };
 };
 
-export const generateEffects = () => {
+const generateEffects = () => {
     return {
-        [Constants.COMPRESSOR]: null,
-        [Constants.DELAY]: null,
-        [Constants.DISTORTION]: null,
-        [Constants.DUB]: null,
-        [Constants.FLANGER]: null,
-        [Constants.PING_PONG]: null,
-        [Constants.QUADRAFUZZ]: null,
-        [Constants.REVERB]: null,
-        [Constants.RING_MOD]: null,
-        [Constants.STEREO_PANNER]: null,
-        [Constants.TREMOLO]: null
+        [COMPRESSOR]: null,
+        [DELAY]: null,
+        [DISTORTION]: null,
+        [DUB]: null,
+        [FLANGER]: null,
+        [PING_PONG]: null,
+        [QUADRAFUZZ]: null,
+        [REVERB]: null,
+        [RING_MOD]: null,
+        [STEREO_PANNER]: null,
+        [TREMOLO]: null
     };
 };
 
-export const initialWorkstationState: WorkstationStateInterface = {
+const initialWorkstationProps: WorkstationPropsInterface = {
     volume: .5,
     checkedEffects: {},
     effects: {},
@@ -73,7 +91,7 @@ export const initialWorkstationState: WorkstationStateInterface = {
     downloadBlob: null,
     selectedEffect: null,
     selectedRegion: null,
-    [Constants.COMPRESSOR]: {
+    [COMPRESSOR]: {
         threshold: -24,
         knee: 30,
         attack: .003,
@@ -81,52 +99,52 @@ export const initialWorkstationState: WorkstationStateInterface = {
         ratio: 12,
         mix: .5,
     },
-    [Constants.DELAY]: {
+    [DELAY]: {
         feedback: .5,
         time: .3,
         mix: .5,
     },
-    [Constants.DISTORTION]: {
+    [DISTORTION]: {
         gain: .5,
     },
-    [Constants.DUB]: {
+    [DUB]: {
         feedback: .5,
         time: .3,
         cutoff: 700,
         mix: .5,
     },
-    [Constants.FLANGER]: {
+    [FLANGER]: {
         lowGain: .6,
         midLowGain: .8,
         midHighGain: .5,
         highGain: .6,
     },
-    [Constants.PING_PONG]: {
+    [PING_PONG]: {
         feedback: .5,
         time: .3,
         mix: .5,
     },
-    [Constants.QUADRAFUZZ]: {
+    [QUADRAFUZZ]: {
         lowGain: .6,
         midLowGain: .8,
         midHighGain: .5,
         highGain: .6,
     },
-    [Constants.REVERB]: {
+    [REVERB]: {
         time: .01,
         decay: .01,
         reverse: true,
         mix: .5,
     },
-    [Constants.RING_MOD]: {
+    [RING_MOD]: {
         speed: 30,
         distortion: 1,
         mix: .5,
     },
-    [Constants.STEREO_PANNER]: {
+    [STEREO_PANNER]: {
         pan: 0,
     },
-    [Constants.TREMOLO]: {
+    [TREMOLO]: {
         speed: 4,
         depth: 1,
         mix: .5,
@@ -137,38 +155,38 @@ export const initialWorkstationState: WorkstationStateInterface = {
 const effectsReducer = (checkedEffect: string, options: any) => {
     let newEffect = null;
     switch (checkedEffect) {
-        case Constants.COMPRESSOR:
+        case COMPRESSOR:
             newEffect = new Pizzicato.Effects.Compressor(options);
             break;
-        case Constants.DELAY:
+        case DELAY:
             options[options] = {detached: true};
             newEffect = new Pizzicato.Effects.Delay(options);
             break;
-        case Constants.DISTORTION:
+        case DISTORTION:
             options[options] = {detached: true};
             newEffect = new Pizzicato.Effects.Distortion(options);
             break;
-        case Constants.DUB:
+        case DUB:
             newEffect = new Pizzicato.Effects.DubDelay(options);
             break;
-        case Constants.FLANGER:
+        case FLANGER:
             newEffect = new Pizzicato.Effects.Flanger(options);
             break;
-        case Constants.PING_PONG:
+        case PING_PONG:
             newEffect = new Pizzicato.Effects.PingPongDelay(options);
             break;
-        case Constants.QUADRAFUZZ:
+        case QUADRAFUZZ:
             newEffect = new Pizzicato.Effects.Quadrafuzz(options);
             break;
-        case Constants.REVERB:
+        case REVERB:
             newEffect = new Pizzicato.Effects.Reverb(options);
             break;
-        case Constants.RING_MOD:
+        case RING_MOD:
             newEffect = new Pizzicato.Effects.RingModulator(options);
             break;
-        case Constants.STEREO_PANNER:
+        case STEREO_PANNER:
             newEffect = new Pizzicato.Effects.StereoPanner(options);
-        case Constants.TREMOLO:
+        case TREMOLO:
             newEffect = new Pizzicato.Effects.Tremolo(options);
             break;
         default:
@@ -179,7 +197,7 @@ const effectsReducer = (checkedEffect: string, options: any) => {
 };
 
 /********** Workstation Reducer **********/
-export const workstationReducer = (state = initialWorkstationState, action: Types.WorkstationActionTypes) => {
+export const workstationReducer = (state = initialWorkstationProps, action: Types.WorkstationActionTypes) => {
     switch (action.type) {
         case Types.VOLUME_CHANGE:
             state.audio.volume = action.volume;
@@ -313,10 +331,12 @@ export const workstationReducer = (state = initialWorkstationState, action: Type
             delete state.checkedEffects[action.currentKey];
             delete state.effects[action.currentKey];
             return Object.assign({}, state, {});
+        case Types.SET_WORKSTATION:
+            return Object.assign({}, state, initialWorkstationProps);
         default:
             return state;
     }
 };
 
 // Exports the Workstation Reducer as the Workstation's State
-export type WorkstationState = ReturnType<typeof workstationReducer>;
+export type WorkstationProps = ReturnType<typeof workstationReducer>;

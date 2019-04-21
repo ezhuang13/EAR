@@ -8,7 +8,7 @@ export interface DispatchProps {
     initializeLogin: typeof initializeLogin,
     loginFail?: typeof loginFail,
     loginSuccess?: typeof loginSuccess,
-    performLogin?: typeof performLogin,
+    performLogin?: typeof performLogin
 }
 
 /********** Action Creators for the Synchronous Typed Actions **********/

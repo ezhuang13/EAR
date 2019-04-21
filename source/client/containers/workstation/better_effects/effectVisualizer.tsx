@@ -5,7 +5,11 @@ import { bindActionCreators } from 'redux';
 import { connect } from 'react-redux';
 import { ThunkDispatch } from 'redux-thunk';
 import { MainState } from '../../../reducers';
-import * as WorkstationActions from '../workstationActions';
+import {
+    toggleEffect,
+    removeEffects,
+    DispatchProps as WorkDispatchProps
+} from '../workstationActions';
 
 class EffectVisualizer extends React.Component<any> {
     constructor(props: any) {
@@ -56,9 +60,10 @@ class EffectVisualizer extends React.Component<any> {
     render() {
         const ourEffects = this.createEffects();
         return (
+            // @ts-ignore
             <EffectBox
-                colStart = {3}
-                colEnd = {5}
+                colStart={3}
+                colEnd={5}
             >
                 <UnderlineText>Remove Effects {this.props.regionNumber}</UnderlineText>
                 {ourEffects}
@@ -79,10 +84,10 @@ const mapStateToProps = (state: MainState) => {
 
 // This gives the component access to dispatch / the actions
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>):
-    WorkstationActions.DispatchProps => {
+    WorkDispatchProps => {
     return bindActionCreators({
-        toggleEffect: WorkstationActions.toggleEffect,
-        removeEffects: WorkstationActions.removeEffects,
+        toggleEffect,
+        removeEffects
     }, dispatch);
 };
 

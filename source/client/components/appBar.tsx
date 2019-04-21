@@ -80,6 +80,21 @@ class StyledAppBar extends React.Component<any> {
                 </StyledButton>
         );
 
+        const pageName = this.props.location.pathname.split('/')[1];
+        const ourPage = pageName === '' ? 'Welcome to EAR' : navBarDisplay[pageName];
+        returnButton.push(
+            <StyledTypography
+                key='header'
+                align='center'
+                variant='title'
+                inline='true'
+                color='textPrimary'
+                style={{margin: '1em', display: 'inline-block'}}
+            >
+            {ourPage}
+            </StyledTypography>
+        );
+
         if (this.props.loggedIn) {
             // push profile and logout
             const profileButton = (
@@ -138,20 +153,10 @@ class StyledAppBar extends React.Component<any> {
 
     render() {
         const finalButtons = this.generateButtons();
-        let page = this.props.location.pathname.split('/')[1];
-        page = page === '' ? 'Welcome to EAR' : navBarDisplay[page];
         return (
             <React.Fragment>
                     <MUIAppBar position='static'>
                         <div style={{display: 'inline'}}>
-                            <StyledTypography
-                                align='center'
-                                variant='title'
-                                inline='true'
-                                color='textPrimary'
-                            >
-                                {page}
-                            </StyledTypography>
                             {finalButtons}
                         </div>
                     </MUIAppBar>

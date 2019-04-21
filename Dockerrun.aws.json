@@ -1,0 +1,259 @@
+{
+    "containerDefinitions": [
+        {
+            "environment": [
+                {
+                    "name": "POSTGRES_USER",
+                    "value": "postgres"
+                },
+                {
+                    "name": "POSTGRES_PASSWORD",
+                    "value": "postgres"
+                },
+                {
+                    "name": "POSTGRES_DB",
+                    "value": "database"
+                }
+            ],
+            "essential": true,
+            "image": "postgres",
+            "memory": 14,
+            "name": "db",
+            "portMappings": [
+                {
+                    "containerPort": 5432,
+                    "hostPort": 5432
+                }
+            ]
+        },
+        {
+            "environment": [
+                {
+                    "name": "DATABASE_URL",
+                    "value": "postgresql://postgres:postgres@db:5432/database"
+                },
+                {
+                    "name": "FLASK_ENV",
+                    "value": "docker"
+                },
+                {
+                    "name": "PYTHONUNBUFFERED",
+                    "value": "0"
+                },
+                {
+                    "name": "MINIO_PORT",
+                    "value": "9001"
+                },
+                {
+                    "name": "BRIDGE_IP",
+                    "value": "172.19.0.1"
+                }
+            ],
+            "essential": true,
+            "image": "none",
+            "links": [
+                "db",
+                "minio1"
+            ],
+            "memory": 14,
+            "mountPoints": [
+                {
+                    "containerPath": "/app",
+                    "sourceVolume": "_"
+                }
+            ],
+            "name": "flask",
+            "portMappings": [
+                {
+                    "containerPort": 5000,
+                    "hostPort": 5000
+                }
+            ]
+        },
+        {
+            "command": [
+                "server",
+                "http://minio1/data",
+                "http://minio2/data",
+                "http://minio3/data",
+                "http://minio4/data"
+            ],
+            "environment": [
+                {
+                    "name": "MINIO_ACCESS_KEY",
+                    "value": "minio"
+                },
+                {
+                    "name": "MINIO_SECRET_KEY",
+                    "value": "minio123"
+                }
+            ],
+            "essential": true,
+            "image": "minio/minio:RELEASE.2019-03-13T21-59-47Z",
+            "logConfiguration": {
+                "logDriver": "none"
+            },
+            "memory": 14,
+            "mountPoints": [
+                {
+                    "containerPath": "/data",
+                    "sourceVolume": "Data1"
+                }
+            ],
+            "name": "minio1",
+            "portMappings": [
+                {
+                    "containerPort": 9000,
+                    "hostPort": 9001
+                }
+            ]
+        },
+        {
+            "command": [
+                "server",
+                "http://minio1/data",
+                "http://minio2/data",
+                "http://minio3/data",
+                "http://minio4/data"
+            ],
+            "environment": [
+                {
+                    "name": "MINIO_ACCESS_KEY",
+                    "value": "minio"
+                },
+                {
+                    "name": "MINIO_SECRET_KEY",
+                    "value": "minio123"
+                }
+            ],
+            "essential": true,
+            "image": "minio/minio:RELEASE.2019-03-13T21-59-47Z",
+            "logConfiguration": {
+                "logDriver": "none"
+            },
+            "memory": 14,
+            "mountPoints": [
+                {
+                    "containerPath": "/data",
+                    "sourceVolume": "Data2"
+                }
+            ],
+            "name": "minio2",
+            "portMappings": [
+                {
+                    "containerPort": 9000,
+                    "hostPort": 9002
+                }
+            ]
+        },
+        {
+            "command": [
+                "server",
+                "http://minio1/data",
+                "http://minio2/data",
+                "http://minio3/data",
+                "http://minio4/data"
+            ],
+            "environment": [
+                {
+                    "name": "MINIO_ACCESS_KEY",
+                    "value": "minio"
+                },
+                {
+                    "name": "MINIO_SECRET_KEY",
+                    "value": "minio123"
+                }
+            ],
+            "essential": true,
+            "image": "minio/minio:RELEASE.2019-03-13T21-59-47Z",
+            "logConfiguration": {
+                "logDriver": "none"
+            },
+            "memory": 14,
+            "mountPoints": [
+                {
+                    "containerPath": "/data",
+                    "sourceVolume": "Data3"
+                }
+            ],
+            "name": "minio3",
+            "portMappings": [
+                {
+                    "containerPort": 9000,
+                    "hostPort": 9003
+                }
+            ]
+        },
+        {
+            "command": [
+                "server",
+                "http://minio1/data",
+                "http://minio2/data",
+                "http://minio3/data",
+                "http://minio4/data"
+            ],
+            "environment": [
+                {
+                    "name": "MINIO_ACCESS_KEY",
+                    "value": "minio"
+                },
+                {
+                    "name": "MINIO_SECRET_KEY",
+                    "value": "minio123"
+                }
+            ],
+            "essential": true,
+            "image": "minio/minio:RELEASE.2019-03-13T21-59-47Z",
+            "logConfiguration": {
+                "logDriver": "none"
+            },
+            "memory": 14,
+            "mountPoints": [
+                {
+                    "containerPath": "/data",
+                    "sourceVolume": "Data4"
+                }
+            ],
+            "name": "minio4",
+            "portMappings": [
+                {
+                    "containerPort": 9000,
+                    "hostPort": 9004
+                }
+            ]
+        }
+    ],
+    "family": "",
+    "volumes": [
+        {
+            "host": {
+                "sourcePath": "."
+            },
+            "name": "_"
+        },
+        {
+            "host": {
+                "sourcePath": "data1"
+            },
+            "name": "Data1"
+        },
+        {
+            "host": {
+                "sourcePath": "data2"
+            },
+            "name": "Data2"
+        },
+        {
+            "host": {
+                "sourcePath": "data3"
+            },
+            "name": "Data3"
+        },
+        {
+            "host": {
+                "sourcePath": "data4"
+            },
+            "name": "Data4"
+        }
+    ]
+}

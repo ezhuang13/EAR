@@ -1,20 +1,20 @@
 import * as Types from './loginTypes';
 
 /********** Login State Interface and Initial State Constant **********/
-export interface LoginStateInterface {
+export interface LoginPropsInterface {
     loginError: string;
     notify: string;
     attemptedUser: string;
 }
 
-export const initialLoginState: LoginStateInterface = {
+export const initialLoginProps: LoginPropsInterface = {
     loginError: '',
     notify: '',
     attemptedUser: '',
 };
 
 /********** Login Reducer **********/
-export const loginReducer = (state = initialLoginState, action: Types.LoginActionTypes) => {
+export const loginReducer = (state = initialLoginProps, action: Types.LoginActionTypes) => {
     switch (action.type) {
         case Types.LOGIN_INITIALIZED:
             return Object.assign({}, state, {
@@ -44,4 +44,4 @@ export const loginReducer = (state = initialLoginState, action: Types.LoginActio
 };
 
 // Exports the Login Reducer as the Login's State
-export type LoginState = ReturnType<typeof loginReducer>;
+export type LoginProps = ReturnType<typeof loginReducer>;
