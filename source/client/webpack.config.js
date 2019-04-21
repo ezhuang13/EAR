@@ -1,6 +1,7 @@
 // Necessary inclusions!
 const path = require('path');
 const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 
 // Create Bundling Regex (for Chunk Splitting).
 const bundleRegex = new RegExp(['[\\/]',
@@ -83,6 +84,12 @@ const clientConfig = {
     },
 
     optimization: {
+        minimize: true,
+        minimizer: [
+            new UglifyJSPlugin({
+                include: /\.min\.js$/
+            })
+        ],
         splitChunks: {
             cacheGroups: {
               commons: {

@@ -5,16 +5,16 @@ import React, { Fragment } from 'react';
 import { StyledGrid, StyledTypography, SharedWithStyles } from '../../utility/shared';
 
 // @ts-ignore
-import EARlogo from '../../../../images/EARlogo.png';
+import EARlogo from '../../images/EARlogo.png';
 
 // @ts-ignore
-import AaronPic from '../../../../images/AaronPic.png';
+import AaronPic from '../../images/AaronPic.png';
 
 // @ts-ignore
-import EricPic from '../../../../images/EricPic.png';
+import EricPic from '../../images/EricPic.png';
 
 // @ts-ignore
-import RajPic from '../../../../images/RajPic.png';
+import RajPic from '../../images/RajPic.png';
 
 // Define styles for the homepage!
 const styles = (theme: any) => ({

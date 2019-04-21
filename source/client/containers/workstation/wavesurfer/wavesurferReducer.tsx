@@ -1,17 +1,17 @@
 import * as Types from './wavesurferTypes';
-import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
-import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
 
 /********** Local State Interface and Initial State Constant **********/
-interface WaveStateLocal {
-    waveInitialized?: boolean;
-    wave?: any;
-    waveColor?: string;
-    progressColor?: string;
+export interface WaveState {}
+
+interface WavePropsInterface {
+    waveInitialized: boolean;
+    wave: any;
+    waveColor: string;
+    progressColor: string;
     songData?: Types.Options;
 }
 
-export const initialWaveState: WaveStateLocal = {
+export const initialWaveProps: WavePropsInterface = {
     waveInitialized: false,
     wave: {},
     waveColor: 'purple',
@@ -26,7 +26,7 @@ export const initialWaveState: WaveStateLocal = {
 };
 
 /********** Application Reducer **********/
-export const waveReducer = (state = initialWaveState, action: Types.WaveActionTypes) => {
+export const waveReducer = (state = initialWaveProps, action: Types.WaveActionTypes) => {
     switch (action.type) {
         case Types.WAVE_INITIALIZED:
             return Object.assign({}, state, {
@@ -97,4 +97,4 @@ export const waveReducer = (state = initialWaveState, action: Types.WaveActionTy
 };
 
 // Exports the Application Reducer as the Application's State
-export type WaveState = ReturnType<typeof waveReducer>;
+export type WaveProps = ReturnType<typeof waveReducer>;

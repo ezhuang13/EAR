@@ -6,13 +6,16 @@ import { optionLabelToParam, sliderOptions, toDisplayString } from './effectCons
 
 // Imports for Application State
 import { MainState } from '../../../reducers';
-import * as WorkstationActions from './../workstationActions';
-import { WorkstationState } from './../workstationReducer';
+import {
+    modifyEffect,
+    DispatchProps as WorkDispatchProps
+} from './../workstationActions';
+import { WorkstationProps } from './../workstationReducer';
 
 import MusicSlider from '../../../components/slider';
 import { SliderGrids, EffectBox, UnderlineText } from '../../../utility/shared';
 
-export type EffectCustomizerProps = WorkstationActions.DispatchProps & WorkstationState;
+export type EffectCustomizerProps = WorkDispatchProps & WorkstationProps;
 
 class EffectCustomizer extends React.Component<EffectCustomizerProps> {
 
@@ -74,7 +77,7 @@ const mapStateToProps = (state: MainState) => {
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>):
     WorkstationActions.DispatchProps => {
     return bindActionCreators({
-        modifyEffect: WorkstationActions.modifyEffect,
+        modifyEffect
     }, dispatch);
 };
 

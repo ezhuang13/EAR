@@ -4,16 +4,22 @@ import { ThunkDispatch } from 'redux-thunk';
 
 // Import shared components
 import Form from '../../components/form';
-import * as Schemas from '../../utility/schemas';
+import {
+    performValidation
+} from '../../utility/schemas';
 
 // Imports for Actions and Types
-import * as Actions from './registerActions';
+import {
+    performRegister,
+    registerFail,
+    DispatchProps as RegisterDispatchProps
+} from './registerActions';
 import * as Types from './registerTypes';
 
 // Imports for Application State (based on the reducer)
 import { MainState } from '../../reducers';
-import { RegisterState } from './registerReducer';
-import { AppState } from '../app/appReducer';
+import { RegisterProps } from './registerReducer';
+import { AppProps } from '../app/appReducer';
 
 // Import constants for Register
 import { RouteComponentProps } from 'react-router';
@@ -26,10 +32,10 @@ import { StyledPlainPaper, ModalNotify, SharedWithStyles, formStyles } from '../
 interface ParentProps extends RouteComponentProps<{}> {}
 
 // Combined Props Type for Register Compoinent (Dispatch and State)
-export type RegisterProps = Actions.DispatchProps & ParentProps & RegisterState & AppState;
+export type ComboProps = RegisterDispatchProps & ParentProps & RegisterProps & AppProps;
 
-class Register extends React.Component<RegisterProps> {
-    constructor(props: RegisterProps) {
+class Register extends React.Component<ComboProps> {
+    constructor(props: ComboProps) {
         super(props);
 
         this.onAcceptRegister = this.onAcceptRegister.bind(this);
@@ -42,16 +48,12 @@ class Register extends React.Component<RegisterProps> {
         }
     }
 
-    componentWillUpdate(prevProps) {
-        console.log(prevProps, this.props);
-    }
-
     onAcceptRegister() {
         this.props.history.push('/login');
     }
 
     submitRegistration(registrationInfo: Types.RegisterInformation) {
-        const validResult = Schemas.performValidation(registrationInfo, 'Register');
+        const validResult = performValidation(registrationInfo, 'Register');
         if (validResult.error === null) {
             // No error, thus login information passed client-side validation!
             // Allow login fetch to actually happen...
@@ -92,13 +94,13 @@ const mapStateToProps = (state: MainState) => {
 };
 
 // This gives the component access to dispatch / the actions
-const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): RegisterDispatchProps => {
     return bindActionCreators({
-        performRegister: Actions.performRegister,
-        registerFail: Actions.registerFail,
+        performRegister,
+        registerFail,
     }, dispatch);
 };
 
 // This method wraps the component with the store and dispatch!!!
-export default connect<any, Actions.DispatchProps, any, MainState>(mapStateToProps,
+export default connect<any, RegisterDispatchProps, any, MainState>(mapStateToProps,
     mapDispatchToProps)(SharedWithStyles()(formStyles)(Register));

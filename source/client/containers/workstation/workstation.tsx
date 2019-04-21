@@ -3,16 +3,49 @@ import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
 
-// Imports for Application State
+// Imports for Different States.
 import { MainState } from '../../reducers';
+import { AppProps } from '../app/appReducer';
 import { RouteComponentProps } from 'react-router';
-import { WorkstationState } from './workstationReducer';
-import { ProjectsState } from '../projects/projectsReducer';
-import { WaveState } from './wavesurfer/wavesurferReducer';
-import * as WorkstationActions from './workstationActions';
-import * as WaveActions from './wavesurfer/wavesurferActions';
-import * as ProjectsActions from '../projects/projectsActions';
-import * as ProjectsTypes from '../projects/projectsTypes';
+import { WorkstationProps, WorkstationState } from './workstationReducer';
+import { ProjectsProps } from '../projects/projectsReducer';
+import { WaveProps } from './wavesurfer/wavesurferReducer';
+
+// Imports for Workstation Actions.
+import {
+    volumeChange,
+    createSound,
+    setPlay,
+    togglePlay,
+    toggleEffect,
+    removeEffects,
+    addCheckedEffects,
+    resetEffects,
+    deleteRegion,
+    selectRegion,
+    setWorkstation,
+    DispatchProps as WorkstationDispatchProps
+} from './workstationActions';
+
+// Imports for Wavesurfer Actions.
+import {
+    addPlugin,
+    removePlugin,
+    clipAudio,
+    addRegionOptions,
+    DispatchProps as WaveDispatchProps
+} from './wavesurfer/wavesurferActions';
+
+// Imports for Project Actions.
+import {
+    createProject,
+    obtainProjectData,
+    getProjectBlob,
+    DispatchProps as ProjectDispatchProps
+} from '../projects/projectsActions';
+
+// Import for Project Info.
+import { ProjectInfo } from '../projects/projectsTypes';
 
 // Import custom components and 3rd party libs
 import RecordButton from './recording/recordButton';
@@ -22,23 +55,24 @@ import EffectSource from './better_effects/effectSource';
 import EffectVisualizer from './better_effects/effectVisualizer';
 import EffectCustomizer from './better_effects/effectCustomizer';
 import interact from 'interactjs';
-import { AppState } from '../app/appReducer';
+import {
+    StyledButton,
+    StyledPlainPaper,
+    otherPaperStyles
+} from '../../utility/shared';
 import Selector from '../../components/selector';
-
-// shared parts
-import { isEmpty, StyledPlainPaper, StyledButton, SharedWithStyles, otherPaperStyles } from '../../utility/shared';
+import { withStyles } from '@material-ui/core';
 
 // Interface for what we want to pass as props from the parent component
-interface ParentProps extends RouteComponentProps<{}> {}
+interface ParentProps extends RouteComponentProps<{}> { }
 
 // Combined Props Type for Workstation Component (Dispatch and State)
-export type WorkstationProps = WorkstationActions.DispatchProps & ProjectsActions.DispatchProps &
-WaveActions.DispatchProps & WorkstationState & ProjectsState & WaveState & ParentProps & AppState;
+export type ComboProps = WorkstationDispatchProps & ProjectDispatchProps &
+    WaveDispatchProps & WorkstationProps & ProjectsProps & WaveProps & ParentProps & AppProps;
 
-// TODO(all): css libraries (basecss, boostrap) for design and layout
-class Workstation extends React.Component<WorkstationProps, any> {
+class Workstation extends React.Component<ComboProps, WorkstationState> {
 
-    constructor(props: WorkstationProps) {
+    constructor(props: ComboProps) {
         super(props);
 
         this.state = {
@@ -54,14 +88,28 @@ class Workstation extends React.Component<WorkstationProps, any> {
         this.deleteRegion = this.deleteRegion.bind(this);
         this.addRegion = this.addRegion.bind(this);
         this.changeSelectorType = this.changeSelectorType.bind(this);
+        this.resizeWave = this.resizeWave.bind(this);
+
+        // Methods for generating components to be rendered.
         this.generateController = this.generateController.bind(this);
+        this.generateButtons = this.generateButtons.bind(this);
     }
 
     componentDidMount() {
+        this.props.setWorkstation();
         if (this.props.currentUser && this.props.currentProjectName) {
+
+            // @ts-ignore Obtain the project blob, then create the URL and Audio.
             this.props.getProjectBlob(this.props.currentUser, this.props.currentProjectName).then(() => {
                 const url = URL.createObjectURL(this.props.currentProject);
                 this.props.createSound(url);
+            });
+            window.addEventListener('resize', (ev) => {
+                // @ts-ignore Clear the timeout if we're still resizing!
+                clearTimeout(window.resizedFinished);
+
+                // @ts-ignore Set the timeout for calling the resizeWave function.
+                window.resizedFinished = setTimeout(this.resizeWave, 250);
             });
         } else {
             // We need to fetch and set the project here.
@@ -70,18 +118,6 @@ class Workstation extends React.Component<WorkstationProps, any> {
     }
 
     componentDidUpdate(prevProps: WorkstationProps, prevState: any) {
-        if (this.props.audio === null) {
-            // Audio hasn't been initialized yet.
-        } else {
-            // Audio is now initialized in here.
-        }
-
-        if (isEmpty(this.props.wave)) {
-            // Wave has not been initialized.
-        } else {
-            // Wave is now initialized in here.
-        }
-
         // Finds the newly added region and adds the number identifier to the regions HTML.
         if (prevState.regionsInfo !== this.state.regionsInfo) {
             if (this.props.wave.regions) {
@@ -90,7 +126,7 @@ class Workstation extends React.Component<WorkstationProps, any> {
                     if (prevState.regionsInfo[currentKey] !== this.state.regionsInfo[currentKey]) {
                         // Adds a label to the region if necessary!
                         this.props.addRegionOptions(currentKey, this.state.regionsInfo[currentKey],
-                                                    this.props.wave, this.props.audio, this.props.checkedEffects);
+                            this.props.wave, this.props.audio, this.props.checkedEffects);
                     }
                 });
             }
@@ -111,11 +147,16 @@ class Workstation extends React.Component<WorkstationProps, any> {
         this.props.resetEffects();
     }
 
+    resizeWave() {
+        this.props.wave.drawer.containerWidth = this.props.wave.drawer.container.clientWidth;
+        this.props.wave.drawBuffer();
+    }
+
     changeSelectorType(newType: string) {
         this.props.selectRegion(newType);
     }
 
-    replaceAudio(project: ProjectsTypes.ProjectInfo) {
+    replaceAudio(project: ProjectInfo) {
         this.props.createProject(project, this.props.currentUser);
         const url = URL.createObjectURL(this.props.downloadBlob);
         this.props.createSound(url);
@@ -212,7 +253,7 @@ class Workstation extends React.Component<WorkstationProps, any> {
 
             this.props.wave.regions.list[ourKey].on('click', async (clickedRegion: any) => {
                 const regionKey = await clickedRegion.target.dataset.id; // Need to "await" for the stuff to settle.
-                this.setState({highlightedRegion: regionKey});
+                this.setState({ highlightedRegion: regionKey });
                 // Need to highlight the current region by changing its color.
                 // i.e. Need to setState locally and in the Redux store.
             });
@@ -221,14 +262,16 @@ class Workstation extends React.Component<WorkstationProps, any> {
 
             // Add another option for the Selector!
             const newSelectorOption = {
-                 value: ourKey,
-                 label: 'Region ' + listLength
+                value: ourKey,
+                label: 'Region ' + listLength
             };
 
             // Create the new checkedEffects
             this.props.addCheckedEffects(regionKeys[listLength]);
-            this.setState({regionsInfo: {...this.state.regionsInfo, ...returnObject},
-                selectorOptions: [...this.state.selectorOptions, newSelectorOption]});
+            this.setState({
+                regionsInfo: { ...this.state.regionsInfo, ...returnObject },
+                selectorOptions: [...this.state.selectorOptions, newSelectorOption]
+            });
         });
     }
 
@@ -248,9 +291,8 @@ class Workstation extends React.Component<WorkstationProps, any> {
         }
     }
 
-    render() {
-        const {classes} = this.props; 
-        const buttons = [
+    generateButtons() {
+        const ourButtons = [
             {
                 method: this.togglePlay,
                 text: this.props.isPlaying ? 'Pause' : 'Play'
@@ -270,16 +312,17 @@ class Workstation extends React.Component<WorkstationProps, any> {
         ];
 
         const OurSelector = this.state.selectorOptions.length !== 0 ?
-                            <Selector
-                                key='selector'
-                                changeType={this.changeSelectorType}
-                                textOptions={this.state.selectorOptions}
-                                labelText='Select a Region'
-                                defaultValue='0'
-                            /> : '';
+            <Selector
+                key='selector'
+                changeType={this.changeSelectorType}
+                textOptions={this.state.selectorOptions}
+                labelText='Select a Region'
+                defaultValue='0'
+            /> : '';
 
+        // Loop through the first button array and generate the appropriate row of buttons.
         const buttonRow = [];
-        buttons.forEach((value, index) => {
+        ourButtons.forEach((value, index) => {
             buttonRow.push(
                 <StyledButton
                     key={index}
@@ -289,25 +332,43 @@ class Workstation extends React.Component<WorkstationProps, any> {
                 </StyledButton>
             );
         });
+
+        // Loop through the second button array, generate buttons
         buttonRow.push(OurSelector);
-        const ourController = this.generateController();
+        buttonRow.push(<RecordButton key='record'/>);
+
+        return buttonRow;
+    }
+
+    render() {
+        let ourController = null;
+        let ourButtons = null;
+        if (this.props.waveInitialized) {
+            ourButtons = this.generateButtons();
+            ourController = this.generateController();
+        }
+
+        const paperStyle = {
+            margin: '0.5em',
+        };
 
         return (
             <React.Fragment>
-                <StyledPlainPaper className = {this.props.classes.root} style={{margin: '0.5em', display: 'inline-block'}} >
-                    <div>
-                        {buttonRow}
-                    </div>
-                    <div>
-                        <RecordButton/>
-                        <RecorderButtons replaceAudio={this.replaceAudio} {...this.props}/>
-                    </div>
+                <StyledPlainPaper
+                    className={this.props.classes.root}
+                    style={{...paperStyle, display: 'inline-block'}}
+                >
+                    {ourButtons}
+                    <RecorderButtons replaceAudio={this.replaceAudio} {...this.props} />
                 </StyledPlainPaper>
                 <Wave/>
-                <StyledPlainPaper className = {this.props.classes.root} style = {{margin: '0.5em', display: 'inline-grid'}}>
-                    <EffectSource/>
+                <StyledPlainPaper
+                    className={this.props.classes.root}
+                    style={{...paperStyle, display: 'inline-grid'}}
+                >
+                    <EffectSource />
                     {this.props.selectedRegion && ourController}
-                    {this.props.selectedEffect && <EffectCustomizer/>}
+                    {this.props.selectedEffect && <EffectCustomizer />}
                 </StyledPlainPaper>
             </React.Fragment>
         );
@@ -331,6 +392,7 @@ const mapStateToProps = (state: MainState) => {
 
         wave: state.wave.wave,
         songData: state.wave.songData,
+        waveInitialized: state.wave.waveInitialized,
 
         currentUser: state.app.currentUser
     };
@@ -338,29 +400,34 @@ const mapStateToProps = (state: MainState) => {
 
 // This gives the component access to dispatch / the actions
 const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>):
-    WorkstationActions.DispatchProps & ProjectsActions.DispatchProps => {
+    WorkstationDispatchProps & WaveDispatchProps & ProjectDispatchProps => {
     return bindActionCreators({
-        volumeChange: WorkstationActions.volumeChange,
-        createSound: WorkstationActions.createSound,
-        setPlay: WorkstationActions.setPlay,
-        togglePlay: WorkstationActions.togglePlay,
-        toggleEffect: WorkstationActions.toggleEffect,
-        removeEffects: WorkstationActions.removeEffects,
-        addCheckedEffects: WorkstationActions.addCheckedEffects,
-        resetEffects: WorkstationActions.resetEffects,
-        deleteRegion: WorkstationActions.deleteRegion,
-        selectRegion: WorkstationActions.selectRegion,
 
-        createProject: ProjectsActions.createProject,
-        obtainProjectData: ProjectsActions.obtainProjectData,
-        getProjectBlob: ProjectsActions.getProjectBlob,
+        // Workstation Actions!
+        volumeChange,
+        createSound,
+        setPlay,
+        togglePlay,
+        toggleEffect,
+        removeEffects,
+        addCheckedEffects,
+        resetEffects,
+        deleteRegion,
+        selectRegion,
+        setWorkstation,
 
-        addPlugin: WaveActions.addPlugin,
-        removePlugin: WaveActions.removePlugin,
-        clipAudio: WaveActions.clipAudio,
-        addRegionOptions: WaveActions.addRegionOptions
+        // Create Project Actions!
+        createProject,
+        obtainProjectData,
+        getProjectBlob,
+
+        // Wavesurfer Actions!
+        addPlugin,
+        removePlugin,
+        clipAudio,
+        addRegionOptions
     }, dispatch);
 };
 
-// This method wraps the component with the store and dispatch!!!
-export default connect(mapStateToProps, mapDispatchToProps)(SharedWithStyles(otherPaperStyles)(Workstation));
+// @ts-ignore Wraps the method with the store and actions, uses withStyles for styling.
+export default connect(mapStateToProps, mapDispatchToProps)(withStyles(otherPaperStyles)(Workstation));

@@ -5,11 +5,15 @@ import { ThunkDispatch } from 'redux-thunk';
 import { connect } from 'react-redux';
 
 // Imports for Actions and Types
-import * as Actions from './appActions';
+import {
+    initializeApplication,
+    setUser,
+    DispatchProps as AppDispatchProps
+} from './appActions';
 
 // Imports for Application State (based on the reducer)
 import { MainState } from '../../reducers';
-import { AppState } from './appReducer';
+import { AppProps } from './appReducer';
 
 // Importing the Smart components / Routes
 import Register from '../register/register';
@@ -30,10 +34,10 @@ import AppBar from '../../components/appBar';
 interface ParentProps extends RouteComponentProps<{}> {}
 
 // Combined Props Type for App Compoinent (Dispatch and State)
-export type AppProps = Actions.DispatchProps & ParentProps & AppState;
+export type ComboProps = AppDispatchProps & ParentProps & AppProps;
 
-class Application extends React.Component<AppProps> {
-    constructor(props: AppProps) {
+class Application extends React.Component<ComboProps> {
+    constructor(props: ComboProps) {
         super(props);
 
         // Binding "this" object to the different methods
@@ -99,13 +103,13 @@ const mapStateToProps = (state: MainState) => {
 };
 
 // This gives the component access to dispatch / the actions
-const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): Actions.DispatchProps => {
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): AppDispatchProps => {
     return bindActionCreators({
-        initializeApplication: Actions.initializeApplication,
-        setUser: Actions.setUser
+        initializeApplication,
+        setUser
     }, dispatch);
 };
 
 // This method wraps the component with the store and dispatch!!!
-export default connect<any, Actions.DispatchProps, any, MainState>
+export default connect<any, AppDispatchProps, any, MainState>
 (mapStateToProps, mapDispatchToProps)(Application);

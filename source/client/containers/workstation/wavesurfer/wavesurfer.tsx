@@ -5,14 +5,29 @@ import { connect } from 'react-redux';
 import styled from 'styled-components';
 import { bindActionCreators } from 'redux';
 
-import * as WaveActions from './wavesurferActions';
-import * as WorkActions from '../workstationActions';
+import {
+    initializeWave,
+    changeWaveColor,
+    changeProgressColor,
+    addPlugin,
+    setOptions,
+    replaceAudio,
+    removePlugin,
+    clipAudio,
+    playRegion,
+    addRegionOptions,
+    DispatchProps as WaveDispatchProps
+} from './wavesurferActions';
+import {
+    togglePlay,
+    DispatchProps as WorkDispatchProps
+} from '../workstationActions';
 
 // Imports for Application State (based on the reducer)
 import { MainState } from '../../../reducers';
-import { WaveState } from './wavesurferReducer';
-import { WorkstationState } from '../workstationReducer';
-import { ProjectsState } from '../../projects/projectsReducer';
+import { WaveProps, WaveState } from './wavesurferReducer';
+import { WorkstationProps } from '../workstationReducer';
+import { ProjectsProps } from '../../projects/projectsReducer';
 
 const StyledDiv = styled.div`
     display: block;
@@ -26,11 +41,11 @@ const StyledDiv = styled.div`
 interface ParentProps extends RouteComponentProps<{}> {}
 
 // Combined Props Type for App Compoinent (Dispatch and State)
-export type WaveProps = WaveActions.DispatchProps & WorkActions.DispatchProps &
-    ParentProps & WaveState & WorkstationState & ProjectsState;
+export type ComboProps = WaveDispatchProps & WorkDispatchProps &
+    ParentProps & WaveProps & WorkstationProps & ProjectsProps;
 
-class Wavesurfer extends React.Component<WaveProps> {
-    constructor(props: WaveProps) {
+class Wavesurfer extends React.Component<ComboProps, WaveState> {
+    constructor(props: ComboProps) {
         super(props);
 
         this.changeWaveColor = this.changeWaveColor.bind(this);
@@ -41,7 +56,7 @@ class Wavesurfer extends React.Component<WaveProps> {
         return;
     }
 
-    componentWillUpdate(nextProps: WaveProps) {
+    componentWillUpdate(nextProps: ComboProps) {
         if (nextProps.audio !== this.props.audio) {
                 if (this.props.waveInitialized && this.props.downloadBlob) {
                     this.props.audio.pause();
@@ -121,23 +136,23 @@ const mapStateToProps = (state: MainState) => {
 };
 
 // This gives the component access to dispatch / the actions
-const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): WaveActions.DispatchProps &
-WorkActions.DispatchProps => {
+const mapDispatchToProps = (dispatch: ThunkDispatch<{}, {}, any>): WaveDispatchProps &
+WorkDispatchProps => {
     return bindActionCreators({
-        initializeWave: WaveActions.initializeWave,
-        changeWaveColor: WaveActions.changeWaveColor,
-        changeProgressColor: WaveActions.changeProgressColor,
-        addPlugin: WaveActions.addPlugin,
-        setOptions: WaveActions.setOptions,
-        replaceAudio: WaveActions.replaceAudio,
-        removePlugin: WaveActions.removePlugin,
-        clipAudio: WaveActions.clipAudio,
-        playRegion: WaveActions.playRegion,
-        togglePlay: WorkActions.togglePlay,
-        addRegionOptions: WaveActions.addRegionOptions
+        initializeWave,
+        changeWaveColor,
+        changeProgressColor,
+        addPlugin,
+        setOptions,
+        replaceAudio,
+        removePlugin,
+        clipAudio,
+        playRegion,
+        togglePlay,
+        addRegionOptions
     }, dispatch);
 };
 
 // This method wraps the component with the store and dispatch!!!
-export default connect<any, WaveActions.DispatchProps, any, MainState>
+export default connect<any, WaveDispatchProps, any, MainState>
 (mapStateToProps, mapDispatchToProps)(Wavesurfer);

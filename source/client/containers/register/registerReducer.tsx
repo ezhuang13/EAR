@@ -1,17 +1,17 @@
 import * as Types from './registerTypes';
 
 /********** Local State Interface and Initial State Constant **********/
-interface RegisterStateLocal {
+interface RegisterPropsInterface {
     registerError: string;
     notify: string;
 }
-export const initialRegisterState: RegisterStateLocal = {
+export const initialRegisterProps: RegisterPropsInterface = {
     registerError: '',
     notify: '',
 };
 
 /********** Register Reducer **********/
-export const registerReducer = (state = initialRegisterState, action: Types.RegisterActionTypes) => {
+export const registerReducer = (state = initialRegisterProps, action: Types.RegisterActionTypes) => {
     switch (action.type) {
         case Types.REGISTER_FAIL:
             // Return the proper changed state!
@@ -40,4 +40,4 @@ export const registerReducer = (state = initialRegisterState, action: Types.Regi
 };
 
 // Exports the Register Reducer as the Register's State
-export type RegisterState = ReturnType<typeof registerReducer>;
+export type RegisterProps = ReturnType<typeof registerReducer>;

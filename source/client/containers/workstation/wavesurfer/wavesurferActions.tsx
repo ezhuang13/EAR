@@ -1,27 +1,26 @@
 import * as Types from './wavesurferTypes';
-import { initialWaveState } from './wavesurferReducer';
+import { initialWaveProps } from './wavesurferReducer';
 import WaveSurfer from 'wavesurfer.js';
-import Pizzicato from 'pizzicato';
 import { ThunkAction, ThunkDispatch } from 'redux-thunk';
 import { AnyAction } from 'redux';
 import CursorPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.cursor.min.js';
 import RegionsPlugin from 'wavesurfer.js/dist/plugin/wavesurfer.regions.min.js';
-import * as EffectsConstants from '../better_effects/effectConstants';
+import { EffectList } from '../better_effects/effectConstants';
 import { toggleEffect } from '../workstationActions';
 import interact from 'interactjs';
 
 /********** List of Actions for Dispatch Props **********/
 export interface DispatchProps {
-    initializeWave: typeof initializeWave,
-    changeWaveColor: typeof changeWaveColor,
-    changeProgressColor: typeof changeProgressColor,
-    addPlugin: typeof addPlugin,
-    setOptions: typeof setOptions,
-    replaceAudio: typeof replaceAudio,
-    removePlugin: typeof removePlugin,
-    clipAudio: typeof clipAudio,
-    playRegion: typeof playRegion,
-    addRegionOptions: typeof addRegionOptions
+    initializeWave?: typeof initializeWave,
+    changeWaveColor?: typeof changeWaveColor,
+    changeProgressColor?: typeof changeProgressColor,
+    addPlugin?: typeof addPlugin,
+    setOptions?: typeof setOptions,
+    replaceAudio?: typeof replaceAudio,
+    removePlugin?: typeof removePlugin,
+    clipAudio?: typeof clipAudio,
+    playRegion?: typeof playRegion,
+    addRegionOptions?: typeof addRegionOptions
 }
 
 const generatePlugin = (pluginType: string, wave: any) => {
@@ -32,8 +31,7 @@ const generatePlugin = (pluginType: string, wave: any) => {
                     regions: [
                         {
                             start: 0.2 * wave.backend.buffer.duration,
-                            end: 0.3 * wave.backend.buffer.duration,
-                            color: 'hsla(400, 100%, 30%, 0.5)'
+                            end: 0.3 * wave.backend.buffer.duration
                         }
                     ],
                     dragSelection: {
@@ -191,7 +189,8 @@ export const addPlugin = (pluginType: string, wave: any): ThunkActionType => {
                 wave.params.plugins.push(pluginToAdd);
                 wave.disableDragSelection();
             } else {
-                wave.addRegion({start: 5, end: 10});
+                wave.addRegion({start: 0.2 * wave.backend.buffer.duration,
+                    end: 0.3 * wave.backend.buffer.duration});
             }
             return resolve();
         });
@@ -206,9 +205,8 @@ export const initializeWave = (audioBlob: Blob): ThunkActionType => {
                 // Create the WaveSurfer waveform.
                 const ourWave = WaveSurfer.create({
                     container: '#wavesurfer',
-                    waveColor: initialWaveState.waveColor,
-                    progressColor: initialWaveState.progressColor,
-                    audioContext: Pizzicato.context,
+                    waveColor: initialWaveProps.waveColor,
+                    progressColor: initialWaveProps.progressColor,
                     plugins: [
                         CursorPlugin.create({
                             showTime: true,
@@ -257,7 +255,7 @@ export const addRegionOptions = (currentKey: string, numberID: string, wave: any
             }
 
             // Obtain a list of effects as HTML ID's (for the dropzone handling)
-            const effectsListIds = EffectsConstants.EffectList.map((element) => {
+            const effectsListIds = EffectList.map((element) => {
                 return '#' + element;
             });
             const singleStringEffects = effectsListIds.join(', ');

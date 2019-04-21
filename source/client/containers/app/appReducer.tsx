@@ -1,14 +1,14 @@
 import * as Types from './appTypes';
 
 /********** Local State Interface and Initial State Constant **********/
-interface AppStateLocal {
+interface AppPropsInterface {
     loggedIn: boolean;
     currentUser: string;
     status: string;
     appInitialized: boolean;
 }
 
-export const initialAppState: AppStateLocal = {
+export const initialAppProps: AppPropsInterface = {
     appInitialized: false,
     status: '',
     currentUser: '',
@@ -16,7 +16,7 @@ export const initialAppState: AppStateLocal = {
 };
 
 /********** Application Reducer **********/
-export const appReducer = (state = initialAppState, action: Types.AppActionTypes) => {
+export const appReducer = (state = initialAppProps, action: Types.AppActionTypes) => {
     switch (action.type) {
         case Types.APPLICATION_INITIALIZED:
             return Object.assign({}, state, {
@@ -38,4 +38,4 @@ export const appReducer = (state = initialAppState, action: Types.AppActionTypes
 };
 
 // Exports the Application Reducer as the Application's State
-export type AppState = ReturnType<typeof appReducer>;
+export type AppProps = ReturnType<typeof appReducer>;

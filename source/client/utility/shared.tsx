@@ -42,9 +42,9 @@ export const StyledFormControl = withStyles({
   root: {}
 })(FormControl);
 
-export const StyledGrid = withStyles({
-  root: {}
-})(Grid);
+export const StyledGrid = (props) => {
+  return <Grid {...props}/>;
+};
 
 export const StyledPlainPaper = withStyles({
   root: {}
@@ -65,7 +65,6 @@ export const StyledButton = withStyles({
 export const MUIAppBar = withStyles({
   root: {}
 })(AppBar);
-
 
 export const StyledTable = withStyles({
   root: {}
@@ -350,8 +349,8 @@ export const EndSliders = styled.div`
 `;
 
 export const EffectBox = styled.div`
-    grid-column-start: ${props => props.colStart};
-    grid-column-end: ${props => props.colEnd};
+    grid-column-start: ${(props: any) => props.colStart};
+    grid-column-end: ${(props: any) => props.colEnd};
     padding: 5px;
     margin-left: 1em;
     border: 2px black solid;
