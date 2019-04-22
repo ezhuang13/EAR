@@ -7,7 +7,7 @@ ENV PATH /app/node_modules/.bin:$PATH
 # Add package.json and node_modules (cached).
 ADD package.json /app/
 WORKDIR /app
-RUN npm install --silent
+RUN npm install
 
 # Add the application (not cached)!
 ADD . /app
