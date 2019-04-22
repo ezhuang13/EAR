@@ -13,7 +13,7 @@ RUN npm install
 ADD . /app
 
 # Compile the application
-RUN npm run build
+RUN npm run build-prod
 
 # Do the production environment.
 # Proxy server for serving up html on HTTP server
