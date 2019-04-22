@@ -18,9 +18,9 @@ RUN npm run build-prod
 # Do the production environment.
 # Proxy server for serving up html on HTTP server
 # Handles load balancing, memory, and performance optimization
-FROM nginx:1.13.3-alpine
-COPY --from=build /static /usr/share/nginx/html
-COPY --from=build /app/index.html /usr/share/nginx/html/index.html
-COPY --from=build /app/nginx.conf /etc/nginx/conf.default
+FROM nginx:stable
+COPY --from=build /static /var/www
+COPY --from=build /app/index.html /var/www
+COPY --from=build /app/nginx.conf /etc/nginx/conf.d/default.conf
 EXPOSE 80
 CMD ["nginx", "-g", "daemon off;"]
