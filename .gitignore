@@ -25,3 +25,4 @@ __pycache__
 .DS_Store
 package-lock.json
 source/client/webpack-stats.json
+*.pem
